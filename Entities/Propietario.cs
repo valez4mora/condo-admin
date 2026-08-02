@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    internal class PropiedadEntity
+    public class Propietario :Persona
     {
+        public int IdPropietario { get; set; }
+        public bool EstadoMorosidad { get; set; }
     }
 }
