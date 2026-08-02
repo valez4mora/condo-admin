@@ -54,6 +54,18 @@
     <Compile Include="Forms\FrmPropiedad.Designer.cs">
       <DependentUpon>FrmPropiedad.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmPropietario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPropietario.Designer.cs">
+      <DependentUpon>FrmPropietario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmResidente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmResidente.Designer.cs">
+      <DependentUpon>FrmResidente.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmPropiedad.resx">
