@@ -16,5 +16,20 @@ namespace UI.Forms
         {
             InitializeComponent();
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void titulo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnlimpiar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
