@@ -294,7 +294,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(800, 816);
+            this.ClientSize = new System.Drawing.Size(800, 749);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnconsultar);
             this.Controls.Add(this.textBox1);
@@ -321,6 +321,7 @@
             this.Controls.Add(this.code);
             this.Name = "FrmPropiedad";
             this.Text = "FrmPropiedad";
+            this.Load += new System.EventHandler(this.FrmPropiedad_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

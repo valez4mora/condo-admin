@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using DTO;
+using Util.Patrones;
 
 namespace DAL.Persistencia
 {
     public class PropiedadDAL
     {
-            Conexion conexion = new Conexion();
+            Conexion conexion = Conexion.Instancia;
 
             // Inserta una nueva propiedad en la base de datos
             public bool Registrar(PropiedadDTO propiedad)
