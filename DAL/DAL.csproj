@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Persistencia\FacturaDAL.cs" />
+    <Compile Include="Persistencia\FondoReservaDAL.cs" />
     <Compile Include="Persistencia\PersonaDAL.cs" />
     <Compile Include="Persistencia\PropiedadDAL.cs" />
     <Compile Include="Persistencia\PropietarioDAL.cs" />
