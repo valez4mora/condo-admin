@@ -42,7 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Persistencia\CargoFacturableDAL.cs" />
+    <Compile Include="Persistencia\FacturaDAL.cs" />
+    <Compile Include="Persistencia\FondoReservaDAL.cs" />
+    <Compile Include="Persistencia\PersonaDAL.cs" />
     <Compile Include="Persistencia\PropiedadDAL.cs" />
+    <Compile Include="Persistencia\PropietarioDAL.cs" />
+    <Compile Include="Persistencia\ResidenteDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

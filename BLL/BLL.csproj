@@ -41,7 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CargoFacturableBILL.cs" />
+    <Compile Include="CargoFacturableBLL.cs" />
+    <Compile Include="FacturaBLL.cs" />
+    <Compile Include="FinanzasBLL.cs" />
+    <Compile Include="FondoReserva.cs" />
+    <Compile Include="PersonaBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropiedadBLL.cs" />
     <Compile Include="PropietarioBLL.cs" />
