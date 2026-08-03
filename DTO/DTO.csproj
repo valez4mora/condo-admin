@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CargoFacturableDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropiedadDTO.cs" />
     <Compile Include="PropietarioDTO.cs" />
