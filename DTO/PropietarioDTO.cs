@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    internal class PropietarioDTO
+    public class PropietarioDTO : PersonaDTO
     {
+        public int IdPropietario { get; set; }
+
+        public bool EstadoMorosidad { get; set; }
     }
 }

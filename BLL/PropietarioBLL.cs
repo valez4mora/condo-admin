@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DAL.Persistencia;
+using DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,44 @@ using System.Threading.Tasks;
 
 namespace BLL
 {
-    internal class PropietarioBLL
+    public class PropietarioBLL
     {
-    }
+        PersonaDAL personaDAL = new PersonaDAL();
+        PropietarioDAL propietarioDAL = new PropietarioDAL();
+
+        public bool Registrar(PropietarioDTO propietario)
+        {
+
+            PersonaDTO persona = new PersonaDTO();
+
+            persona.Identificacion = propietario.Identificacion;
+            persona.Nombre = propietario.Nombre;
+            persona.Apellido = propietario.Apellido;
+            persona.Sexo = propietario.Sexo;
+            persona.Telefono = propietario.Telefono;
+            persona.Email = propietario.Email;
+            persona.Direccion = propietario.Direccion;
+
+
+            // Guarda persona
+            bool guardado = personaDAL.Registrar(persona);
+
+
+            if (guardado)
+            {
+                // Busca el Id generado
+                int idPersona = personaDAL.ObtenerIdPorIdentificacion(
+                                  propietario.Identificacion);
+
+
+                propietario.IdPersona = idPersona;
+
+
+                // Guarda propietario
+                return propietarioDAL.Registrar(propietario);
+            }
+
+            return false;
+        }
+    } 
 }
