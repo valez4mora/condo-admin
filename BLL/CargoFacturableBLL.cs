@@ -14,7 +14,7 @@ namespace BLL
     {
         ICargoFacturableDAL dal= new CargoFacturableDAL();
 
-        public bool GenerarCuotaOrdinaria(PropiedadDTO propiedad)
+        public CargoFacturableDTO  GenerarCuotaOrdinaria(PropiedadDTO propiedad) //cuota de mantenimiento
         {
             if (propiedad == null)
             {
@@ -31,7 +31,13 @@ namespace BLL
             decimal MontoBase= (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo;
             CargoFacturableDTO cargo = CargoFacturableFactory.CrearCuotaMantenimiento(propiedad.IdPropiedad, MontoBase);
 
-            return dal.Registrar(cargo);
+            bool guardado=dal.Registrar(cargo);
+
+            if (!guardado)
+            {
+                throw new Exception("No se pudo guardar la cuota en la base de datos.");
+            }
+            return cargo;
         }
     }
 }

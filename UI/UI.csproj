@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FrmFacturacion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmFacturacion.Designer.cs">
+      <DependentUpon>FrmFacturacion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmPropiedad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +74,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FrmFacturacion.resx">
+      <DependentUpon>FrmFacturacion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPropiedad.resx">
       <DependentUpon>FrmPropiedad.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,6 +106,10 @@
     <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{dec6d2f7-4daa-4982-a4fc-249116544ca2}</Project>
       <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{e8557c6d-3868-4db0-968e-5f3e61657cad}</Project>
+      <Name>DTO</Name>
     </ProjectReference>
     <ProjectReference Include="..\Entities\Entities.csproj">
       <Project>{b7f9d3cb-5c9c-4f12-ae01-77b2401f5316}</Project>
