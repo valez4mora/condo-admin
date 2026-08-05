@@ -1,12 +1,16 @@
-﻿using System;
+﻿using DAL.Persistencia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTO;
 
 namespace BLL
 {
-    internal class FondoReserva
+    public class FondoReservaBLL
     {
+        
+
     }
 }
