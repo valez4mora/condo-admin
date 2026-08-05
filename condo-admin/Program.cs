@@ -19,7 +19,7 @@ namespace condo_admin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmPropiedad());
+            Application.Run(new FrmFacturacion());
         }
     }
 }

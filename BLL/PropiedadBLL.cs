@@ -39,6 +39,10 @@ namespace BLL
             return dal.Registrar(propiedad);
         }
 
+        public List<PropiedadDTO> ObtenerTodas()
+        {
+            return dal.ObtenerTodas();
+        }
     }
 }
 
