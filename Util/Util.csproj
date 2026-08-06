@@ -42,8 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Patrones\CargoFacturableFactory.cs" />
     <Compile Include="Patrones\Conexion.cs" />
+    <Compile Include="Patrones\GestionFinancieraFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

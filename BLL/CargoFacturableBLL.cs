@@ -29,7 +29,7 @@ namespace BLL
                 throw new Exception("La propiedad no tiene tarifa configurada.");
             }
             decimal MontoBase= (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo;
-            CargoFacturableDTO cargo = CargoFacturableFactory.CrearCuotaMantenimiento(propiedad.IdPropiedad, MontoBase);
+            CargoFacturableDTO cargo = GestionFinancieraFactory.CrearCuotaMantenimiento(propiedad.IdPropiedad, MontoBase);
 
             bool guardado=dal.Registrar(cargo);
 
