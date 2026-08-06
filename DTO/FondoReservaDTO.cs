@@ -8,9 +8,10 @@ namespace DTO
 {
     public class FondoReservaDTO
     {
+        public int IdFondoReserva { get; set; }
         public int IdPropiedad { get; set; }
-        public decimal CuotaMantenimiento { get; set; }
-        public decimal FondoReserva { get; set; }
+        public decimal Porcentaje { get; set; }
+        public decimal Monto { get; set; }
         public DateTime Fecha { get; set; }
     }
 }

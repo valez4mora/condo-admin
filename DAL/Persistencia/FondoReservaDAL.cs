@@ -37,12 +37,74 @@ namespace DAL.Persistencia
 
         public List<FondoReserva> ObtenerTodos()
         {
-            return new List<FondoReserva>();
+            List<FondoReserva> lista = new List<FondoReserva>();
+
+            SqlConnection cn = conexion.ObtenerConexion();
+
+            string sql = "SELECT * FROM FondoReserva";
+
+            SqlCommand cmd = new SqlCommand(sql, cn);
+
+            cn.Open();
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                FondoReserva fondo = new FondoReserva
+                {
+                    IdFondoReserva = Convert.ToInt32(dr["IdFondoReserva"]),
+                    IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]),
+                    Porcentaje = Convert.ToDecimal(dr["Porcentaje"]),
+                    Monto = Convert.ToDecimal(dr["Monto"]),
+                    Fecha = Convert.ToDateTime(dr["Fecha"])
+                };
+
+                lista.Add(fondo);
+            }
+
+            dr.Close();
+            cn.Close();
+
+            return lista;
         }
 
         public List<FondoReserva> ObtenerPorPropiedad(int idPropiedad)
         {
-            return new List<FondoReserva>();
+            List<FondoReserva> lista = new List<FondoReserva>();
+
+            SqlConnection cn = conexion.ObtenerConexion();
+
+            string sql = @"SELECT *
+                   FROM FondoReserva
+                   WHERE IdPropiedad=@IdPropiedad";
+
+            SqlCommand cmd = new SqlCommand(sql, cn);
+
+            cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
+
+            cn.Open();
+
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            while (dr.Read())
+            {
+                FondoReserva fondo = new FondoReserva
+                {
+                    IdFondoReserva = Convert.ToInt32(dr["IdFondoReserva"]),
+                    IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]),
+                    Porcentaje = Convert.ToDecimal(dr["Porcentaje"]),
+                    Monto = Convert.ToDecimal(dr["Monto"]),
+                    Fecha = Convert.ToDateTime(dr["Fecha"])
+                };
+
+                lista.Add(fondo);
+            }
+
+            dr.Close();
+            cn.Close();
+
+            return lista;
         }
     }
 }

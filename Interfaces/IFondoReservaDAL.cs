@@ -10,7 +10,9 @@ namespace Interfaces
     public interface IFondoReservaDAL
     {
         void Insertar(FondoReserva fondo);
+
         List<FondoReserva> ObtenerTodos();
+
         List<FondoReserva> ObtenerPorPropiedad(int idPropiedad);
     }
 }

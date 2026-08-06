@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IFondoReservaDAL.cs" />
+    <Compile Include="IIndicadorMorosidadDAL.cs" />
     <Compile Include="IPersonaDAL.cs" />
     <Compile Include="IPropiedadDAL.cs" />
     <Compile Include="IPropietarioDAL.cs" />

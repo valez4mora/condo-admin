@@ -47,6 +47,7 @@
     <Compile Include="DetalleFactura.cs" />
     <Compile Include="Factura.cs" />
     <Compile Include="FondoReserva.cs" />
+    <Compile Include="IndicadorMorosidad.cs" />
     <Compile Include="Pago.cs" />
     <Compile Include="Persona.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
