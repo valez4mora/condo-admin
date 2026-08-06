@@ -16,5 +16,8 @@ namespace Interfaces
 
         List<CargoFacturableDTO> ObtenerTodos();//trae todos los cargos de todas la propiedades 
 
+        List<CargoFacturableDTO> ObtenerVencidosSinPenalizar();
+        bool ActualizarPenalizacion(CargoFacturableDTO cargo);
+
     }
 }

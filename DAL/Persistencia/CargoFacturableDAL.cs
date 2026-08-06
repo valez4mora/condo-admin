@@ -51,8 +51,8 @@ namespace DAL.Persistencia
         {
             //se utiliza una lista ,ya que una propiedad puede tener varios cargos
             List<CargoFacturableDTO> lista = new List<CargoFacturableDTO>(); //se crea la lista
-            
-            using (SqlConnection cn= Conexion.Instancia.ObtenerConexion())
+
+            using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
             {
                 cn.Open();
 
@@ -114,6 +114,13 @@ namespace DAL.Persistencia
             }
             return lista;
         }
+
+        public List<CargoFacturableDTO> ObtenerVencidosSinPenalizar()
+        {
+
+
+
+
+        }
     }
 }
- 

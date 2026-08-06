@@ -19,5 +19,6 @@ namespace DTO
         public DateTime FechaVencimiento { get; set; }
         public string Estado { get; set; }
         public int IdPropiedad { get; set; }
+        public bool Penalizado { get; set; }
     }
 }
