@@ -9,7 +9,7 @@ namespace Util.Patrones
 {
     public class GestionFinancieraFactory
     {
-        private const decimal PORCENTAJE_IVA = 0.3m;
+        private const decimal PORCENTAJE_IVA = 0.13m;
 
         // ---------- Cuota de mantenimiento ----------
         // Cuota = (Area x Tarifa) + CargoFijo
@@ -71,5 +71,24 @@ namespace Util.Patrones
                 IdPropiedad = idPropiedad
             };
         }
+
+        // --------- Penalizacion --------------
+        public static CargoFacturableDTO CrearPenalizacion (int idPropiedad,decimal monto, string descripcion)
+        {
+            return new CargoFacturableDTO
+            {
+                Descripcion = descripcion,
+                Tipo = "Penalizacion",
+                MontoBase = monto,
+                IVA = 0,
+                Total = monto,
+                FechaEmision = DateTime.Now,
+                FechaVencimiento = DateTime.Now.AddDays(15),
+                Estado = "Pendiente",
+                IdPropiedad = idPropiedad
+            };
+        }
+
+
     }
 }

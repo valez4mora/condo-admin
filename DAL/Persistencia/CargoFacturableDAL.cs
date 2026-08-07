@@ -115,12 +115,6 @@ namespace DAL.Persistencia
             return lista;
         }
 
-        public List<CargoFacturableDTO> ObtenerVencidosSinPenalizar()
-        {
-
-
-
-
-        }
+       
     }
 }
