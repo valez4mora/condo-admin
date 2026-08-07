@@ -289,6 +289,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(388, 273);
             this.dataGridView1.TabIndex = 25;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // vScrollBar1
             // 
@@ -303,7 +304,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(546, 802);
+            this.ClientSize = new System.Drawing.Size(546, 749);
             this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.btnconsultar);
