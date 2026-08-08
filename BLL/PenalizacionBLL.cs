@@ -17,10 +17,10 @@ namespace BLL
             _cargoDAL = new CargoFacturableDAL();
         }
 
-        public CargoFacturableDTO AplicarPenalizacion(int idPropiedad)
+        public CargoFacturableDTO AplicarPenalizacion(PropiedadDTO idPropiedad)
         {
             // Se traen los cargos de esa propiedad
-            List<CargoFacturableDTO> cargos = _cargoDAL.ObtenerPorPropiedad(idPropiedad);
+            List<CargoFacturableDTO> cargos = _cargoDAL.ObtenerPorPropiedad( idPropiedad);
 
             // Se busca el cargo de cuota vencido
             CargoFacturableDTO vencido = cargos.FirstOrDefault(c =>
@@ -54,7 +54,7 @@ namespace BLL
 
             // Factory arma el objeto 
             CargoFacturableDTO penalizacion = GestionFinancieraFactory.CrearPenalizacion(
-                idPropiedad, monto, descripcion);
+                idPropiedad.IdPropiedad, monto, descripcion);
 
             // Se guarda con el DAO instanciado
             bool guardado = _cargoDAL.Registrar(penalizacion);

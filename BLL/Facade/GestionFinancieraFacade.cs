@@ -1,8 +1,10 @@
 ﻿using DTO;
+using Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Util.Patrones;
 
@@ -40,6 +42,12 @@ namespace BLL
         public CargoFacturableDTO CalcularInteresMora(int idPropiedad, decimal saldo, decimal tasa, int meses)
         {
             return GestionFinancieraFactory.CrearInteresMora(idPropiedad, saldo, tasa, meses);
+        }
+
+        //------------ 4. Indicador de morosidad ----------
+        public void CrearPenalizacion(CargoFacturableDTO idPropiedad, decimal monto, string descripcion)
+        {
+
         }
 
     }

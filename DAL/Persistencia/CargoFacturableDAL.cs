@@ -47,7 +47,7 @@ namespace DAL.Persistencia
             }
         }
 
-        public List<CargoFacturableDTO> ObtenerPorPropiedad(int idPropiedad)
+        public List<CargoFacturableDTO> ObtenerPorPropiedad(PropiedadDTO propiedad)
         {
             //se utiliza una lista ,ya que una propiedad puede tener varios cargos
             List<CargoFacturableDTO> lista = new List<CargoFacturableDTO>(); //se crea la lista
@@ -58,7 +58,7 @@ namespace DAL.Persistencia
 
                 string sql = "SELECT *FROM CargoFacturable WHERE IdPropiedad=@IdPropiedad";
                 SqlCommand cmd = new SqlCommand(sql, cn);
-                cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
+                cmd.Parameters.AddWithValue("@IdPropiedad", propiedad.IdPropiedad);
 
                 //DataReader ya que necesitamos leer los resultados
                 SqlDataReader dr = cmd.ExecuteReader();

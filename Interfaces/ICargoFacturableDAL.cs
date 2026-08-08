@@ -12,7 +12,7 @@ namespace Interfaces
      
       bool Registrar(CargoFacturableDTO cargo);  //Inserta un nuevo Cargo en la tabla CargoFacturable
         
-        List<CargoFacturableDTO> ObtenerPorPropiedad(int idPropiedad);//trae todos los cargos que le pertenecen a una propiedad especifica
+        List<CargoFacturableDTO> ObtenerPorPropiedad(PropiedadDTO idPropiedad);//trae todos los cargos que le pertenecen a una propiedad especifica
 
         List<CargoFacturableDTO> ObtenerTodos();//trae todos los cargos de todas la propiedades 
 
