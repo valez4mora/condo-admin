@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Servicios_Externos
+namespace Integration.Provincias
 {
-    internal class ServicioProvinciasDAL
+    internal class ProvinciaDTO
     {
     }
 }

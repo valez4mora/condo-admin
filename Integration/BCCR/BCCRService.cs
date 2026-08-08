@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interfaces.Servicios_Externos
+namespace Integration.BCCR
 {
-    internal interface IServicioHaciendaDAL
+    internal class BCCRService
     {
     }
 }

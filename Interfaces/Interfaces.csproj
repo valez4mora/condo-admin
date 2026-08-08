@@ -49,9 +49,6 @@
     <Compile Include="IResidenteDAL.cs" />
     <Compile Include="ICargoFacturableDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Servicios Externos\IServicioBccrDAL.cs" />
-    <Compile Include="Servicios Externos\IServicioHaciendaDAL.cs" />
-    <Compile Include="Servicios Externos\IServicioProvinciasDAL.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DTO\DTO.csproj">

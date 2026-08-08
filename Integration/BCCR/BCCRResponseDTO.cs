@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Servicios_Externos
+namespace Integration.BCCR
 {
-    internal class ServicioBccrDAL
+    internal class BCCRResponseDTO
     {
     }
 }
