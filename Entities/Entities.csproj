@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AreaComun.cs" />
     <Compile Include="Bitacora.cs" />
+    <Compile Include="BloqueoMantenimiento.cs" />
     <Compile Include="CargoFacturable.cs" />
     <Compile Include="DetalleFactura.cs" />
     <Compile Include="Factura.cs" />
