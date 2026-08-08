@@ -1,14 +1,15 @@
-﻿using DTO;
-using Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using DTO;
+using Entities;
+using System.Threading;
 using Util.Patrones;
+using BLL;
 
-namespace BLL
+namespace Patrones.Facade
 {
     public class GestionFinancieraFacade
     {
@@ -52,3 +53,6 @@ namespace BLL
 
     }
 }
+
+
+

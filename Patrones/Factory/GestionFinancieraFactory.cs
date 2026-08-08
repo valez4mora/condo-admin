@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Util.Patrones
+namespace Patrones.Factory
 {
     public class GestionFinancieraFactory
     {
@@ -73,7 +73,7 @@ namespace Util.Patrones
         }
 
         // --------- Penalizacion --------------
-        public static CargoFacturableDTO CrearPenalizacion (int idPropiedad,decimal monto, string descripcion)
+        public static CargoFacturableDTO CrearPenalizacion(int idPropiedad, decimal monto, string descripcion)
         {
             return new CargoFacturableDTO
             {
