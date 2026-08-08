@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Integration.Hacienda
 {
-    internal interface IHaciendaService
+    public interface IHaciendaService
     {
+        HaciendaResponseDTO ConsultarIdentificacion(string identificacion);
     }
 }
