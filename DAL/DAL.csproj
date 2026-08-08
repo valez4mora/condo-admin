@@ -50,6 +50,9 @@
     <Compile Include="Persistencia\PropietarioDAL.cs" />
     <Compile Include="Persistencia\ResidenteDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Servicios Externos\ServicioBccrDAL.cs" />
+    <Compile Include="Servicios Externos\ServicioHaciendaDAL.cs" />
+    <Compile Include="Servicios Externos\ServicioProvinciasDAL.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
