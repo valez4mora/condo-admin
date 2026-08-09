@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Singleton;
+
 namespace DAL.DAO
 {
     public class PersonaDAO

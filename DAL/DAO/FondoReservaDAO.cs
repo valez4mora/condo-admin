@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using DAL.Singleton;
 using Interfaces;
 
-namespace DAL.Persistencia
+namespace DAL.DAO
 {
     public class FondoReservaDAO : IFondoReservaDAL
     {

@@ -5,7 +5,6 @@ using System.Data;
 using System.Data.SqlClient;
 using DAL.Singleton;
 
-
 namespace DAL.DAO
 {
     public class ResidenteDAL

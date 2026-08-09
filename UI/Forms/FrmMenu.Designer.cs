@@ -48,10 +48,10 @@
             this.propiedadesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.morosidadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ingresosMensualesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indiceDeRiesgoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.personasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestionDePropietariosResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestiónDeResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indiceDeRiesgoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -211,6 +211,13 @@
             this.ingresosMensualesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ingresosMensualesToolStripMenuItem.Text = "Ingresos Mensuales";
             // 
+            // indiceDeRiesgoToolStripMenuItem
+            // 
+            this.indiceDeRiesgoToolStripMenuItem.Name = "indiceDeRiesgoToolStripMenuItem";
+            this.indiceDeRiesgoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.indiceDeRiesgoToolStripMenuItem.Text = "Indice de riesgo ";
+            this.indiceDeRiesgoToolStripMenuItem.Click += new System.EventHandler(this.indiceDeRiesgoToolStripMenuItem_Click);
+            // 
             // personasToolStripMenuItem
             // 
             this.personasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -234,13 +241,6 @@
             this.gestiónDeResidentesToolStripMenuItem.Text = "Gestión de Residentes ";
             this.gestiónDeResidentesToolStripMenuItem.Click += new System.EventHandler(this.gestiónDeResidentesToolStripMenuItem_Click);
             // 
-            // indiceDeRiesgoToolStripMenuItem
-            // 
-            this.indiceDeRiesgoToolStripMenuItem.Name = "indiceDeRiesgoToolStripMenuItem";
-            this.indiceDeRiesgoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.indiceDeRiesgoToolStripMenuItem.Text = "Indice de riesgo ";
-            this.indiceDeRiesgoToolStripMenuItem.Click += new System.EventHandler(this.indiceDeRiesgoToolStripMenuItem_Click);
-            // 
             // FrmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -250,6 +250,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmMenu";
             this.Text = "Menu";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FrmMenu_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
