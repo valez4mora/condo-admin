@@ -43,7 +43,7 @@
             this.lblTitulo = new System.Windows.Forms.Label();
             this.pnlContenedor = new System.Windows.Forms.Panel();
             this.btnEliminar = new System.Windows.Forms.Button();
-            this.btnReporte = new System.Windows.Forms.Button();
+            this.btnLimpiar = new System.Windows.Forms.Button();
             this.btnActualizar = new System.Windows.Forms.Button();
             this.pnlMenu = new System.Windows.Forms.Panel();
             this.nudCuota = new System.Windows.Forms.NumericUpDown();
@@ -58,6 +58,7 @@
             this.nudArea = new System.Windows.Forms.NumericUpDown();
             this.lblTipo = new System.Windows.Forms.Label();
             this.btnBuscar = new System.Windows.Forms.Button();
+            this.btnReporte = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
             this.pnlContenedor.SuspendLayout();
             this.pnlMenu.SuspendLayout();
@@ -133,7 +134,7 @@
             this.btnRegistrar.BackColor = System.Drawing.Color.OliveDrab;
             this.btnRegistrar.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRegistrar.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnRegistrar.Location = new System.Drawing.Point(79, 518);
+            this.btnRegistrar.Location = new System.Drawing.Point(40, 518);
             this.btnRegistrar.Name = "btnRegistrar";
             this.btnRegistrar.Size = new System.Drawing.Size(151, 40);
             this.btnRegistrar.TabIndex = 12;
@@ -183,7 +184,7 @@
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(904, 113);
+            this.pnlHeader.Size = new System.Drawing.Size(1009, 113);
             this.pnlHeader.TabIndex = 26;
             // 
             // lblSubtitulo
@@ -213,8 +214,9 @@
             // pnlContenedor
             // 
             this.pnlContenedor.BackColor = System.Drawing.SystemColors.Menu;
-            this.pnlContenedor.Controls.Add(this.btnEliminar);
             this.pnlContenedor.Controls.Add(this.btnReporte);
+            this.pnlContenedor.Controls.Add(this.btnEliminar);
+            this.pnlContenedor.Controls.Add(this.btnLimpiar);
             this.pnlContenedor.Controls.Add(this.btnActualizar);
             this.pnlContenedor.Controls.Add(this.pnlMenu);
             this.pnlContenedor.Controls.Add(this.btnBuscar);
@@ -224,7 +226,7 @@
             this.pnlContenedor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContenedor.Location = new System.Drawing.Point(0, 113);
             this.pnlContenedor.Name = "pnlContenedor";
-            this.pnlContenedor.Size = new System.Drawing.Size(904, 599);
+            this.pnlContenedor.Size = new System.Drawing.Size(1009, 599);
             this.pnlContenedor.TabIndex = 27;
             // 
             // btnEliminar
@@ -232,7 +234,7 @@
             this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.btnEliminar.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminar.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnEliminar.Location = new System.Drawing.Point(459, 518);
+            this.btnEliminar.Location = new System.Drawing.Point(413, 518);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(151, 40);
             this.btnEliminar.TabIndex = 28;
@@ -240,25 +242,25 @@
             this.btnEliminar.UseVisualStyleBackColor = false;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
-            // btnReporte
+            // btnLimpiar
             // 
-            this.btnReporte.BackColor = System.Drawing.Color.Gray;
-            this.btnReporte.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReporte.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnReporte.Location = new System.Drawing.Point(657, 518);
-            this.btnReporte.Name = "btnReporte";
-            this.btnReporte.Size = new System.Drawing.Size(151, 40);
-            this.btnReporte.TabIndex = 27;
-            this.btnReporte.Text = "Generar Reporte";
-            this.btnReporte.UseVisualStyleBackColor = false;
-            this.btnReporte.Click += new System.EventHandler(this.btnReporte_Click);
+            this.btnLimpiar.BackColor = System.Drawing.Color.Chocolate;
+            this.btnLimpiar.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLimpiar.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnLimpiar.Location = new System.Drawing.Point(601, 518);
+            this.btnLimpiar.Name = "btnLimpiar";
+            this.btnLimpiar.Size = new System.Drawing.Size(151, 40);
+            this.btnLimpiar.TabIndex = 27;
+            this.btnLimpiar.Text = "Limpiar";
+            this.btnLimpiar.UseVisualStyleBackColor = false;
+            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
             // btnActualizar
             // 
             this.btnActualizar.BackColor = System.Drawing.Color.Teal;
             this.btnActualizar.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnActualizar.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnActualizar.Location = new System.Drawing.Point(265, 518);
+            this.btnActualizar.Location = new System.Drawing.Point(219, 518);
             this.btnActualizar.Name = "btnActualizar";
             this.btnActualizar.Size = new System.Drawing.Size(151, 40);
             this.btnActualizar.TabIndex = 26;
@@ -288,7 +290,7 @@
             this.pnlMenu.Controls.Add(this.label5);
             this.pnlMenu.Location = new System.Drawing.Point(0, 73);
             this.pnlMenu.Name = "pnlMenu";
-            this.pnlMenu.Size = new System.Drawing.Size(904, 395);
+            this.pnlMenu.Size = new System.Drawing.Size(1009, 395);
             this.pnlMenu.TabIndex = 25;
             this.pnlMenu.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlMenu_Paint);
             // 
@@ -415,12 +417,25 @@
             this.btnBuscar.UseVisualStyleBackColor = false;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
+            // btnReporte
+            // 
+            this.btnReporte.BackColor = System.Drawing.Color.Gray;
+            this.btnReporte.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReporte.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnReporte.Location = new System.Drawing.Point(807, 518);
+            this.btnReporte.Name = "btnReporte";
+            this.btnReporte.Size = new System.Drawing.Size(151, 40);
+            this.btnReporte.TabIndex = 29;
+            this.btnReporte.Text = "Generar Reporte";
+            this.btnReporte.UseVisualStyleBackColor = false;
+            this.btnReporte.Click += new System.EventHandler(this.btnReporte_Click);
+            // 
             // FrmPropiedad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(904, 712);
+            this.ClientSize = new System.Drawing.Size(1009, 712);
             this.Controls.Add(this.pnlContenedor);
             this.Controls.Add(this.pnlHeader);
             this.Controls.Add(this.label4);
@@ -472,7 +487,8 @@
         private System.Windows.Forms.NumericUpDown nudCuota;
         private System.Windows.Forms.Label lblCuota;
         private System.Windows.Forms.Button btnEliminar;
-        private System.Windows.Forms.Button btnReporte;
+        private System.Windows.Forms.Button btnLimpiar;
         private System.Windows.Forms.Button btnActualizar;
+        private System.Windows.Forms.Button btnReporte;
     }
 }
