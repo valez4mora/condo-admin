@@ -83,5 +83,12 @@ namespace UI.Forms
             frm.MdiParent = this;
             frm.Show();
         }
+
+        private void indiceDeRiesgoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmIndiceDeRiesgo frm = new FrmIndiceDeRiesgo();
+            frm.MdiParent = this;
+            frm.Show();
+        }
     }
 }

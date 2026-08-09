@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using DTO;
 using DAL.Singleton;
 
-namespace DAL.Persistencia
+namespace DAL.DAO
 {
     public class PropiedadDAO
     {

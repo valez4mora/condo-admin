@@ -38,6 +38,7 @@
             this.facturaciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reservasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.áreasComunesReservasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reservasToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.seguridadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rolesYPermisosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +51,7 @@
             this.personasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestionDePropietariosResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestiónDeResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reservasToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.indiceDeRiesgoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -139,6 +140,13 @@
             this.áreasComunesReservasToolStripMenuItem.Text = "Áreas Comunes";
             this.áreasComunesReservasToolStripMenuItem.Click += new System.EventHandler(this.áreasComunesReservasToolStripMenuItem_Click);
             // 
+            // reservasToolStripMenuItem1
+            // 
+            this.reservasToolStripMenuItem1.Name = "reservasToolStripMenuItem1";
+            this.reservasToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.reservasToolStripMenuItem1.Text = "Reservas";
+            this.reservasToolStripMenuItem1.Click += new System.EventHandler(this.reservasToolStripMenuItem1_Click);
+            // 
             // seguridadToolStripMenuItem
             // 
             this.seguridadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -171,7 +179,7 @@
             // controlDeVisitasToolStripMenuItem
             // 
             this.controlDeVisitasToolStripMenuItem.Name = "controlDeVisitasToolStripMenuItem";
-            this.controlDeVisitasToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.controlDeVisitasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.controlDeVisitasToolStripMenuItem.Text = "Control de Visitas";
             // 
             // reportesToolStripMenuItem
@@ -179,7 +187,8 @@
             this.reportesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.propiedadesToolStripMenuItem1,
             this.morosidadToolStripMenuItem,
-            this.ingresosMensualesToolStripMenuItem});
+            this.ingresosMensualesToolStripMenuItem,
+            this.indiceDeRiesgoToolStripMenuItem});
             this.reportesToolStripMenuItem.Name = "reportesToolStripMenuItem";
             this.reportesToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.reportesToolStripMenuItem.Text = "Reportes";
@@ -225,12 +234,12 @@
             this.gestiónDeResidentesToolStripMenuItem.Text = "Gestión de Residentes ";
             this.gestiónDeResidentesToolStripMenuItem.Click += new System.EventHandler(this.gestiónDeResidentesToolStripMenuItem_Click);
             // 
-            // reservasToolStripMenuItem1
+            // indiceDeRiesgoToolStripMenuItem
             // 
-            this.reservasToolStripMenuItem1.Name = "reservasToolStripMenuItem1";
-            this.reservasToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.reservasToolStripMenuItem1.Text = "Reservas";
-            this.reservasToolStripMenuItem1.Click += new System.EventHandler(this.reservasToolStripMenuItem1_Click);
+            this.indiceDeRiesgoToolStripMenuItem.Name = "indiceDeRiesgoToolStripMenuItem";
+            this.indiceDeRiesgoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.indiceDeRiesgoToolStripMenuItem.Text = "Indice de riesgo ";
+            this.indiceDeRiesgoToolStripMenuItem.Click += new System.EventHandler(this.indiceDeRiesgoToolStripMenuItem_Click);
             // 
             // FrmMenu
             // 
@@ -274,5 +283,6 @@
         private System.Windows.Forms.ToolStripMenuItem gestionDePropietariosResidentesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gestiónDeResidentesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reservasToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem indiceDeRiesgoToolStripMenuItem;
     }
 }
