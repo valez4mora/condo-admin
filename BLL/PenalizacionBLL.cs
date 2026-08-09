@@ -10,11 +10,11 @@ namespace BLL
 {
     public class PenalizacionBLL
     {
-        private readonly CargoFacturableDAL _cargoDAL;
+        private readonly CargoFacturableDAO _cargoDAL;
 
         public PenalizacionBLL()
         {
-            _cargoDAL = new CargoFacturableDAL();
+            _cargoDAL = new CargoFacturableDAO();
         }
 
         public CargoFacturableDTO AplicarPenalizacion(PropiedadDTO idPropiedad)

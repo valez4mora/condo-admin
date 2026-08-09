@@ -12,7 +12,7 @@ namespace BLL
 {
     public class CargoFacturableBILL
     {
-        ICargoFacturableDAL dal= new CargoFacturableDAL();
+        ICargoFacturableDAL dal= new CargoFacturableDAO();
 
         public CargoFacturableDTO  GenerarCuotaOrdinaria(PropiedadDTO propiedad) //cuota de mantenimiento
         {

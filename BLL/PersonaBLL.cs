@@ -10,7 +10,7 @@ namespace BLL
 {
     public class PersonaBLL
     {
-        PersonaDAL dal = new PersonaDAL();
+        PersonaDAO dal = new PersonaDAO();
 
         public bool Registrar(PersonaDTO persona)
         {

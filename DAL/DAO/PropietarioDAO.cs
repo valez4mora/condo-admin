@@ -4,12 +4,12 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.Patrones;
+using Util.BD_Connection;
 using DTO;  
 
 namespace DAL.Persistencia
 {
-    public class PropietarioDAL
+    public class PropietarioDAO
     {
         Conexion conexion = Conexion.Instancia;
 

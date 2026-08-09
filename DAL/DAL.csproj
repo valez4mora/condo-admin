@@ -42,14 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Persistencia\CargoFacturableDAL.cs" />
-    <Compile Include="Persistencia\FacturaDAL.cs" />
-    <Compile Include="Persistencia\FondoReservaDAL.cs" />
-    <Compile Include="Persistencia\IndicadorMorosidadDAL.cs" />
-    <Compile Include="Persistencia\PersonaDAL.cs" />
-    <Compile Include="Persistencia\PropiedadDAL.cs" />
-    <Compile Include="Persistencia\PropietarioDAL.cs" />
-    <Compile Include="Persistencia\ResidenteDAL.cs" />
+    <Compile Include="DAO\CargoFacturableDAO.cs" />
+    <Compile Include="DAO\FacturaDAO.cs" />
+    <Compile Include="DAO\FondoReservaDAO.cs" />
+    <Compile Include="DAO\IndicadorMorosidadDAO.cs" />
+    <Compile Include="DAO\PersonaDAO.cs" />
+    <Compile Include="DAO\PropiedadDAO.cs" />
+    <Compile Include="DAO\PropietarioDAO.cs" />
+    <Compile Include="DAO\ResidenteDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

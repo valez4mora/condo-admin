@@ -45,9 +45,7 @@
     <Compile Include="Facade\GestionFinancieraFacade.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DAO\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{dec6d2f7-4daa-4982-a4fc-249116544ca2}</Project>

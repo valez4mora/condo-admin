@@ -11,7 +11,7 @@ namespace BLL
 {
     public class FondoReservaBLL
     {
-        private readonly FondoReservaDAL dal = new FondoReservaDAL();
+        private readonly FondoReservaDAO dal = new FondoReservaDAO();
 
         public void RegistrarFondo(PropiedadDTO propiedad)
         {

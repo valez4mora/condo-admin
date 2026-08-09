@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using DTO;
-using Util.Patrones;
+using Util.BD_Connection;
 
 namespace DAL.Persistencia
 {
-    public class PropiedadDAL
+    public class PropiedadDAO
     {
             Conexion conexion = Conexion.Instancia;
 

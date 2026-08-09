@@ -5,11 +5,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.Patrones;
+using Util.BD_Connection;
 
 namespace DAL.Persistencia
 {
-    public class ResidenteDAL
+    public class ResidenteDAO
     {
         Conexion conexion = Conexion.Instancia;
 

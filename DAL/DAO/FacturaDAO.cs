@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Persistencia
 {
-    internal class FacturaDAL
+    internal class FacturaDAO
     {
     }
 }

@@ -10,8 +10,8 @@ namespace BLL
 {
     public class ResidenteBLL
     {
-        PersonaDAL personaDAL = new PersonaDAL();
-        ResidenteDAL residenteDAL = new ResidenteDAL();
+        PersonaDAO personaDAL = new PersonaDAO();
+        ResidenteDAO residenteDAL = new ResidenteDAO();
 
         public bool Registrar(ResidenteDTO residente)
         {

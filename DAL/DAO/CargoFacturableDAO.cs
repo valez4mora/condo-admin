@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using DTO;
 using Interfaces;
-using Util.Patrones;
+using Util.BD_Connection;
 
 
 namespace DAL.Persistencia
 {
-    public class CargoFacturableDAL : ICargoFacturableDAL
+    public class CargoFacturableDAO : ICargoFacturableDAL
     {
         public bool Registrar(CargoFacturableDTO cargo)
         {

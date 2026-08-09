@@ -11,7 +11,7 @@ namespace BLL
 {
     public class IndicadorMorosidadBLL
     {
-        private readonly IndicadorMorosidadDAL dal = new IndicadorMorosidadDAL();
+        private readonly IndicadorMorosidadDAO dal = new IndicadorMorosidadDAO();
 
         public void RegistrarMorosidad(IndicadorMorosidadDTO dto)
         {

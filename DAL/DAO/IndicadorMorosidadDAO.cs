@@ -6,11 +6,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.Patrones;
+using Util.BD_Connection;
 
 namespace DAL.Persistencia
 {
-        public class IndicadorMorosidadDAL : IIndicadorMorosidadDAL
+        public class IndicadorMorosidadDAO : IIndicadorMorosidadDAL
         {
             Conexion conexion = Conexion.Instancia;
 
