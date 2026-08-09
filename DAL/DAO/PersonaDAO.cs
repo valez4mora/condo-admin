@@ -5,9 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.BD_Connection;
-
-namespace DAL.Persistencia
+using DAL.Singleton;
+namespace DAL.DAO
 {
     public class PersonaDAO
     {

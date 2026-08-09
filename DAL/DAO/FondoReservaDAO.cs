@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.BD_Connection;
+using DAL.Singleton;
 using Interfaces;
 
 namespace DAL.Persistencia

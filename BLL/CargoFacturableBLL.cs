@@ -1,4 +1,4 @@
-﻿using DAL.Persistencia;
+﻿using DAL.DAO;
 using DTO;
 using Interfaces;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.Factory;
+using Factory;
 
 namespace BLL
 {

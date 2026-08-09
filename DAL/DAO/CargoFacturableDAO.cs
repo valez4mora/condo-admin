@@ -6,10 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DTO;
 using Interfaces;
-using Util.BD_Connection;
+using DAL.Singleton;
 
-
-namespace DAL.Persistencia
+namespace DAL.DAO
 {
     public class CargoFacturableDAO : ICargoFacturableDAL
     {

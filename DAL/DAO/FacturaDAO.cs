@@ -7,10 +7,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.BD_Connection;
+using DAL.Singleton;
 
-
-namespace DAL.Persistencia
+namespace DAL.DAO
 {
     public class FacturaDAO: IFacturaDAL
     {
