@@ -139,6 +139,7 @@
             this.btnRegistrar.TabIndex = 12;
             this.btnRegistrar.Text = "Registrar";
             this.btnRegistrar.UseVisualStyleBackColor = false;
+            this.btnRegistrar.Click += new System.EventHandler(this.btnRegistrar_Click);
             // 
             // lblFoto
             // 
@@ -237,6 +238,7 @@
             this.btnEliminar.TabIndex = 28;
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = false;
+            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
             // btnReporte
             // 
@@ -249,6 +251,7 @@
             this.btnReporte.TabIndex = 27;
             this.btnReporte.Text = "Generar Reporte";
             this.btnReporte.UseVisualStyleBackColor = false;
+            this.btnReporte.Click += new System.EventHandler(this.btnReporte_Click);
             // 
             // btnActualizar
             // 
@@ -261,6 +264,7 @@
             this.btnActualizar.TabIndex = 26;
             this.btnActualizar.Text = "Actualizar";
             this.btnActualizar.UseVisualStyleBackColor = false;
+            this.btnActualizar.Click += new System.EventHandler(this.btnActualizar_Click);
             // 
             // pnlMenu
             // 

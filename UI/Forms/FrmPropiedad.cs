@@ -138,5 +138,25 @@ namespace UI.Forms
         {
 
         }
+
+        private void btnRegistrar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnActualizar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnReporte_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
