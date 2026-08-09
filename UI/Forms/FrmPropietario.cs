@@ -1,5 +1,6 @@
-﻿using BLL;
+using BLL;
 using DTO;
+using Integration.Hacienda;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ namespace UI.Forms
     public partial class FrmPropietario : Form
     {
         private PropietarioBLL propietarioBLL = new PropietarioBLL();
+        private IHaciendaService haciendaService = new HaciendaService();
 
         public FrmPropietario()
         {
@@ -22,8 +24,6 @@ namespace UI.Forms
             ConfigurarColumnas();
         }
 
-        // Define explícitamente qué columnas mostrar (en vez de AutoGenerateColumns)
-        // para no mostrar IdPersona ni Fotografia (byte[]) en la grilla.
         private void ConfigurarColumnas()
         {
             dgvPropietarios.Columns.Clear();
@@ -33,7 +33,7 @@ namespace UI.Forms
                 DataPropertyName = "Identificacion",
                 Name = "colIdentificacion",
                 HeaderText = "Identificación",
-                Width = 130
+                Width = 110
             });
 
             dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
@@ -41,7 +41,7 @@ namespace UI.Forms
                 DataPropertyName = "Nombre",
                 Name = "colNombre",
                 HeaderText = "Nombre",
-                Width = 130
+                Width = 110
             });
 
             dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
@@ -49,15 +49,7 @@ namespace UI.Forms
                 DataPropertyName = "Apellidos",
                 Name = "colApellidos",
                 HeaderText = "Apellidos",
-                Width = 150
-            });
-
-            dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Sexo",
-                Name = "colSexo",
-                HeaderText = "Sexo",
-                Width = 60
+                Width = 120
             });
 
             dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
@@ -65,7 +57,7 @@ namespace UI.Forms
                 DataPropertyName = "Telefono",
                 Name = "colTelefono",
                 HeaderText = "Teléfono",
-                Width = 110
+                Width = 90
             });
 
             dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
@@ -73,15 +65,7 @@ namespace UI.Forms
                 DataPropertyName = "Email",
                 Name = "colEmail",
                 HeaderText = "Correo",
-                Width = 180
-            });
-
-            dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Direccion",
-                Name = "colDireccion",
-                HeaderText = "Dirección",
-                Width = 200
+                Width = 150
             });
 
             dgvPropietarios.Columns.Add(new DataGridViewCheckBoxColumn
@@ -89,12 +73,17 @@ namespace UI.Forms
                 DataPropertyName = "EstadoMorosidad",
                 Name = "colMorosidad",
                 HeaderText = "Moroso",
-                Width = 70
+                Width = 60
             });
         }
 
         private void FrmPropietario_Load(object sender, EventArgs e)
         {
+            cmbSexo.Items.Clear();
+            cmbSexo.Items.Add("M");
+            cmbSexo.Items.Add("F");
+            cmbSexo.SelectedIndex = -1;
+
             CargarListaPropietarios();
         }
 
@@ -103,8 +92,6 @@ namespace UI.Forms
             try
             {
                 List<PropietarioDTO> propietarios = propietarioBLL.ObtenerTodos();
-
-                // BindingList permite refrescar sin reasignar el DataSource cada vez
                 dgvPropietarios.DataSource = new BindingList<PropietarioDTO>(propietarios);
             }
             catch (Exception ex)
@@ -121,6 +108,127 @@ namespace UI.Forms
         private void btnActualizarLista_Click(object sender, EventArgs e)
         {
             CargarListaPropietarios();
+        }
+
+        // Consulta el API de Hacienda con la identificación digitada
+        // y autocompleta el campo Nombre con la razón social/nombre que devuelve.
+        // La API solo entrega un campo "nombre" completo; Apellidos lo ajusta el usuario.
+        private void btnBuscarHacienda_Click(object sender, EventArgs e)
+        {
+            string identificacion = txtIdentificacion.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(identificacion))
+            {
+                MessageBox.Show(
+                    "Digite una identificación antes de buscar.",
+                    "Identificación requerida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
+
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+
+                HaciendaResponseDTO resultado = haciendaService.ConsultarIdentificacion(identificacion);
+
+                if (resultado == null || string.IsNullOrWhiteSpace(resultado.Nombre))
+                {
+                    MessageBox.Show(
+                        "No se encontró información para esa identificación en Hacienda.",
+                        "Sin resultados",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                    return;
+                }
+
+                // Hacienda devuelve el nombre completo en un solo campo.
+                // Se coloca en Nombre; el usuario puede ajustarlo o repartirlo en Apellidos.
+                txtNombre.Text = resultado.Nombre;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudo consultar el API de Hacienda: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(txtIdentificacion.Text))
+                    throw new Exception("La identificación es obligatoria.");
+
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                    throw new Exception("El nombre es obligatorio.");
+
+                if (string.IsNullOrWhiteSpace(txtApellidos.Text))
+                    throw new Exception("Los apellidos son obligatorios.");
+
+                PropietarioDTO propietario = new PropietarioDTO
+                {
+                    Identificacion = txtIdentificacion.Text.Trim(),
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellidos = txtApellidos.Text.Trim(),
+                    Sexo = cmbSexo.SelectedItem != null ? cmbSexo.SelectedItem.ToString() : null,
+                    Telefono = txtTelefono.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Direccion = txtDireccion.Text.Trim(),
+                    EstadoMorosidad = false // un propietario nuevo inicia al día
+                };
+
+                bool registrado = propietarioBLL.Registrar(propietario);
+
+                if (registrado)
+                {
+                    MessageBox.Show(
+                        "El propietario se registró correctamente.",
+                        "Registro exitoso",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
+                    LimpiarFormulario();
+                    CargarListaPropietarios();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
+
+        private void LimpiarFormulario()
+        {
+            txtIdentificacion.Clear();
+            txtNombre.Clear();
+            txtApellidos.Clear();
+            txtTelefono.Clear();
+            txtEmail.Clear();
+            txtDireccion.Clear();
+            cmbSexo.SelectedIndex = -1;
+        }
+
+        private void btnLimpiarFormulario_Click(object sender, EventArgs e)
+        {
+            LimpiarFormulario();
         }
     }
 }

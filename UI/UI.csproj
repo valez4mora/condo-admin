@@ -165,6 +165,10 @@
       <Project>{b7f9d3cb-5c9c-4f12-ae01-77b2401f5316}</Project>
       <Name>Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Integration\Integration.csproj">
+      <Project>{385606f4-84cf-4915-bf7c-a412222a562c}</Project>
+      <Name>Integration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{8bbb3a97-4701-4ed9-b815-8e5810f67d78}</Project>
       <Name>Interfaces</Name>
