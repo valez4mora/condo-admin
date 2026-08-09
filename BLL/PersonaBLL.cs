@@ -24,7 +24,7 @@ namespace BLL
                 throw new Exception("El nombre es obligatorio");
 
 
-            if (string.IsNullOrEmpty(persona.Apellido))
+            if (string.IsNullOrEmpty(persona.Apellidos))
                 throw new Exception("Los apellidos son obligatorios");
 
 

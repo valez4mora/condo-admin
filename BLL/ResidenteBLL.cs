@@ -1,4 +1,5 @@
-﻿using DAL.DAO;
+﻿using DAL.Persistencia;
+using DAL.DAO;
 using DTO;
 using System;
 using System.Collections.Generic;
@@ -6,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace BLL
 {
     public class ResidenteBLL
     {
         PersonaDAO personaDAL = new PersonaDAO();
-        ResidenteDAO residenteDAL = new ResidenteDAO();
+        ResidenteDAL residenteDAL = new ResidenteDAL();
 
         public bool Registrar(ResidenteDTO residente)
         {
@@ -20,7 +22,7 @@ namespace BLL
 
             persona.Identificacion = residente.Identificacion;
             persona.Nombre = residente.Nombre;
-            persona.Apellido = residente.Apellido;
+            persona.Apellidos = residente.Apellidos;
             persona.Sexo = residente.Sexo;
             persona.Telefono = residente.Telefono;
             persona.Email = residente.Email;

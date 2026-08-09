@@ -1,4 +1,5 @@
 ﻿using DAL.DAO;
+using DAL.Persistencia;
 using DTO;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace BLL
     public class PropietarioBLL
     {
         PersonaDAO personaDAL = new PersonaDAO();
-        PropietarioDAO propietarioDAL = new PropietarioDAO();
+        PropietarioDAL propietarioDAL = new PropietarioDAL();
 
         public bool Registrar(PropietarioDTO propietario)
         {
@@ -20,7 +21,7 @@ namespace BLL
 
             persona.Identificacion = propietario.Identificacion;
             persona.Nombre = propietario.Nombre;
-            persona.Apellido = propietario.Apellido;
+            persona.Apellidos = propietario.Apellidos;
             persona.Sexo = propietario.Sexo;
             persona.Telefono = propietario.Telefono;
             persona.Email = propietario.Email;

@@ -1,17 +1,17 @@
-﻿using DAL.DAO;
+﻿using DAL.Persistencia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTO;
-using DAL;
+
 
 namespace BLL
 {
     public class PropiedadBLL
     {
-        PropiedadDAO dal = new PropiedadDAO();
+        DAL.DAO.PropiedadDAO dal = new DAL.DAO.PropiedadDAO();
 
         public bool Registrar(PropiedadDTO propiedad)
         {
