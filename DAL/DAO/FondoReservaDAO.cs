@@ -5,10 +5,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Util.BD_Connection;
 using Interfaces;
 
-namespace DAL.Persistencia
+namespace DAL.DAO
 {
     public class FondoReservaDAO : IFondoReservaDAL
     {

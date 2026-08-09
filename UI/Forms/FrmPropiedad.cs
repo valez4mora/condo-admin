@@ -19,16 +19,6 @@ namespace UI.Forms
             InitializeComponent();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void titulo_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnlimpiar_Click(object sender, EventArgs e)
         {
 
@@ -39,12 +29,112 @@ namespace UI.Forms
            
         }
 
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        private void label11_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblCodigo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblResidentes_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblCuota_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlMenu_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblTipo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPropietario_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblEstado_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtCodigo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtDireccion_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nudResidentes_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nudArea_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nudCuota_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbTipo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbPropietario_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbEstado_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtBuscarPorCodigo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
         {
 
         }

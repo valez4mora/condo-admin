@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using DTO;
-using Util.BD_Connection;
 
-namespace DAL.Persistencia
+namespace DAL.DAO
 {
     public class PropiedadDAO
     {
