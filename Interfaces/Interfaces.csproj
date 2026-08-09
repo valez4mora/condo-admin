@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IFacturaDAL.cs" />
     <Compile Include="IFondoReservaDAL.cs" />
     <Compile Include="IIndicadorMorosidadDAL.cs" />
     <Compile Include="IPersonaDAL.cs" />

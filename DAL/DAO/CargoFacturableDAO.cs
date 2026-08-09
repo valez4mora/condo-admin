@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DTO;
 using Interfaces;
+using DAL.Singleton;
 
 namespace DAL.DAO
 {

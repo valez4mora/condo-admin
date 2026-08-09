@@ -65,7 +65,7 @@ namespace UI.Forms
 
         private void cargosFacturablesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmFacturacion frm = new FrmFacturacion();
+            FrmGenerarCuota frm = new FrmGenerarCuota();
             frm.MdiParent = this;
             frm.Show();
         }

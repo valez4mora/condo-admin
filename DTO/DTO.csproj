@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CargoFacturableDTO.cs" />
+    <Compile Include="FacturaDTO.cs" />
     <Compile Include="FondoReservaDTO.cs" />
     <Compile Include="IndicadorMorosidadDTO.cs" />
     <Compile Include="PersonaDTO.cs" />
