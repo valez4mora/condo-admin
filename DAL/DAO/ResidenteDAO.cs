@@ -1,10 +1,10 @@
-﻿using DAL.Singleton;
-using DTO;
+﻿using DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using DAL.Singleton;
+
 
 namespace DAL.DAO
 {

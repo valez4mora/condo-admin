@@ -2,51 +2,57 @@
 using DTO;
 using Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL
 {
+ 
     public class IndicadorMorosidadBLL
     {
         private readonly IndicadorMorosidadDAO dal = new IndicadorMorosidadDAO();
 
-        public void RegistrarMorosidad(IndicadorMorosidadDTO dto)
+       
+        //calcula el índice de riesgo de morosidad para una propiedad
+        public IndicadorMorosidadDTO CalcularIndicador(IndicadorMorosidadDTO indicador)
         {
-            decimal interes = dto.MontoAdeudado *
-                              (dto.TasaInteres / 100m) *
-                              dto.MesesMora;
+            if (indicador == null)
+                throw new ArgumentNullException( "Los datos del indicador no pueden ser nulos.");
 
-            IndicadorMorosidad indicador = new IndicadorMorosidad
+            if (indicador.IdPropiedad <= 0)
+                throw new ArgumentException("Debe indicar una propiedad válida.");
+
+            // aplicar fórmula
+            decimal indice = (indicador.MesesMora * 0.5m)
+                           + (indicador.FacturasPendientes * 0.3m)
+                           + (indicador.MontoAdeudado / 100000m * 0.2m);
+
+            indicador.IndiceRiesgo = Math.Round(indice, 2);
+            indicador.FechaCalculo = DateTime.Now;
+
+     
+            if (indice <= 2.9m)
+                indicador.Clasificacion = "Bajo";
+            else if (indice <= 5.9m)
+                indicador.Clasificacion = "Medio";
+            else if (indice <= 8.9m)
+                indicador.Clasificacion = "Alto";
+            else
+                indicador.Clasificacion = "Critico";
+
+            
+            IndicadorMorosidad entidad = new IndicadorMorosidad
             {
-                IdPropiedad = dto.IdPropiedad,
-                MesesMora = dto.MesesMora,
-                FacturasPendientes = dto.FacturasPendientes,
-                MontoAdeudado = dto.MontoAdeudado,
-                TasaInteres = dto.TasaInteres,
-                InteresCalculado = interes,
-                FechaCalculo = DateTime.Now
+                IdPropiedad = indicador.IdPropiedad,
+                MesesMora = indicador.MesesMora,
+                FacturasPendientes = indicador.FacturasPendientes,
+                MontoAdeudado = indicador.MontoAdeudado,
+                IndiceRiesgo = indicador.IndiceRiesgo,
+                Clasificacion = indicador.Clasificacion,
+                FechaCalculo = indicador.FechaCalculo
             };
 
-            if (dto.MesesMora == 0)
-            {
-                indicador.Clasificacion = "Bajo";
-                indicador.IndiceRiesgo = 0;
-            }
-            else if (dto.MesesMora <= 2)
-            {
-                indicador.Clasificacion = "Medio";
-                indicador.IndiceRiesgo = 50;
-            }
-            else
-            {
-                indicador.Clasificacion = "Alto";
-                indicador.IndiceRiesgo = 100;
-            }
+            dal.Insertar(entidad);
 
-            dal.Insertar(indicador);
+            return indicador;
         }
     }
 }
