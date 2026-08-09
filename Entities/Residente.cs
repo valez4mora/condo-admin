@@ -8,7 +8,7 @@ namespace Entities
 {
     public class Residente : Persona
     {
-        public int IdResidente { get; set; }
+        
         public int IdPropiedad { get; set; }
     }
 }
