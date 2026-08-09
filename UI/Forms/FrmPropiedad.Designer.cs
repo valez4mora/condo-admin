@@ -42,6 +42,7 @@
             this.lblSubtitulo = new System.Windows.Forms.Label();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.pnlContenedor = new System.Windows.Forms.Panel();
+            this.btnReporte = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
             this.btnLimpiar = new System.Windows.Forms.Button();
             this.btnActualizar = new System.Windows.Forms.Button();
@@ -58,7 +59,6 @@
             this.nudArea = new System.Windows.Forms.NumericUpDown();
             this.lblTipo = new System.Windows.Forms.Label();
             this.btnBuscar = new System.Windows.Forms.Button();
-            this.btnReporte = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
             this.pnlContenedor.SuspendLayout();
             this.pnlMenu.SuspendLayout();
@@ -76,7 +76,6 @@
             this.lblCodigo.Size = new System.Drawing.Size(137, 21);
             this.lblCodigo.TabIndex = 3;
             this.lblCodigo.Text = "Código de la Propiedad:";
-            this.lblCodigo.Click += new System.EventHandler(this.lblCodigo_Click);
             // 
             // lblPropietario
             // 
@@ -87,7 +86,6 @@
             this.lblPropietario.Size = new System.Drawing.Size(68, 16);
             this.lblPropietario.TabIndex = 4;
             this.lblPropietario.Text = "Propietario:";
-            this.lblPropietario.Click += new System.EventHandler(this.lblPropietario_Click);
             // 
             // label4
             // 
@@ -107,7 +105,6 @@
             this.label5.Size = new System.Drawing.Size(60, 16);
             this.label5.TabIndex = 6;
             this.label5.Text = "Área (m²):";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // lblEstado
             // 
@@ -118,7 +115,6 @@
             this.lblEstado.Size = new System.Drawing.Size(104, 20);
             this.lblEstado.TabIndex = 7;
             this.lblEstado.Text = "Estado Financiero:";
-            this.lblEstado.Click += new System.EventHandler(this.lblEstado_Click);
             // 
             // txtCodigo
             // 
@@ -127,7 +123,6 @@
             this.txtCodigo.Name = "txtCodigo";
             this.txtCodigo.Size = new System.Drawing.Size(209, 23);
             this.txtCodigo.TabIndex = 10;
-            this.txtCodigo.TextChanged += new System.EventHandler(this.txtCodigo_TextChanged);
             // 
             // btnRegistrar
             // 
@@ -151,7 +146,6 @@
             this.lblFoto.Size = new System.Drawing.Size(66, 20);
             this.lblFoto.TabIndex = 17;
             this.lblFoto.Text = "Fotografía:";
-            this.lblFoto.Click += new System.EventHandler(this.label7_Click);
             // 
             // lblBuscarPorCodigo
             // 
@@ -174,7 +168,6 @@
             this.txtBuscarPorCodigo.Size = new System.Drawing.Size(290, 22);
             this.txtBuscarPorCodigo.TabIndex = 23;
             this.txtBuscarPorCodigo.Text = "Ingrese el código de la propiedad";
-            this.txtBuscarPorCodigo.TextChanged += new System.EventHandler(this.txtBuscarPorCodigo_TextChanged);
             // 
             // pnlHeader
             // 
@@ -192,23 +185,22 @@
             this.lblSubtitulo.AutoSize = true;
             this.lblSubtitulo.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSubtitulo.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lblSubtitulo.Location = new System.Drawing.Point(296, 71);
+            this.lblSubtitulo.Location = new System.Drawing.Point(390, 69);
             this.lblSubtitulo.Name = "lblSubtitulo";
             this.lblSubtitulo.Size = new System.Drawing.Size(199, 17);
             this.lblSubtitulo.TabIndex = 27;
             this.lblSubtitulo.Text = "Registro y Búsqueda de Propiedades";
-            this.lblSubtitulo.Click += new System.EventHandler(this.label11_Click);
             // 
             // lblTitulo
             // 
             this.lblTitulo.AutoSize = true;
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft New Tai Lue", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitulo.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.lblTitulo.Location = new System.Drawing.Point(350, 34);
+            this.lblTitulo.Location = new System.Drawing.Point(376, 33);
             this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(105, 25);
+            this.lblTitulo.Size = new System.Drawing.Size(223, 25);
             this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "Propiedad";
+            this.lblTitulo.Text = "Gestión de Propiedades";
             this.lblTitulo.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pnlContenedor
@@ -228,6 +220,19 @@
             this.pnlContenedor.Name = "pnlContenedor";
             this.pnlContenedor.Size = new System.Drawing.Size(1009, 599);
             this.pnlContenedor.TabIndex = 27;
+            // 
+            // btnReporte
+            // 
+            this.btnReporte.BackColor = System.Drawing.Color.Gray;
+            this.btnReporte.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReporte.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnReporte.Location = new System.Drawing.Point(807, 518);
+            this.btnReporte.Name = "btnReporte";
+            this.btnReporte.Size = new System.Drawing.Size(151, 40);
+            this.btnReporte.TabIndex = 29;
+            this.btnReporte.Text = "Generar Reporte";
+            this.btnReporte.UseVisualStyleBackColor = false;
+            this.btnReporte.Click += new System.EventHandler(this.btnReporte_Click);
             // 
             // btnEliminar
             // 
@@ -292,7 +297,6 @@
             this.pnlMenu.Name = "pnlMenu";
             this.pnlMenu.Size = new System.Drawing.Size(1009, 395);
             this.pnlMenu.TabIndex = 25;
-            this.pnlMenu.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlMenu_Paint);
             // 
             // nudCuota
             // 
@@ -301,7 +305,6 @@
             this.nudCuota.Name = "nudCuota";
             this.nudCuota.Size = new System.Drawing.Size(209, 23);
             this.nudCuota.TabIndex = 27;
-            this.nudCuota.ValueChanged += new System.EventHandler(this.nudCuota_ValueChanged);
             // 
             // lblCuota
             // 
@@ -312,7 +315,6 @@
             this.lblCuota.Size = new System.Drawing.Size(143, 16);
             this.lblCuota.TabIndex = 26;
             this.lblCuota.Text = "Cuota de Mantenimiento:";
-            this.lblCuota.Click += new System.EventHandler(this.lblCuota_Click);
             // 
             // cmbEstado
             // 
@@ -322,7 +324,6 @@
             this.cmbEstado.Name = "cmbEstado";
             this.cmbEstado.Size = new System.Drawing.Size(209, 24);
             this.cmbEstado.TabIndex = 25;
-            this.cmbEstado.SelectedIndexChanged += new System.EventHandler(this.cmbEstado_SelectedIndexChanged);
             // 
             // cmbTipo
             // 
@@ -332,7 +333,6 @@
             this.cmbTipo.Name = "cmbTipo";
             this.cmbTipo.Size = new System.Drawing.Size(209, 24);
             this.cmbTipo.TabIndex = 24;
-            this.cmbTipo.SelectedIndexChanged += new System.EventHandler(this.cmbTipo_SelectedIndexChanged);
             // 
             // nudResidentes
             // 
@@ -341,7 +341,6 @@
             this.nudResidentes.Name = "nudResidentes";
             this.nudResidentes.Size = new System.Drawing.Size(209, 23);
             this.nudResidentes.TabIndex = 23;
-            this.nudResidentes.ValueChanged += new System.EventHandler(this.nudResidentes_ValueChanged);
             // 
             // lblResidentes
             // 
@@ -352,7 +351,6 @@
             this.lblResidentes.Size = new System.Drawing.Size(133, 16);
             this.lblResidentes.TabIndex = 22;
             this.lblResidentes.Text = "Cantidad de Residentes:";
-            this.lblResidentes.Click += new System.EventHandler(this.lblResidentes_Click);
             // 
             // txtDireccion
             // 
@@ -361,7 +359,6 @@
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.Size = new System.Drawing.Size(209, 23);
             this.txtDireccion.TabIndex = 21;
-            this.txtDireccion.TextChanged += new System.EventHandler(this.txtDireccion_TextChanged);
             // 
             // label1
             // 
@@ -372,7 +369,6 @@
             this.label1.Size = new System.Drawing.Size(96, 16);
             this.label1.TabIndex = 20;
             this.label1.Text = "Dirección Exacta:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // cmbPropietario
             // 
@@ -382,7 +378,6 @@
             this.cmbPropietario.Name = "cmbPropietario";
             this.cmbPropietario.Size = new System.Drawing.Size(209, 24);
             this.cmbPropietario.TabIndex = 19;
-            this.cmbPropietario.SelectedIndexChanged += new System.EventHandler(this.cmbPropietario_SelectedIndexChanged);
             // 
             // nudArea
             // 
@@ -402,7 +397,6 @@
             this.lblTipo.Size = new System.Drawing.Size(107, 16);
             this.lblTipo.TabIndex = 11;
             this.lblTipo.Text = "Tipo de Propiedad:";
-            this.lblTipo.Click += new System.EventHandler(this.lblTipo_Click);
             // 
             // btnBuscar
             // 
@@ -416,19 +410,6 @@
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = false;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
-            // 
-            // btnReporte
-            // 
-            this.btnReporte.BackColor = System.Drawing.Color.Gray;
-            this.btnReporte.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReporte.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.btnReporte.Location = new System.Drawing.Point(807, 518);
-            this.btnReporte.Name = "btnReporte";
-            this.btnReporte.Size = new System.Drawing.Size(151, 40);
-            this.btnReporte.TabIndex = 29;
-            this.btnReporte.Text = "Generar Reporte";
-            this.btnReporte.UseVisualStyleBackColor = false;
-            this.btnReporte.Click += new System.EventHandler(this.btnReporte_Click);
             // 
             // FrmPropiedad
             // 

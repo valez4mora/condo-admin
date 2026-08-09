@@ -47,5 +47,10 @@ namespace BLL
 
             return false;
         }
+
+        public List<PropietarioDTO> ObtenerTodos()
+        {
+            return propietarioDAL.ObtenerTodos();
+        }
     } 
 }

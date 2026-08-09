@@ -43,6 +43,41 @@ namespace BLL
         {
             return dal.ObtenerTodas();
         }
+
+        public PropiedadDTO ObtenerPorCodigo(string codigo)
+        {
+            if (string.IsNullOrWhiteSpace(codigo))
+                throw new Exception("Debe indicar un código para buscar.");
+
+            return dal.ObtenerPorCodigo(codigo);
+        }
+
+        public bool Modificar(PropiedadDTO propiedad)
+        {
+            if (propiedad.IdPropiedad <= 0)
+                throw new Exception("Debe buscar una propiedad antes de actualizar.");
+
+            if (string.IsNullOrWhiteSpace(propiedad.Codigo))
+                throw new Exception("El código es obligatorio.");
+
+            if (propiedad.Area <= 0)
+                throw new Exception("El área debe ser mayor a cero.");
+
+            if (propiedad.CantidadResidentes < 0)
+                throw new Exception("Cantidad de residentes inválida.");
+
+            if (propiedad.IdPropietario <= 0)
+                throw new Exception("Debe seleccionar un propietario.");
+
+            return dal.Modificar(propiedad);
+        }
+
+        public bool Eliminar(int idPropiedad)
+        {
+            if (idPropiedad <= 0)
+                throw new Exception("Debe buscar una propiedad antes de eliminar.");
+
+            return dal.Eliminar(idPropiedad);
+        }
     }
 }
-
