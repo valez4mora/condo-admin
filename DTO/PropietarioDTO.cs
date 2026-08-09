@@ -8,8 +8,7 @@ namespace DTO
 {
     public class PropietarioDTO : PersonaDTO
     {
-        public int IdPropietario { get; set; }
-
+  
         public bool EstadoMorosidad { get; set; }
     }
 }

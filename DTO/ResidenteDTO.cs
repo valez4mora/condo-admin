@@ -8,7 +8,7 @@ namespace DTO
 {
     public class ResidenteDTO : PersonaDTO
     {
-        public int IdResidente { get; set; }
+     
         public int IdPropiedad { get; set; }
     }
 }

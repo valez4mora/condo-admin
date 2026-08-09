@@ -1,6 +1,6 @@
 ﻿namespace UI.Forms
 {
-    partial class FrmFacturacion
+    partial class FrmGenerarCuota
     {
         /// <summary>
         /// Required designer variable.

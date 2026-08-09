@@ -1,15 +1,13 @@
-﻿using System;
+﻿using DTO;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Util.BD_Connection;
-using DTO;  
 
 namespace DAL.Persistencia
 {
-    public class PropietarioDAO
+    public class PropietarioDAL
     {
         Conexion conexion = Conexion.Instancia;
 
@@ -18,17 +16,10 @@ namespace DAL.Persistencia
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-
-                string sql = @"INSERT INTO Propietario
-                               (IdPersona, EstadoMorosidad)
-                               VALUES
-                               (@IdPersona,@EstadoMorosidad)";
-
-                SqlCommand cmd = new SqlCommand(sql, cn);
-
+                SqlCommand cmd = new SqlCommand("sp_RegistrarPropietario", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
                 cmd.Parameters.AddWithValue("@EstadoMorosidad", propietario.EstadoMorosidad);
-
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
@@ -36,45 +27,29 @@ namespace DAL.Persistencia
         public List<PropietarioDTO> ObtenerTodos()
         {
             List<PropietarioDTO> lista = new List<PropietarioDTO>();
-
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-
-                string sql = "SELECT * FROM Propietario";
-
-                SqlCommand cmd = new SqlCommand(sql, cn);
-
+                SqlCommand cmd = new SqlCommand("sp_ObtenerPropietarios", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
                 SqlDataReader dr = cmd.ExecuteReader();
-
                 while (dr.Read())
                 {
                     lista.Add(new PropietarioDTO
                     {
-                        IdPropietario = Convert.ToInt32(dr["IdPropietario"]),
                         IdPersona = Convert.ToInt32(dr["IdPersona"]),
+                        Identificacion = dr["Identificacion"].ToString(),
+                        Nombre = dr["Nombre"].ToString(),
+                        Apellidos = dr["Apellidos"].ToString(),
+                        Sexo = dr["Sexo"].ToString(),
+                        Telefono = dr["Telefono"].ToString(),
+                        Email = dr["Email"].ToString(),
+                        Direccion = dr["Direccion"].ToString(),
                         EstadoMorosidad = Convert.ToBoolean(dr["EstadoMorosidad"])
                     });
                 }
             }
-
             return lista;
-        }
-
-        public bool Eliminar(int id)
-        {
-            using (SqlConnection cn = conexion.ObtenerConexion())
-            {
-                cn.Open();
-
-                string sql = "DELETE FROM Propietario WHERE IdPropietario=@Id";
-
-                SqlCommand cmd = new SqlCommand(sql, cn);
-
-                cmd.Parameters.AddWithValue("@Id", id);
-
-                return cmd.ExecuteNonQuery() > 0;
-            }
         }
 
         public bool Modificar(PropietarioDTO propietario)
@@ -82,16 +57,22 @@ namespace DAL.Persistencia
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-
-                string sql = @"UPDATE Propietario
-                       SET EstadoMorosidad=@EstadoMorosidad
-                       WHERE IdPropietario=@Id";
-
-                SqlCommand cmd = new SqlCommand(sql, cn);
-
+                SqlCommand cmd = new SqlCommand("sp_ModificarPropietario", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
                 cmd.Parameters.AddWithValue("@EstadoMorosidad", propietario.EstadoMorosidad);
-                cmd.Parameters.AddWithValue("@Id", propietario.IdPropietario);
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
 
+        public bool Eliminar(int idPersona)
+        {
+            using (SqlConnection cn = conexion.ObtenerConexion())
+            {
+                cn.Open();
+                SqlCommand cmd = new SqlCommand("sp_EliminarPropietario", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdPersona", idPersona);
                 return cmd.ExecuteNonQuery() > 0;
             }
         }

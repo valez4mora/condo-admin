@@ -12,12 +12,12 @@ using DTO;
 
 namespace UI.Forms
 {
-    public partial class FrmFacturacion : Form
+    public partial class FrmGenerarCuota : Form
     {
         //Intancias
         PropiedadBLL propiedadBLL = new PropiedadBLL();
         CargoFacturableBILL cargoBLL = new CargoFacturableBILL();
-        public FrmFacturacion()
+        public FrmGenerarCuota()
         {
             InitializeComponent();
         }

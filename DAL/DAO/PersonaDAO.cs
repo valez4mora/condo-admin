@@ -32,7 +32,7 @@ namespace DAL.Persistencia
 
                 cmd.Parameters.AddWithValue("@Identificacion", persona.Identificacion);
                 cmd.Parameters.AddWithValue("@Nombre", persona.Nombre);
-                cmd.Parameters.AddWithValue("@Apellidos", persona.Apellido);
+                cmd.Parameters.AddWithValue("@Apellidos", persona.Apellidos);
                 cmd.Parameters.AddWithValue("@Sexo", persona.Sexo);
                 cmd.Parameters.AddWithValue("@Telefono", persona.Telefono);
                 cmd.Parameters.AddWithValue("@Email", persona.Email);
@@ -69,8 +69,8 @@ namespace DAL.Persistencia
                     p.IdPersona = Convert.ToInt32(dr["IdPersona"]);
                     p.Identificacion = dr["Identificacion"].ToString();
                     p.Nombre = dr["Nombre"].ToString();
-                    p.Apellido = dr["Apellidos"].ToString();
-                    p.Sexo = Convert.ToChar(dr["Sexo"]);
+                    p.Apellidos = dr["Apellidos"].ToString();
+                    p.Sexo = dr["Sexo"].ToString();
                     p.Telefono = dr["Telefono"].ToString();
                     p.Email = dr["Email"].ToString();
                     p.Direccion = dr["Direccion"].ToString();
@@ -106,8 +106,8 @@ namespace DAL.Persistencia
                     p.IdPersona = Convert.ToInt32(dr["IdPersona"]);
                     p.Identificacion = dr["Identificacion"].ToString();
                     p.Nombre = dr["Nombre"].ToString();
-                    p.Apellido = dr["Apellidos"].ToString();
-                    p.Sexo = Convert.ToChar(dr["Sexo"]);
+                    p.Apellidos = dr["Apellidos"].ToString();
+                    p.Sexo = dr["Sexo"].ToString();
                     p.Telefono = dr["Telefono"].ToString();
                     p.Email = dr["Email"].ToString();
                     p.Direccion = dr["Direccion"].ToString();
@@ -144,7 +144,7 @@ namespace DAL.Persistencia
 
                 cmd.Parameters.AddWithValue("@Identificacion", persona.Identificacion);
                 cmd.Parameters.AddWithValue("@Nombre", persona.Nombre);
-                cmd.Parameters.AddWithValue("@Apellidos", persona.Apellido);
+                cmd.Parameters.AddWithValue("@Apellidos", persona.Apellidos);
                 cmd.Parameters.AddWithValue("@Sexo", persona.Sexo);
                 cmd.Parameters.AddWithValue("@Telefono", persona.Telefono);
                 cmd.Parameters.AddWithValue("@Email", persona.Email);
