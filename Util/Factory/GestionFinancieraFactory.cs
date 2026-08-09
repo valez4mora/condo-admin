@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patrones.Factory
+namespace Util.Factory
 {
     public class GestionFinancieraFactory
     {

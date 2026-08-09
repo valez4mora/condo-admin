@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Patrones\Conexion.cs" />
+    <Compile Include="BD Connection\Conexion.cs" />
+    <Compile Include="Factory\GestionFinancieraFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

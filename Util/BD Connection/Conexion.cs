@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Util.Patrones
+namespace Util.BD_Connection
 {
     public class Conexion
     {
@@ -27,7 +31,7 @@ namespace Util.Patrones
                 return instancia;
             }
         }
-        
+
         public SqlConnection ObtenerConexion()
         {
             return new SqlConnection(cadenaConexion);
