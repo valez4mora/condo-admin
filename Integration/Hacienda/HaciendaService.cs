@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
+using Newtonsoft.Json;
+using DTO;
 
 namespace Integration.Hacienda
 {
     public class HaciendaService : IHaciendaService
     {
         private readonly HttpClient _httpClient;
-
-        private const string URL =
-            "https://api.hacienda.go.cr/fe/ae?identificacion=";
-
         private readonly string _url;
 
         public HaciendaService()
@@ -23,9 +17,13 @@ namespace Integration.Hacienda
 
             _url = ConfigurationManager
                 .AppSettings["URLHacienda"];
+
+            if (string.IsNullOrWhiteSpace(_url))
+            {
+                throw new ConfigurationErrorsException(
+                    "No se encontró la configuración 'URLHacienda' en App.config.");
+            }
         }
-
-
 
         public HaciendaResponseDTO ConsultarIdentificacion(
             string identificacion)
@@ -33,10 +31,11 @@ namespace Integration.Hacienda
             if (string.IsNullOrWhiteSpace(identificacion))
             {
                 throw new ArgumentException(
-                    "La identificación es requerida.");
+                    "La identificación es requerida.",
+                    nameof(identificacion));
             }
 
-            string url = URL + identificacion;
+            string url = _url + identificacion;
 
             try
             {
@@ -54,8 +53,7 @@ namespace Integration.Hacienda
                     response.Content.ReadAsStringAsync().Result;
 
                 HaciendaResponseDTO resultado =
-                    JsonConvert.DeserializeObject<HaciendaResponseDTO>(
-                        json);
+                    JsonConvert.DeserializeObject<HaciendaResponseDTO>(json);
 
                 return resultado;
             }
@@ -74,3 +72,4 @@ namespace Integration.Hacienda
         }
     }
 }
+

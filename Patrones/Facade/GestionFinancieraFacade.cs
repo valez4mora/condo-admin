@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DTO;
 using Entities;
 using System.Threading;
-using Util.Patrones;
+using Patrones.Factory;
 using BLL;
 
 namespace Patrones.Facade
