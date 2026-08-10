@@ -45,7 +45,7 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@TarifaMetro", propiedad.TarifaMetro);
                 cmd.Parameters.AddWithValue("@CargoFijo", propiedad.CargoFijo);
                 cmd.Parameters.AddWithValue("@CuotaMantenimiento", propiedad.CuotaMantenimiento);
-                cmd.Parameters.AddWithValue("@Estado", propiedad.Estado);
+               
                 cmd.Parameters.AddWithValue("@IdPropietario", propiedad.IdPropietario);
 
                 // ExecuteNonQuery devuelve la cantidad de filas afectadas.
@@ -86,7 +86,6 @@ namespace DAL.DAO
                     p.TarifaMetro = Convert.ToDecimal(dr["TarifaMetro"]);
                     p.CargoFijo = Convert.ToDecimal(dr["CargoFijo"]);
                     p.CuotaMantenimiento = Convert.ToDecimal(dr["CuotaMantenimiento"]);
-                    p.Estado = Convert.ToBoolean(dr["Estado"]);
                     p.IdPropietario = Convert.ToInt32(dr["IdPropietario"]);
 
                     // Agregar el objeto a la lista
@@ -127,7 +126,7 @@ namespace DAL.DAO
                         TarifaMetro = Convert.ToDecimal(dr["TarifaMetro"]),
                         CargoFijo = Convert.ToDecimal(dr["CargoFijo"]),
                         CuotaMantenimiento = Convert.ToDecimal(dr["CuotaMantenimiento"]),
-                        Estado = Convert.ToBoolean(dr["Estado"]),
+                       
                         IdPropietario = Convert.ToInt32(dr["IdPropietario"])
                     };
                 }
@@ -163,7 +162,7 @@ namespace DAL.DAO
                         TarifaMetro = Convert.ToDecimal(dr["TarifaMetro"]),
                         CargoFijo = Convert.ToDecimal(dr["CargoFijo"]),
                         CuotaMantenimiento = Convert.ToDecimal(dr["CuotaMantenimiento"]),
-                        Estado = Convert.ToBoolean(dr["Estado"]),
+                        
                         IdPropietario = Convert.ToInt32(dr["IdPropietario"])
                     };
                 }
@@ -202,7 +201,7 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@TarifaMetro", propiedad.TarifaMetro);
                 cmd.Parameters.AddWithValue("@CargoFijo", propiedad.CargoFijo);
                 cmd.Parameters.AddWithValue("@CuotaMantenimiento", propiedad.CuotaMantenimiento);
-                cmd.Parameters.AddWithValue("@Estado", propiedad.Estado);
+                
                 cmd.Parameters.AddWithValue("@IdPropietario", propiedad.IdPropietario);
                 cmd.Parameters.AddWithValue("@Id", propiedad.IdPropiedad);
 

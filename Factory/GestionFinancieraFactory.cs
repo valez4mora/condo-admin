@@ -21,7 +21,7 @@ namespace Factory
             return new CargoFacturableDTO // se crea el objeto
             {
                 Descripcion = "Cuota de mantenimiento",
-                Tipo = "Cuota de mantenimiento",
+                Tipo = "CuotaMantenimiento",
                 MontoBase = montoBase,
                 IVA = iva,
                 Total = total,
@@ -41,7 +41,7 @@ namespace Factory
             return new CargoFacturableDTO
             {
                 Descripcion = "Fondo de reserva",
-                Tipo = "FondoReserva",
+                Tipo = "CuotaMantenimiento",
                 MontoBase = montoBase,
                 IVA = 0,
                 Total = montoBase,
@@ -61,7 +61,7 @@ namespace Factory
             return new CargoFacturableDTO
             {
                 Descripcion = $"Interés por mora ({meses} mes(es))",
-                Tipo = "InteresMora",
+                Tipo = "Multa",
                 MontoBase = montoBase,
                 IVA = 0,
                 Total = montoBase,
@@ -78,7 +78,7 @@ namespace Factory
             return new CargoFacturableDTO
             {
                 Descripcion = descripcion,
-                Tipo = "Penalizacion",
+                Tipo = "Multa",
                 MontoBase = monto,
                 IVA = 0,
                 Total = monto,

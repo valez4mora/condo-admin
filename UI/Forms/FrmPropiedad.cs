@@ -130,7 +130,7 @@ namespace UI.Forms
                 nudArea.Value = propiedad.Area; // esto ya dispara el recálculo de la cuota
                 cmbTipo.Text = propiedad.Tipo;
                 cmbPropietario.SelectedValue = propiedad.IdPropietario;
-                cmbEstado.SelectedValue = propiedad.Estado;
+               
             }
             catch (Exception ex)
             {
@@ -166,7 +166,7 @@ namespace UI.Forms
                     CargoFijo = cargoFijo,
                     CuotaMantenimiento = nudCuota.Value,
                     IdPropietario = idPropietario,
-                    Estado = estado
+                   
                 };
 
                 bool registrado = propiedadBLL.Registrar(propiedad);
@@ -218,7 +218,7 @@ namespace UI.Forms
                     CargoFijo = cargoFijo,
                     CuotaMantenimiento = nudCuota.Value,
                     IdPropietario = Convert.ToInt32(cmbPropietario.SelectedValue),
-                    Estado = Convert.ToBoolean(cmbEstado.SelectedValue)
+                    
                 };
 
                 bool actualizado = propiedadBLL.Modificar(propiedad);

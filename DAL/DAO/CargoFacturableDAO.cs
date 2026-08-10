@@ -14,20 +14,19 @@ namespace DAL.DAO
     {
         public bool Registrar(CargoFacturableDTO cargo)
         {
-            //habre un canal de comunicacion hacia sql
             using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
             {
                 cn.Open();
 
-                //instruccion de INSERT con los datos que vienen del DTO
+                // se agrego SELECT SCOPE_IDENTITY() para recuperar el id generado
                 string sql = @"INSERT INTO CargoFacturable
-                   (Descripcion,Tipo,MontoBase,IVA,Total,FechaEmision,FechaVencimiento,Estado,
-                    IdPropiedad)
-                    VALUES
-                    (@Descripcion,@Tipo,@MontoBase,@IVA,@Total,@FechaEmision,@FechaVencimiento,@Estado,
-                    @IdPropiedad)";
+           (Descripcion, Tipo, MontoBase, IVA, Total, FechaEmision, 
+            FechaVencimiento, Estado, IdPropiedad)
+            VALUES
+           (@Descripcion, @Tipo, @MontoBase, @IVA, @Total, @FechaEmision,
+            @FechaVencimiento, @Estado, @IdPropiedad);
+            SELECT SCOPE_IDENTITY();";
 
-                //se llenan los datos con los valores que traiga cargo
                 SqlCommand cmd = new SqlCommand(sql, cn);
                 cmd.Parameters.AddWithValue("@Descripcion", cargo.Descripcion);
                 cmd.Parameters.AddWithValue("@Tipo", cargo.Tipo);
@@ -39,10 +38,13 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@Estado", cargo.Estado);
                 cmd.Parameters.AddWithValue("@IdPropiedad", cargo.IdPropiedad);
 
-                //se ejecuta el insert,en caso de que sea mayor a 1 , se inserto el cargo
-                //si no, el insert fallo
-                return cmd.ExecuteNonQuery() > 0;
+                // executeScalar retorna el id generado por la base de datos
+                int idGenerado = Convert.ToInt32(cmd.ExecuteScalar());
 
+                // se asigna el id al DTO para que el BLL lo pueda usar
+                cargo.IdCargo = idGenerado;
+
+                return idGenerado > 0;
             }
         }
 

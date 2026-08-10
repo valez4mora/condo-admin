@@ -24,7 +24,7 @@ namespace DTO
 
             public decimal CuotaMantenimiento { get; set; }
 
-            public bool Estado { get; set; }
+       
 
             public int IdPropietario { get; set; }
 
