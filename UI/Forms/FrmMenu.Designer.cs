@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.personasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gestionDePropietariosResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gestiónDeResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propiedadesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestionDePropiedadesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.financieroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,7 +47,10 @@
             this.propiedadesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.morosidadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ingresosMensualesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indiceDeRiesgoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.personasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gestionDePropietariosResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gestiónDeResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.controlDeMorosidadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -69,6 +69,146 @@
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // propiedadesToolStripMenuItem
+            // 
+            this.propiedadesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gestionDePropiedadesToolStripMenuItem});
+            this.propiedadesToolStripMenuItem.Image = global::UI.Properties.Resources.property;
+            this.propiedadesToolStripMenuItem.Name = "propiedadesToolStripMenuItem";
+            this.propiedadesToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
+            this.propiedadesToolStripMenuItem.Text = "Propiedades";
+            // 
+            // gestionDePropiedadesToolStripMenuItem
+            // 
+            this.gestionDePropiedadesToolStripMenuItem.Name = "gestionDePropiedadesToolStripMenuItem";
+            this.gestionDePropiedadesToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.gestionDePropiedadesToolStripMenuItem.Text = "Gestion de propiedades";
+            this.gestionDePropiedadesToolStripMenuItem.Click += new System.EventHandler(this.gestionDePropiedadesToolStripMenuItem_Click);
+            // 
+            // financieroToolStripMenuItem
+            // 
+            this.financieroToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cargosFacturablesToolStripMenuItem,
+            this.penalizacionesToolStripMenuItem,
+            this.fondoDeReservaToolStripMenuItem,
+            this.controlDeMorosidadToolStripMenuItem});
+            this.financieroToolStripMenuItem.Image = global::UI.Properties.Resources.budget;
+            this.financieroToolStripMenuItem.Name = "financieroToolStripMenuItem";
+            this.financieroToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
+            this.financieroToolStripMenuItem.Text = "Financiero";
+            // 
+            // cargosFacturablesToolStripMenuItem
+            // 
+            this.cargosFacturablesToolStripMenuItem.Name = "cargosFacturablesToolStripMenuItem";
+            this.cargosFacturablesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.cargosFacturablesToolStripMenuItem.Text = "Cargos Facturables";
+            this.cargosFacturablesToolStripMenuItem.Click += new System.EventHandler(this.cargosFacturablesToolStripMenuItem_Click);
+            // 
+            // penalizacionesToolStripMenuItem
+            // 
+            this.penalizacionesToolStripMenuItem.Name = "penalizacionesToolStripMenuItem";
+            this.penalizacionesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.penalizacionesToolStripMenuItem.Text = "Penalizaciones";
+            this.penalizacionesToolStripMenuItem.Click += new System.EventHandler(this.penalizacionesToolStripMenuItem_Click);
+            // 
+            // fondoDeReservaToolStripMenuItem
+            // 
+            this.fondoDeReservaToolStripMenuItem.Name = "fondoDeReservaToolStripMenuItem";
+            this.fondoDeReservaToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.fondoDeReservaToolStripMenuItem.Text = "Fondo de Reserva";
+            this.fondoDeReservaToolStripMenuItem.Click += new System.EventHandler(this.fondoDeReservaToolStripMenuItem_Click);
+            // 
+            // reservasToolStripMenuItem
+            // 
+            this.reservasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.áreasComunesReservasToolStripMenuItem,
+            this.reservasToolStripMenuItem1});
+            this.reservasToolStripMenuItem.Image = global::UI.Properties.Resources.reservation;
+            this.reservasToolStripMenuItem.Name = "reservasToolStripMenuItem";
+            this.reservasToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
+            this.reservasToolStripMenuItem.Text = "Reservas";
+            // 
+            // áreasComunesReservasToolStripMenuItem
+            // 
+            this.áreasComunesReservasToolStripMenuItem.Name = "áreasComunesReservasToolStripMenuItem";
+            this.áreasComunesReservasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.áreasComunesReservasToolStripMenuItem.Text = "Áreas Comunes";
+            this.áreasComunesReservasToolStripMenuItem.Click += new System.EventHandler(this.áreasComunesReservasToolStripMenuItem_Click);
+            // 
+            // reservasToolStripMenuItem1
+            // 
+            this.reservasToolStripMenuItem1.Name = "reservasToolStripMenuItem1";
+            this.reservasToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.reservasToolStripMenuItem1.Text = "Reservas";
+            this.reservasToolStripMenuItem1.Click += new System.EventHandler(this.reservasToolStripMenuItem1_Click);
+            // 
+            // seguridadToolStripMenuItem
+            // 
+            this.seguridadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.usuariosToolStripMenuItem,
+            this.rolesYPermisosToolStripMenuItem});
+            this.seguridadToolStripMenuItem.Image = global::UI.Properties.Resources.cyber_security;
+            this.seguridadToolStripMenuItem.Name = "seguridadToolStripMenuItem";
+            this.seguridadToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.seguridadToolStripMenuItem.Text = "Seguridad";
+            // 
+            // usuariosToolStripMenuItem
+            // 
+            this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usuariosToolStripMenuItem.Text = "Usuarios";
+            // 
+            // rolesYPermisosToolStripMenuItem
+            // 
+            this.rolesYPermisosToolStripMenuItem.Name = "rolesYPermisosToolStripMenuItem";
+            this.rolesYPermisosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rolesYPermisosToolStripMenuItem.Text = "Roles y permisos";
+            // 
+            // accesoToolStripMenuItem
+            // 
+            this.accesoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.controlDeVisitasToolStripMenuItem});
+            this.accesoToolStripMenuItem.Image = global::UI.Properties.Resources.sign_in;
+            this.accesoToolStripMenuItem.Name = "accesoToolStripMenuItem";
+            this.accesoToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.accesoToolStripMenuItem.Text = "Acceso";
+            // 
+            // controlDeVisitasToolStripMenuItem
+            // 
+            this.controlDeVisitasToolStripMenuItem.Name = "controlDeVisitasToolStripMenuItem";
+            this.controlDeVisitasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.controlDeVisitasToolStripMenuItem.Text = "Control de Visitas";
+            // 
+            // reportesToolStripMenuItem
+            // 
+            this.reportesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.propiedadesToolStripMenuItem1,
+            this.morosidadToolStripMenuItem,
+            this.ingresosMensualesToolStripMenuItem});
+            this.reportesToolStripMenuItem.Image = global::UI.Properties.Resources.seo_report;
+            this.reportesToolStripMenuItem.Name = "reportesToolStripMenuItem";
+            this.reportesToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.reportesToolStripMenuItem.Text = "Reportes";
+            // 
+            // propiedadesToolStripMenuItem1
+            // 
+            this.propiedadesToolStripMenuItem1.Name = "propiedadesToolStripMenuItem1";
+            this.propiedadesToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.propiedadesToolStripMenuItem1.Text = "Propiedades";
+            // 
+            // morosidadToolStripMenuItem
+            // 
+            this.morosidadToolStripMenuItem.Name = "morosidadToolStripMenuItem";
+            this.morosidadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.morosidadToolStripMenuItem.Text = "Morosidad";
+            this.morosidadToolStripMenuItem.Click += new System.EventHandler(this.morosidadToolStripMenuItem_Click);
+            // 
+            // ingresosMensualesToolStripMenuItem
+            // 
+            this.ingresosMensualesToolStripMenuItem.Name = "ingresosMensualesToolStripMenuItem";
+            this.ingresosMensualesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ingresosMensualesToolStripMenuItem.Text = "Ingresos Mensuales";
             // 
             // personasToolStripMenuItem
             // 
@@ -94,151 +234,12 @@
             this.gestiónDeResidentesToolStripMenuItem.Text = "Gestión de Residentes ";
             this.gestiónDeResidentesToolStripMenuItem.Click += new System.EventHandler(this.gestiónDeResidentesToolStripMenuItem_Click);
             // 
-            // propiedadesToolStripMenuItem
+            // controlDeMorosidadToolStripMenuItem
             // 
-            this.propiedadesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gestionDePropiedadesToolStripMenuItem});
-            this.propiedadesToolStripMenuItem.Image = global::UI.Properties.Resources.property;
-            this.propiedadesToolStripMenuItem.Name = "propiedadesToolStripMenuItem";
-            this.propiedadesToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
-            this.propiedadesToolStripMenuItem.Text = "Propiedades";
-            // 
-            // gestionDePropiedadesToolStripMenuItem
-            // 
-            this.gestionDePropiedadesToolStripMenuItem.Name = "gestionDePropiedadesToolStripMenuItem";
-            this.gestionDePropiedadesToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.gestionDePropiedadesToolStripMenuItem.Text = "Gestion de propiedades";
-            this.gestionDePropiedadesToolStripMenuItem.Click += new System.EventHandler(this.gestionDePropiedadesToolStripMenuItem_Click);
-            // 
-            // financieroToolStripMenuItem
-            // 
-            this.financieroToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cargosFacturablesToolStripMenuItem,
-            this.penalizacionesToolStripMenuItem,
-            this.fondoDeReservaToolStripMenuItem});
-            this.financieroToolStripMenuItem.Image = global::UI.Properties.Resources.budget;
-            this.financieroToolStripMenuItem.Name = "financieroToolStripMenuItem";
-            this.financieroToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
-            this.financieroToolStripMenuItem.Text = "Financiero";
-            // 
-            // cargosFacturablesToolStripMenuItem
-            // 
-            this.cargosFacturablesToolStripMenuItem.Name = "cargosFacturablesToolStripMenuItem";
-            this.cargosFacturablesToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.cargosFacturablesToolStripMenuItem.Text = "Cargos Facturables";
-            this.cargosFacturablesToolStripMenuItem.Click += new System.EventHandler(this.cargosFacturablesToolStripMenuItem_Click);
-            // 
-            // penalizacionesToolStripMenuItem
-            // 
-            this.penalizacionesToolStripMenuItem.Name = "penalizacionesToolStripMenuItem";
-            this.penalizacionesToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.penalizacionesToolStripMenuItem.Text = "Penalizaciones";
-            this.penalizacionesToolStripMenuItem.Click += new System.EventHandler(this.penalizacionesToolStripMenuItem_Click);
-            // 
-            // fondoDeReservaToolStripMenuItem
-            // 
-            this.fondoDeReservaToolStripMenuItem.Name = "fondoDeReservaToolStripMenuItem";
-            this.fondoDeReservaToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.fondoDeReservaToolStripMenuItem.Text = "Fondo de Reserva";
-            this.fondoDeReservaToolStripMenuItem.Click += new System.EventHandler(this.fondoDeReservaToolStripMenuItem_Click);
-            // 
-            // reservasToolStripMenuItem
-            // 
-            this.reservasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.áreasComunesReservasToolStripMenuItem,
-            this.reservasToolStripMenuItem1});
-            this.reservasToolStripMenuItem.Image = global::UI.Properties.Resources.reservation;
-            this.reservasToolStripMenuItem.Name = "reservasToolStripMenuItem";
-            this.reservasToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
-            this.reservasToolStripMenuItem.Text = "Reservas";
-            // 
-            // áreasComunesReservasToolStripMenuItem
-            // 
-            this.áreasComunesReservasToolStripMenuItem.Name = "áreasComunesReservasToolStripMenuItem";
-            this.áreasComunesReservasToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.áreasComunesReservasToolStripMenuItem.Text = "Áreas Comunes";
-            this.áreasComunesReservasToolStripMenuItem.Click += new System.EventHandler(this.áreasComunesReservasToolStripMenuItem_Click);
-            // 
-            // reservasToolStripMenuItem1
-            // 
-            this.reservasToolStripMenuItem1.Name = "reservasToolStripMenuItem1";
-            this.reservasToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
-            this.reservasToolStripMenuItem1.Text = "Reservas";
-            this.reservasToolStripMenuItem1.Click += new System.EventHandler(this.reservasToolStripMenuItem1_Click);
-            // 
-            // seguridadToolStripMenuItem
-            // 
-            this.seguridadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.usuariosToolStripMenuItem,
-            this.rolesYPermisosToolStripMenuItem});
-            this.seguridadToolStripMenuItem.Image = global::UI.Properties.Resources.cyber_security;
-            this.seguridadToolStripMenuItem.Name = "seguridadToolStripMenuItem";
-            this.seguridadToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
-            this.seguridadToolStripMenuItem.Text = "Seguridad";
-            // 
-            // usuariosToolStripMenuItem
-            // 
-            this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
-            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.usuariosToolStripMenuItem.Text = "Usuarios";
-            // 
-            // rolesYPermisosToolStripMenuItem
-            // 
-            this.rolesYPermisosToolStripMenuItem.Name = "rolesYPermisosToolStripMenuItem";
-            this.rolesYPermisosToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.rolesYPermisosToolStripMenuItem.Text = "Roles y permisos";
-            // 
-            // accesoToolStripMenuItem
-            // 
-            this.accesoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.controlDeVisitasToolStripMenuItem});
-            this.accesoToolStripMenuItem.Image = global::UI.Properties.Resources.sign_in;
-            this.accesoToolStripMenuItem.Name = "accesoToolStripMenuItem";
-            this.accesoToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
-            this.accesoToolStripMenuItem.Text = "Acceso";
-            // 
-            // controlDeVisitasToolStripMenuItem
-            // 
-            this.controlDeVisitasToolStripMenuItem.Name = "controlDeVisitasToolStripMenuItem";
-            this.controlDeVisitasToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.controlDeVisitasToolStripMenuItem.Text = "Control de Visitas";
-            // 
-            // reportesToolStripMenuItem
-            // 
-            this.reportesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.propiedadesToolStripMenuItem1,
-            this.morosidadToolStripMenuItem,
-            this.ingresosMensualesToolStripMenuItem,
-            this.indiceDeRiesgoToolStripMenuItem});
-            this.reportesToolStripMenuItem.Image = global::UI.Properties.Resources.seo_report;
-            this.reportesToolStripMenuItem.Name = "reportesToolStripMenuItem";
-            this.reportesToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
-            this.reportesToolStripMenuItem.Text = "Reportes";
-            // 
-            // propiedadesToolStripMenuItem1
-            // 
-            this.propiedadesToolStripMenuItem1.Name = "propiedadesToolStripMenuItem1";
-            this.propiedadesToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.propiedadesToolStripMenuItem1.Text = "Propiedades";
-            // 
-            // morosidadToolStripMenuItem
-            // 
-            this.morosidadToolStripMenuItem.Name = "morosidadToolStripMenuItem";
-            this.morosidadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.morosidadToolStripMenuItem.Text = "Morosidad";
-            // 
-            // ingresosMensualesToolStripMenuItem
-            // 
-            this.ingresosMensualesToolStripMenuItem.Name = "ingresosMensualesToolStripMenuItem";
-            this.ingresosMensualesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ingresosMensualesToolStripMenuItem.Text = "Ingresos Mensuales";
-            // 
-            // indiceDeRiesgoToolStripMenuItem
-            // 
-            this.indiceDeRiesgoToolStripMenuItem.Name = "indiceDeRiesgoToolStripMenuItem";
-            this.indiceDeRiesgoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.indiceDeRiesgoToolStripMenuItem.Text = "Indice de riesgo ";
-            this.indiceDeRiesgoToolStripMenuItem.Click += new System.EventHandler(this.indiceDeRiesgoToolStripMenuItem_Click);
+            this.controlDeMorosidadToolStripMenuItem.Name = "controlDeMorosidadToolStripMenuItem";
+            this.controlDeMorosidadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.controlDeMorosidadToolStripMenuItem.Text = "Control de Morosidad";
+            this.controlDeMorosidadToolStripMenuItem.Click += new System.EventHandler(this.controlDeMorosidadToolStripMenuItem_Click_1);
             // 
             // FrmMenu
             // 
@@ -282,6 +283,6 @@
         private System.Windows.Forms.ToolStripMenuItem gestionDePropietariosResidentesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gestiónDeResidentesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reservasToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem indiceDeRiesgoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem controlDeMorosidadToolStripMenuItem;
     }
 }
