@@ -84,9 +84,9 @@ namespace UI.Forms
             frm.Show();
         }
 
-        private void indiceDeRiesgoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void controlDeMorosidadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmIndiceDeRiesgo frm = new FrmIndiceDeRiesgo();
+            FrmMorosidad frm = new FrmMorosidad();
             frm.MdiParent = this;
             frm.Show();
         }

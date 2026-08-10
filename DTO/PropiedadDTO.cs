@@ -29,6 +29,8 @@ namespace DTO
             public int IdPropietario { get; set; }
 
             public string NombrePropietario { get; set; }
+
+            public string Direccion { get; set; }
     }
 }
 

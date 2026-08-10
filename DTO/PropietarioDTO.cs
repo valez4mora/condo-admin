@@ -8,7 +8,14 @@ namespace DTO
 {
     public class PropietarioDTO : PersonaDTO
     {
-  
         public bool EstadoMorosidad { get; set; }
+
+        public string NombreCompleto
+        {
+            get
+            {
+                return $"{Nombre} {Apellidos} - {Identificacion}";
+            }
+        }
     }
 }

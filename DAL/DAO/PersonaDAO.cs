@@ -1,11 +1,12 @@
-﻿using DTO;
+﻿using DAL.Singleton;
+using DTO;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.Singleton;
 
 namespace DAL.DAO
 {
@@ -38,10 +39,13 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@Email", persona.Email);
                 cmd.Parameters.AddWithValue("@Direccion", persona.Direccion);
 
-                if (persona.Fotografia != null)
-                    cmd.Parameters.AddWithValue("@Fotografia", persona.Fotografia);
-                else
-                    cmd.Parameters.AddWithValue("@Fotografia", DBNull.Value);
+                SqlParameter parametroFoto =
+                    cmd.Parameters.Add("@Fotografia", SqlDbType.VarBinary, -1);
+
+                parametroFoto.Value =
+                    persona.Fotografia != null
+                        ? (object)persona.Fotografia
+                        : DBNull.Value;
 
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -150,10 +154,13 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@Email", persona.Email);
                 cmd.Parameters.AddWithValue("@Direccion", persona.Direccion);
 
-                if (persona.Fotografia != null)
-                    cmd.Parameters.AddWithValue("@Fotografia", persona.Fotografia);
-                else
-                    cmd.Parameters.AddWithValue("@Fotografia", DBNull.Value);
+                SqlParameter parametroFoto =
+                    cmd.Parameters.Add("@Fotografia", SqlDbType.VarBinary, -1);
+
+                parametroFoto.Value =
+                    persona.Fotografia != null
+                        ? (object)persona.Fotografia
+                        : DBNull.Value;
 
                 cmd.Parameters.AddWithValue("@Id", persona.IdPersona);
 

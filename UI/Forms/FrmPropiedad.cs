@@ -46,43 +46,32 @@ namespace UI.Forms
             cmbTipo.DataSource = Enum.GetValues(typeof(TipoPropiedad));
             cmbTipo.SelectedIndex = -1;
 
-            CargarEstados();
             CargarPropietarios();
 
             // La cuota se calcula sola; el usuario no la digita
             nudCuota.Enabled = false;
         }
 
-        // cmbEstado representa "Al día / Moroso" (bool), no un índice de riesgo.
-        // Se carga manualmente en vez de enlazarlo a un enum, porque PropiedadDTO.Estado es bool.
-        private void CargarEstados()
-        {
-            var opciones = new List<KeyValuePair<string, bool>>
-            {
-                new KeyValuePair<string, bool>("Al día", true),
-                new KeyValuePair<string, bool>("Moroso", false)
-            };
-
-            cmbEstado.DataSource = opciones;
-            cmbEstado.DisplayMember = "Key";
-            cmbEstado.ValueMember = "Value";
-            cmbEstado.SelectedIndex = -1;
-        }
-
         private void CargarPropietarios()
         {
             try
             {
-                List<PropietarioDTO> propietarios = propietarioBLL.ObtenerTodos();
+                List<PropietarioDTO> propietarios =
+                    propietarioBLL.ObtenerTodos();
+
+                cmbPropietario.DataSource = null;
                 cmbPropietario.DataSource = propietarios;
-                cmbPropietario.DisplayMember = "Nombre";
+
+                cmbPropietario.DisplayMember = "NombreCompleto";
                 cmbPropietario.ValueMember = "IdPersona";
+
                 cmbPropietario.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "No se pudo cargar la lista de propietarios: " + ex.Message,
+                    "No se pudo cargar la lista de propietarios: "
+                    + ex.Message,
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -130,7 +119,6 @@ namespace UI.Forms
                 nudArea.Value = propiedad.Area; // esto ya dispara el recálculo de la cuota
                 cmbTipo.Text = propiedad.Tipo;
                 cmbPropietario.SelectedValue = propiedad.IdPropietario;
-                cmbEstado.SelectedValue = propiedad.Estado;
             }
             catch (Exception ex)
             {
@@ -150,11 +138,7 @@ namespace UI.Forms
                 if (cmbPropietario.SelectedIndex == -1)
                     throw new Exception("Debe seleccionar un propietario.");
 
-                if (cmbEstado.SelectedIndex == -1)
-                    throw new Exception("Debe seleccionar el estado de la propiedad.");
-
                 int idPropietario = Convert.ToInt32(cmbPropietario.SelectedValue);
-                bool estado = Convert.ToBoolean(cmbEstado.SelectedValue);
 
                 PropiedadDTO propiedad = new PropiedadDTO
                 {
@@ -165,8 +149,7 @@ namespace UI.Forms
                     TarifaMetro = tarifaPorM2,
                     CargoFijo = cargoFijo,
                     CuotaMantenimiento = nudCuota.Value,
-                    IdPropietario = idPropietario,
-                    Estado = estado
+                    IdPropietario = idPropietario
                 };
 
                 bool registrado = propiedadBLL.Registrar(propiedad);
@@ -204,9 +187,6 @@ namespace UI.Forms
                 if (cmbPropietario.SelectedIndex == -1)
                     throw new Exception("Debe seleccionar un propietario.");
 
-                if (cmbEstado.SelectedIndex == -1)
-                    throw new Exception("Debe seleccionar el estado de la propiedad.");
-
                 PropiedadDTO propiedad = new PropiedadDTO
                 {
                     IdPropiedad = idPropiedadSeleccionada,
@@ -218,7 +198,6 @@ namespace UI.Forms
                     CargoFijo = cargoFijo,
                     CuotaMantenimiento = nudCuota.Value,
                     IdPropietario = Convert.ToInt32(cmbPropietario.SelectedValue),
-                    Estado = Convert.ToBoolean(cmbEstado.SelectedValue)
                 };
 
                 bool actualizado = propiedadBLL.Modificar(propiedad);
@@ -314,7 +293,6 @@ namespace UI.Forms
 
             cmbTipo.SelectedIndex = -1;
             cmbPropietario.SelectedIndex = -1;
-            cmbEstado.SelectedIndex = -1;
         }
 
         private void btnLimpiar_Click(object sender, EventArgs e)

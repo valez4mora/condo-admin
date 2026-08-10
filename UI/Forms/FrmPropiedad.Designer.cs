@@ -32,7 +32,6 @@
             this.lblPropietario = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.lblEstado = new System.Windows.Forms.Label();
             this.txtCodigo = new System.Windows.Forms.TextBox();
             this.btnRegistrar = new System.Windows.Forms.Button();
             this.lblFoto = new System.Windows.Forms.Label();
@@ -49,7 +48,6 @@
             this.pnlMenu = new System.Windows.Forms.Panel();
             this.nudCuota = new System.Windows.Forms.NumericUpDown();
             this.lblCuota = new System.Windows.Forms.Label();
-            this.cmbEstado = new System.Windows.Forms.ComboBox();
             this.cmbTipo = new System.Windows.Forms.ComboBox();
             this.nudResidentes = new System.Windows.Forms.NumericUpDown();
             this.lblResidentes = new System.Windows.Forms.Label();
@@ -106,16 +104,6 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "Área (m²):";
             // 
-            // lblEstado
-            // 
-            this.lblEstado.AutoSize = true;
-            this.lblEstado.Font = new System.Drawing.Font("Myanmar Text", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEstado.Location = new System.Drawing.Point(495, 95);
-            this.lblEstado.Name = "lblEstado";
-            this.lblEstado.Size = new System.Drawing.Size(104, 20);
-            this.lblEstado.TabIndex = 7;
-            this.lblEstado.Text = "Estado Financiero:";
-            // 
             // txtCodigo
             // 
             this.txtCodigo.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -141,7 +129,7 @@
             // 
             this.lblFoto.AutoSize = true;
             this.lblFoto.Font = new System.Drawing.Font("Myanmar Text", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFoto.Location = new System.Drawing.Point(500, 143);
+            this.lblFoto.Location = new System.Drawing.Point(495, 92);
             this.lblFoto.Name = "lblFoto";
             this.lblFoto.Size = new System.Drawing.Size(66, 20);
             this.lblFoto.TabIndex = 17;
@@ -278,7 +266,6 @@
             this.pnlMenu.BackColor = System.Drawing.SystemColors.HighlightText;
             this.pnlMenu.Controls.Add(this.nudCuota);
             this.pnlMenu.Controls.Add(this.lblCuota);
-            this.pnlMenu.Controls.Add(this.cmbEstado);
             this.pnlMenu.Controls.Add(this.cmbTipo);
             this.pnlMenu.Controls.Add(this.nudResidentes);
             this.pnlMenu.Controls.Add(this.lblResidentes);
@@ -289,7 +276,6 @@
             this.pnlMenu.Controls.Add(this.lblTipo);
             this.pnlMenu.Controls.Add(this.lblCodigo);
             this.pnlMenu.Controls.Add(this.lblPropietario);
-            this.pnlMenu.Controls.Add(this.lblEstado);
             this.pnlMenu.Controls.Add(this.lblFoto);
             this.pnlMenu.Controls.Add(this.txtCodigo);
             this.pnlMenu.Controls.Add(this.label5);
@@ -315,15 +301,6 @@
             this.lblCuota.Size = new System.Drawing.Size(143, 16);
             this.lblCuota.TabIndex = 26;
             this.lblCuota.Text = "Cuota de Mantenimiento:";
-            // 
-            // cmbEstado
-            // 
-            this.cmbEstado.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbEstado.FormattingEnabled = true;
-            this.cmbEstado.Location = new System.Drawing.Point(625, 92);
-            this.cmbEstado.Name = "cmbEstado";
-            this.cmbEstado.Size = new System.Drawing.Size(209, 24);
-            this.cmbEstado.TabIndex = 25;
             // 
             // cmbTipo
             // 
@@ -444,7 +421,6 @@
         private System.Windows.Forms.Label lblPropietario;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label lblEstado;
         private System.Windows.Forms.TextBox txtCodigo;
         private System.Windows.Forms.Button btnRegistrar;
         private System.Windows.Forms.Label lblFoto;
@@ -464,7 +440,6 @@
         private System.Windows.Forms.Label lblResidentes;
         private System.Windows.Forms.TextBox txtDireccion;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cmbEstado;
         private System.Windows.Forms.NumericUpDown nudCuota;
         private System.Windows.Forms.Label lblCuota;
         private System.Windows.Forms.Button btnEliminar;

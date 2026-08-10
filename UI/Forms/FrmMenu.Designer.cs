@@ -48,10 +48,13 @@
             this.propiedadesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.morosidadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ingresosMensualesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indiceDeRiesgoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.personasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestionDePropietariosResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gestiónDeResidentesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.controlDeMorosidadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pagosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.estadoDeCuentaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configuraciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +86,7 @@
             // 
             this.gestionDePropiedadesToolStripMenuItem.Name = "gestionDePropiedadesToolStripMenuItem";
             this.gestionDePropiedadesToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.gestionDePropiedadesToolStripMenuItem.Text = "Gestion de propiedades";
+            this.gestionDePropiedadesToolStripMenuItem.Text = "Gestion de Propiedades";
             this.gestionDePropiedadesToolStripMenuItem.Click += new System.EventHandler(this.gestionDePropiedadesToolStripMenuItem_Click);
             // 
             // financieroToolStripMenuItem
@@ -92,7 +95,11 @@
             this.cargosFacturablesToolStripMenuItem,
             this.penalizacionesToolStripMenuItem,
             this.fondoDeReservaToolStripMenuItem,
-            this.facturaciónToolStripMenuItem});
+            this.facturaciónToolStripMenuItem,
+            this.controlDeMorosidadToolStripMenuItem,
+            this.pagosToolStripMenuItem,
+            this.estadoDeCuentaToolStripMenuItem,
+            this.configuraciónToolStripMenuItem});
             this.financieroToolStripMenuItem.Name = "financieroToolStripMenuItem";
             this.financieroToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
             this.financieroToolStripMenuItem.Text = "Financiero";
@@ -100,28 +107,28 @@
             // cargosFacturablesToolStripMenuItem
             // 
             this.cargosFacturablesToolStripMenuItem.Name = "cargosFacturablesToolStripMenuItem";
-            this.cargosFacturablesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cargosFacturablesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.cargosFacturablesToolStripMenuItem.Text = "Cargos Facturables";
             this.cargosFacturablesToolStripMenuItem.Click += new System.EventHandler(this.cargosFacturablesToolStripMenuItem_Click);
             // 
             // penalizacionesToolStripMenuItem
             // 
             this.penalizacionesToolStripMenuItem.Name = "penalizacionesToolStripMenuItem";
-            this.penalizacionesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.penalizacionesToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.penalizacionesToolStripMenuItem.Text = "Penalizaciones";
             this.penalizacionesToolStripMenuItem.Click += new System.EventHandler(this.penalizacionesToolStripMenuItem_Click);
             // 
             // fondoDeReservaToolStripMenuItem
             // 
             this.fondoDeReservaToolStripMenuItem.Name = "fondoDeReservaToolStripMenuItem";
-            this.fondoDeReservaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fondoDeReservaToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.fondoDeReservaToolStripMenuItem.Text = "Fondo de Reserva";
             this.fondoDeReservaToolStripMenuItem.Click += new System.EventHandler(this.fondoDeReservaToolStripMenuItem_Click);
             // 
             // facturaciónToolStripMenuItem
             // 
             this.facturaciónToolStripMenuItem.Name = "facturaciónToolStripMenuItem";
-            this.facturaciónToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.facturaciónToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.facturaciónToolStripMenuItem.Text = "Facturación";
             // 
             // reservasToolStripMenuItem
@@ -187,8 +194,7 @@
             this.reportesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.propiedadesToolStripMenuItem1,
             this.morosidadToolStripMenuItem,
-            this.ingresosMensualesToolStripMenuItem,
-            this.indiceDeRiesgoToolStripMenuItem});
+            this.ingresosMensualesToolStripMenuItem});
             this.reportesToolStripMenuItem.Name = "reportesToolStripMenuItem";
             this.reportesToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.reportesToolStripMenuItem.Text = "Reportes";
@@ -210,13 +216,6 @@
             this.ingresosMensualesToolStripMenuItem.Name = "ingresosMensualesToolStripMenuItem";
             this.ingresosMensualesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ingresosMensualesToolStripMenuItem.Text = "Ingresos Mensuales";
-            // 
-            // indiceDeRiesgoToolStripMenuItem
-            // 
-            this.indiceDeRiesgoToolStripMenuItem.Name = "indiceDeRiesgoToolStripMenuItem";
-            this.indiceDeRiesgoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.indiceDeRiesgoToolStripMenuItem.Text = "Indice de riesgo ";
-            this.indiceDeRiesgoToolStripMenuItem.Click += new System.EventHandler(this.indiceDeRiesgoToolStripMenuItem_Click);
             // 
             // personasToolStripMenuItem
             // 
@@ -240,6 +239,31 @@
             this.gestiónDeResidentesToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.gestiónDeResidentesToolStripMenuItem.Text = "Gestión de Residentes ";
             this.gestiónDeResidentesToolStripMenuItem.Click += new System.EventHandler(this.gestiónDeResidentesToolStripMenuItem_Click);
+            // 
+            // controlDeMorosidadToolStripMenuItem
+            // 
+            this.controlDeMorosidadToolStripMenuItem.Name = "controlDeMorosidadToolStripMenuItem";
+            this.controlDeMorosidadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.controlDeMorosidadToolStripMenuItem.Text = "Control de Morosidad";
+            this.controlDeMorosidadToolStripMenuItem.Click += new System.EventHandler(this.controlDeMorosidadToolStripMenuItem_Click);
+            // 
+            // pagosToolStripMenuItem
+            // 
+            this.pagosToolStripMenuItem.Name = "pagosToolStripMenuItem";
+            this.pagosToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.pagosToolStripMenuItem.Text = "Pagos";
+            // 
+            // estadoDeCuentaToolStripMenuItem
+            // 
+            this.estadoDeCuentaToolStripMenuItem.Name = "estadoDeCuentaToolStripMenuItem";
+            this.estadoDeCuentaToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.estadoDeCuentaToolStripMenuItem.Text = "Estado de Cuenta";
+            // 
+            // configuraciónToolStripMenuItem
+            // 
+            this.configuraciónToolStripMenuItem.Name = "configuraciónToolStripMenuItem";
+            this.configuraciónToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.configuraciónToolStripMenuItem.Text = "Configuración";
             // 
             // FrmMenu
             // 
@@ -284,6 +308,9 @@
         private System.Windows.Forms.ToolStripMenuItem gestionDePropietariosResidentesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gestiónDeResidentesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reservasToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem indiceDeRiesgoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem controlDeMorosidadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pagosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem estadoDeCuentaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configuraciónToolStripMenuItem;
     }
 }

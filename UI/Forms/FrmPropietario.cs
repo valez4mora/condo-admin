@@ -17,11 +17,13 @@ namespace UI.Forms
     {
         private PropietarioBLL propietarioBLL = new PropietarioBLL();
         private IHaciendaService haciendaService = new HaciendaService();
+        private int idPropietarioSeleccionado = 0;
 
         public FrmPropietario()
         {
             InitializeComponent();
             ConfigurarColumnas();
+            dgvPropietarios.CellClick += dgvPropietarios_CellClick;
         }
 
         private void ConfigurarColumnas()
@@ -87,6 +89,81 @@ namespace UI.Forms
             CargarListaPropietarios();
         }
 
+        private void dgvPropietarios_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            PropietarioDTO propietario =
+                dgvPropietarios.Rows[e.RowIndex]
+                .DataBoundItem as PropietarioDTO;
+
+            if (propietario == null)
+                return;
+
+            idPropietarioSeleccionado = propietario.IdPersona;
+
+            txtIdentificacion.Text = propietario.Identificacion;
+            txtNombre.Text = propietario.Nombre;
+            txtApellidos.Text = propietario.Apellidos;
+            cmbSexo.Text = propietario.Sexo;
+            txtTelefono.Text = propietario.Telefono;
+            txtEmail.Text = propietario.Email;
+            txtDireccion.Text = propietario.Direccion;
+        }
+
+        private void btnActualizar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (idPropietarioSeleccionado <= 0)
+                    throw new Exception(
+                        "Seleccione un propietario de la lista.");
+
+                PropietarioDTO propietario =
+                    new PropietarioDTO
+                    {
+                        IdPersona = idPropietarioSeleccionado,
+                        Identificacion =
+                            txtIdentificacion.Text.Trim(),
+                        Nombre =
+                            txtNombre.Text.Trim(),
+                        Apellidos =
+                            txtApellidos.Text.Trim(),
+                        Sexo =
+                            cmbSexo.SelectedItem?.ToString(),
+                        Telefono =
+                            txtTelefono.Text.Trim(),
+                        Email =
+                            txtEmail.Text.Trim(),
+                        Direccion =
+                            txtDireccion.Text.Trim(),
+
+                        EstadoMorosidad = false
+                    };
+
+                bool actualizado =
+                    propietarioBLL.Modificar(propietario);
+
+                if (actualizado)
+                {
+                    MessageBox.Show(
+                        "Propietario actualizado correctamente.");
+
+                    LimpiarFormulario();
+                    CargarListaPropietarios();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
         private void CargarListaPropietarios()
         {
             try
@@ -145,9 +222,18 @@ namespace UI.Forms
                     return;
                 }
 
-                // Hacienda devuelve el nombre completo en un solo campo.
-                // Se coloca en Nombre; el usuario puede ajustarlo o repartirlo en Apellidos.
-                txtNombre.Text = resultado.Nombre;
+                string nombres;
+                string apellidos;
+
+                SepararNombreCompleto(
+                    resultado.Nombre,
+                    out nombres,
+                    out apellidos
+                );
+
+                txtNombre.Text = nombres;
+                txtApellidos.Text = apellidos;
+
             }
             catch (Exception ex)
             {
@@ -162,6 +248,42 @@ namespace UI.Forms
             {
                 Cursor = Cursors.Default;
             }
+        }
+
+        private void SepararNombreCompleto(string nombreCompleto, out string nombres, out string apellidos)
+        {
+            nombres = "";
+            apellidos = "";
+
+            if (string.IsNullOrWhiteSpace(nombreCompleto))
+                return;
+
+            string[] partes = nombreCompleto
+                .Trim()
+                .Split(new[] { ' ' },
+                       StringSplitOptions.RemoveEmptyEntries);
+
+            if (partes.Length == 1)
+            {
+                nombres = partes[0];
+                return;
+            }
+
+            if (partes.Length == 2)
+            {
+                nombres = partes[0];
+                apellidos = partes[1];
+                return;
+            }
+
+            apellidos =
+                partes[partes.Length - 2] + " " +
+                partes[partes.Length - 1];
+
+            nombres = string.Join(
+                " ",
+                partes.Take(partes.Length - 2)
+            );
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
@@ -230,5 +352,6 @@ namespace UI.Forms
         {
             LimpiarFormulario();
         }
+
     }
 }
