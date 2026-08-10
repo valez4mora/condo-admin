@@ -49,6 +49,8 @@
             this.nudCuota = new System.Windows.Forms.NumericUpDown();
             this.lblCuota = new System.Windows.Forms.Label();
             this.cmbTipo = new System.Windows.Forms.ComboBox();
+            this.cmbEstado = new System.Windows.Forms.ComboBox();
+            this.lblEstado = new System.Windows.Forms.Label();
             this.nudResidentes = new System.Windows.Forms.NumericUpDown();
             this.lblResidentes = new System.Windows.Forms.Label();
             this.txtDireccion = new System.Windows.Forms.TextBox();
@@ -167,6 +169,7 @@
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1009, 113);
             this.pnlHeader.TabIndex = 26;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // lblSubtitulo
             // 
@@ -267,6 +270,8 @@
             this.pnlMenu.Controls.Add(this.nudCuota);
             this.pnlMenu.Controls.Add(this.lblCuota);
             this.pnlMenu.Controls.Add(this.cmbTipo);
+            this.pnlMenu.Controls.Add(this.cmbEstado);
+            this.pnlMenu.Controls.Add(this.lblEstado);
             this.pnlMenu.Controls.Add(this.nudResidentes);
             this.pnlMenu.Controls.Add(this.lblResidentes);
             this.pnlMenu.Controls.Add(this.txtDireccion);
@@ -310,6 +315,25 @@
             this.cmbTipo.Name = "cmbTipo";
             this.cmbTipo.Size = new System.Drawing.Size(209, 24);
             this.cmbTipo.TabIndex = 24;
+            // 
+            // cmbEstado
+            // 
+            this.cmbEstado.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbEstado.FormattingEnabled = true;
+            this.cmbEstado.Location = new System.Drawing.Point(219, 363);
+            this.cmbEstado.Name = "cmbEstado";
+            this.cmbEstado.Size = new System.Drawing.Size(209, 24);
+            this.cmbEstado.TabIndex = 31;
+            // 
+            // lblEstado
+            // 
+            this.lblEstado.AutoSize = true;
+            this.lblEstado.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEstado.Location = new System.Drawing.Point(60, 366);
+            this.lblEstado.Name = "lblEstado";
+            this.lblEstado.Size = new System.Drawing.Size(107, 16);
+            this.lblEstado.TabIndex = 32;
+            this.lblEstado.Text = "Estado de Pago:";
             // 
             // nudResidentes
             // 
@@ -436,6 +460,8 @@
         private System.Windows.Forms.ComboBox cmbPropietario;
         private System.Windows.Forms.NumericUpDown nudArea;
         private System.Windows.Forms.ComboBox cmbTipo;
+        private System.Windows.Forms.ComboBox cmbEstado;
+        private System.Windows.Forms.Label lblEstado;
         private System.Windows.Forms.NumericUpDown nudResidentes;
         private System.Windows.Forms.Label lblResidentes;
         private System.Windows.Forms.TextBox txtDireccion;
