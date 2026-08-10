@@ -212,17 +212,25 @@ namespace DAL.DAO
             {
                 cn.Open();
 
-                string sql = @"SELECT IdPersona 
-                       FROM Persona 
-                       WHERE Identificacion=@Identificacion";
-
+                string sql = @"SELECT IdPersona
+                       FROM Persona
+                       WHERE Identificacion = @Identificacion";
 
                 SqlCommand cmd = new SqlCommand(sql, cn);
 
-                cmd.Parameters.AddWithValue("@Identificacion", identificacion);
+                cmd.Parameters.AddWithValue(
+                    "@Identificacion",
+                    identificacion
+                );
 
+                object resultado = cmd.ExecuteScalar();
 
-                return Convert.ToInt32(cmd.ExecuteScalar());
+                if (resultado != null && resultado != DBNull.Value)
+                {
+                    return Convert.ToInt32(resultado);
+                }
+
+                return 0;
             }
         }
     }

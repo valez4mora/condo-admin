@@ -19,10 +19,33 @@ namespace DAL.DAO
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
+
                 SqlCommand cmd = new SqlCommand("sp_RegistrarPropietario", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
-                cmd.Parameters.AddWithValue("@EstadoMorosidad", propietario.EstadoMorosidad);
+
+                cmd.Parameters.AddWithValue("@Identificacion", propietario.Identificacion);
+                cmd.Parameters.AddWithValue("@Nombre", propietario.Nombre);
+                cmd.Parameters.AddWithValue("@Apellidos", propietario.Apellidos);
+                cmd.Parameters.AddWithValue("@Sexo",
+                    string.IsNullOrWhiteSpace(propietario.Sexo)
+                        ? (object)DBNull.Value
+                        : propietario.Sexo);
+
+                cmd.Parameters.AddWithValue("@Telefono",
+                    string.IsNullOrWhiteSpace(propietario.Telefono)
+                        ? (object)DBNull.Value
+                        : propietario.Telefono);
+
+                cmd.Parameters.AddWithValue("@Email",
+                    string.IsNullOrWhiteSpace(propietario.Email)
+                        ? (object)DBNull.Value
+                        : propietario.Email);
+
+                cmd.Parameters.AddWithValue("@Direccion",
+                    string.IsNullOrWhiteSpace(propietario.Direccion)
+                        ? (object)DBNull.Value
+                        : propietario.Direccion);
+
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
@@ -60,10 +83,34 @@ namespace DAL.DAO
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
+
                 SqlCommand cmd = new SqlCommand("sp_ModificarPropietario", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
+
                 cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
-                cmd.Parameters.AddWithValue("@EstadoMorosidad", propietario.EstadoMorosidad);
+                cmd.Parameters.AddWithValue("@Identificacion", propietario.Identificacion);
+                cmd.Parameters.AddWithValue("@Nombre", propietario.Nombre);
+                cmd.Parameters.AddWithValue("@Apellidos", propietario.Apellidos);
+                cmd.Parameters.AddWithValue("@Sexo",
+                    string.IsNullOrWhiteSpace(propietario.Sexo)
+                        ? (object)DBNull.Value
+                        : propietario.Sexo);
+
+                cmd.Parameters.AddWithValue("@Telefono",
+                    string.IsNullOrWhiteSpace(propietario.Telefono)
+                        ? (object)DBNull.Value
+                        : propietario.Telefono);
+
+                cmd.Parameters.AddWithValue("@Email",
+                    string.IsNullOrWhiteSpace(propietario.Email)
+                        ? (object)DBNull.Value
+                        : propietario.Email);
+
+                cmd.Parameters.AddWithValue("@Direccion",
+                    string.IsNullOrWhiteSpace(propietario.Direccion)
+                        ? (object)DBNull.Value
+                        : propietario.Direccion);
+
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
@@ -77,6 +124,27 @@ namespace DAL.DAO
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdPersona", idPersona);
                 return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool ExistePorPersona(int idPersona)
+        {
+            using (SqlConnection cn = conexion.ObtenerConexion())
+            {
+                cn.Open();
+
+                string sql = @"SELECT COUNT(*)
+                       FROM Propietario
+                       WHERE IdPersona = @IdPersona";
+
+                SqlCommand cmd = new SqlCommand(sql, cn);
+
+                cmd.Parameters.AddWithValue(
+                    "@IdPersona",
+                    idPersona
+                );
+
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
         }
     }
