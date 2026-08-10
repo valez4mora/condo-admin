@@ -49,7 +49,6 @@
             this.nudCuota = new System.Windows.Forms.NumericUpDown();
             this.lblCuota = new System.Windows.Forms.Label();
             this.cmbTipo = new System.Windows.Forms.ComboBox();
-            this.cmbEstado = new System.Windows.Forms.ComboBox();
             this.lblEstado = new System.Windows.Forms.Label();
             this.nudResidentes = new System.Windows.Forms.NumericUpDown();
             this.lblResidentes = new System.Windows.Forms.Label();
@@ -59,6 +58,8 @@
             this.nudArea = new System.Windows.Forms.NumericUpDown();
             this.lblTipo = new System.Windows.Forms.Label();
             this.btnBuscar = new System.Windows.Forms.Button();
+            this.lblFondoResreva = new System.Windows.Forms.Label();
+            this.txtFondoReserva = new System.Windows.Forms.TextBox();
             this.pnlHeader.SuspendLayout();
             this.pnlContenedor.SuspendLayout();
             this.pnlMenu.SuspendLayout();
@@ -81,7 +82,7 @@
             // 
             this.lblPropietario.AutoSize = true;
             this.lblPropietario.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPropietario.Location = new System.Drawing.Point(496, 39);
+            this.lblPropietario.Location = new System.Drawing.Point(58, 265);
             this.lblPropietario.Name = "lblPropietario";
             this.lblPropietario.Size = new System.Drawing.Size(68, 16);
             this.lblPropietario.TabIndex = 4;
@@ -131,7 +132,7 @@
             // 
             this.lblFoto.AutoSize = true;
             this.lblFoto.Font = new System.Drawing.Font("Myanmar Text", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFoto.Location = new System.Drawing.Point(495, 92);
+            this.lblFoto.Location = new System.Drawing.Point(498, 205);
             this.lblFoto.Name = "lblFoto";
             this.lblFoto.Size = new System.Drawing.Size(66, 20);
             this.lblFoto.TabIndex = 17;
@@ -267,10 +268,11 @@
             // pnlMenu
             // 
             this.pnlMenu.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.pnlMenu.Controls.Add(this.txtFondoReserva);
+            this.pnlMenu.Controls.Add(this.lblFondoResreva);
             this.pnlMenu.Controls.Add(this.nudCuota);
             this.pnlMenu.Controls.Add(this.lblCuota);
             this.pnlMenu.Controls.Add(this.cmbTipo);
-            this.pnlMenu.Controls.Add(this.cmbEstado);
             this.pnlMenu.Controls.Add(this.lblEstado);
             this.pnlMenu.Controls.Add(this.nudResidentes);
             this.pnlMenu.Controls.Add(this.lblResidentes);
@@ -292,7 +294,7 @@
             // nudCuota
             // 
             this.nudCuota.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudCuota.Location = new System.Drawing.Point(219, 263);
+            this.nudCuota.Location = new System.Drawing.Point(662, 38);
             this.nudCuota.Name = "nudCuota";
             this.nudCuota.Size = new System.Drawing.Size(209, 23);
             this.nudCuota.TabIndex = 27;
@@ -301,7 +303,7 @@
             // 
             this.lblCuota.AutoSize = true;
             this.lblCuota.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCuota.Location = new System.Drawing.Point(58, 265);
+            this.lblCuota.Location = new System.Drawing.Point(499, 40);
             this.lblCuota.Name = "lblCuota";
             this.lblCuota.Size = new System.Drawing.Size(143, 16);
             this.lblCuota.TabIndex = 26;
@@ -316,24 +318,14 @@
             this.cmbTipo.Size = new System.Drawing.Size(209, 24);
             this.cmbTipo.TabIndex = 24;
             // 
-            // cmbEstado
-            // 
-            this.cmbEstado.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbEstado.FormattingEnabled = true;
-            this.cmbEstado.Location = new System.Drawing.Point(219, 363);
-            this.cmbEstado.Name = "cmbEstado";
-            this.cmbEstado.Size = new System.Drawing.Size(209, 24);
-            this.cmbEstado.TabIndex = 31;
-            // 
             // lblEstado
             // 
             this.lblEstado.AutoSize = true;
             this.lblEstado.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEstado.Location = new System.Drawing.Point(60, 366);
             this.lblEstado.Name = "lblEstado";
-            this.lblEstado.Size = new System.Drawing.Size(107, 16);
+            this.lblEstado.Size = new System.Drawing.Size(0, 16);
             this.lblEstado.TabIndex = 32;
-            this.lblEstado.Text = "Estado de Pago:";
             // 
             // nudResidentes
             // 
@@ -375,7 +367,7 @@
             // 
             this.cmbPropietario.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbPropietario.FormattingEnabled = true;
-            this.cmbPropietario.Location = new System.Drawing.Point(625, 36);
+            this.cmbPropietario.Location = new System.Drawing.Point(219, 262);
             this.cmbPropietario.Name = "cmbPropietario";
             this.cmbPropietario.Size = new System.Drawing.Size(209, 24);
             this.cmbPropietario.TabIndex = 19;
@@ -393,7 +385,7 @@
             // 
             this.lblTipo.AutoSize = true;
             this.lblTipo.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTipo.Location = new System.Drawing.Point(60, 327);
+            this.lblTipo.Location = new System.Drawing.Point(58, 327);
             this.lblTipo.Name = "lblTipo";
             this.lblTipo.Size = new System.Drawing.Size(107, 16);
             this.lblTipo.TabIndex = 11;
@@ -411,6 +403,22 @@
             this.btnBuscar.Text = "Buscar";
             this.btnBuscar.UseVisualStyleBackColor = false;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
+            // lblFondoResreva
+            // 
+            this.lblFondoResreva.AutoSize = true;
+            this.lblFondoResreva.Location = new System.Drawing.Point(499, 95);
+            this.lblFondoResreva.Name = "lblFondoResreva";
+            this.lblFondoResreva.Size = new System.Drawing.Size(98, 13);
+            this.lblFondoResreva.TabIndex = 33;
+            this.lblFondoResreva.Text = "Fondo de Reserva:";
+            // 
+            // txtFondoReserva
+            // 
+            this.txtFondoReserva.Location = new System.Drawing.Point(662, 91);
+            this.txtFondoReserva.Name = "txtFondoReserva";
+            this.txtFondoReserva.Size = new System.Drawing.Size(209, 20);
+            this.txtFondoReserva.TabIndex = 34;
             // 
             // FrmPropiedad
             // 
@@ -460,7 +468,6 @@
         private System.Windows.Forms.ComboBox cmbPropietario;
         private System.Windows.Forms.NumericUpDown nudArea;
         private System.Windows.Forms.ComboBox cmbTipo;
-        private System.Windows.Forms.ComboBox cmbEstado;
         private System.Windows.Forms.Label lblEstado;
         private System.Windows.Forms.NumericUpDown nudResidentes;
         private System.Windows.Forms.Label lblResidentes;
@@ -472,5 +479,7 @@
         private System.Windows.Forms.Button btnLimpiar;
         private System.Windows.Forms.Button btnActualizar;
         private System.Windows.Forms.Button btnReporte;
+        private System.Windows.Forms.Label lblFondoResreva;
+        private System.Windows.Forms.TextBox txtFondoReserva;
     }
 }

@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enumeraciones\IndiceRiesgo.cs" />
     <Compile Include="Enumeraciones\TipoPropiedad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

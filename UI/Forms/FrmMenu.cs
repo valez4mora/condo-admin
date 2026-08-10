@@ -70,13 +70,6 @@ namespace UI.Forms
             frm.Show();
         }
 
-        private void fondoDeReservaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FrmFondoReserva frm = new FrmFondoReserva();
-            frm.MdiParent = this;
-            frm.Show();
-        }
-
         private void reservasToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             FrmAreasComunes frm = new FrmAreasComunes();
