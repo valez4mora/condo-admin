@@ -20,31 +20,13 @@ namespace DAL.DAO
             {
                 cn.Open();
 
-                SqlCommand cmd = new SqlCommand("sp_RegistrarPropietario", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                // La fila en Persona ya fue insertada por PersonaDAO.Registrar en la BLL.
+                // Aquí solo se crea la fila en Propietario vinculada al IdPersona recién obtenido.
+                string sql = @"INSERT INTO Propietario (IdPersona)
+                               VALUES (@IdPersona)";
 
-                cmd.Parameters.AddWithValue("@Identificacion", propietario.Identificacion);
-                cmd.Parameters.AddWithValue("@Nombre", propietario.Nombre);
-                cmd.Parameters.AddWithValue("@Apellidos", propietario.Apellidos);
-                cmd.Parameters.AddWithValue("@Sexo",
-                    string.IsNullOrWhiteSpace(propietario.Sexo)
-                        ? (object)DBNull.Value
-                        : propietario.Sexo);
-
-                cmd.Parameters.AddWithValue("@Telefono",
-                    string.IsNullOrWhiteSpace(propietario.Telefono)
-                        ? (object)DBNull.Value
-                        : propietario.Telefono);
-
-                cmd.Parameters.AddWithValue("@Email",
-                    string.IsNullOrWhiteSpace(propietario.Email)
-                        ? (object)DBNull.Value
-                        : propietario.Email);
-
-                cmd.Parameters.AddWithValue("@Direccion",
-                    string.IsNullOrWhiteSpace(propietario.Direccion)
-                        ? (object)DBNull.Value
-                        : propietario.Direccion);
+                SqlCommand cmd = new SqlCommand(sql, cn);
+                cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
 
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -120,8 +102,12 @@ namespace DAL.DAO
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-                SqlCommand cmd = new SqlCommand("sp_EliminarPropietario", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+
+                // Solo borra la fila de Propietario.
+                // La BLL se encarga de borrar la fila de Persona en el paso siguiente.
+                string sql = "DELETE FROM Propietario WHERE IdPersona = @IdPersona";
+
+                SqlCommand cmd = new SqlCommand(sql, cn);
                 cmd.Parameters.AddWithValue("@IdPersona", idPersona);
                 return cmd.ExecuteNonQuery() > 0;
             }
