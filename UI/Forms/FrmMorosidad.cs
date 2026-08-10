@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace UI.Forms
 {
-    public partial class FrmIndiceDeRiesgo : Form
+    public partial class FrmMorosidad : Form
     {
-        public FrmIndiceDeRiesgo()
+        public FrmMorosidad()
         {
             InitializeComponent();
         }

@@ -18,5 +18,7 @@ namespace Entities
         public  int IdPropietario { get; set; }
         public decimal CuotaMantenimiento { get; set; }
         public int CantidadResidente { get; set; }
+
+        public string Direccion { get; set; }
     }
 }

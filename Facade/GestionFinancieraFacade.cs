@@ -43,6 +43,8 @@ namespace Facade
             return GestionFinancieraFactory.CrearInteresMora(idPropiedad, saldo, tasa, meses);
         }
 
+
+
         //------------ 4. Indicador de morosidad ----------
         public void CrearPenalizacion(CargoFacturableDTO idPropiedad, decimal monto, string descripcion)
         {

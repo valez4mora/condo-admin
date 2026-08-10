@@ -37,7 +37,7 @@ namespace UI.Forms
 
         private void penalizacionesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-          FrmPenalizacion frm = new FrmPenalizacion();
+            FrmPenalizacion frm = new FrmPenalizacion();
             frm.MdiParent = this;
             frm.Show();
         }
@@ -84,9 +84,24 @@ namespace UI.Forms
             frm.Show();
         }
 
+        private void controlDeMorosidadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmMorosidad frm = new FrmMorosidad();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+    
+
+    private void facturaciónToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmGenerarCuota frm = new FrmGenerarCuota();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
         private void indiceDeRiesgoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmIndiceDeRiesgo frm = new FrmIndiceDeRiesgo();
+            FrmMorosidad frm = new FrmMorosidad();
             frm.MdiParent = this;
             frm.Show();
         }
