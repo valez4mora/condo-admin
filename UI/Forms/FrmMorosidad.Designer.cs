@@ -40,6 +40,8 @@ namespace UI.Forms
             this.lblIndiceRiesgo = new System.Windows.Forms.Label();
             this.btnCalcularRegistrar = new System.Windows.Forms.Button();
             this.btnLimpiar = new System.Windows.Forms.Button();
+            this.btnEliminar = new System.Windows.Forms.Button();
+            this.btnActualizar = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
             this.grpDatos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMontoAdeudado)).BeginInit();
@@ -65,7 +67,7 @@ namespace UI.Forms
             this.lblSubtitulo.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.lblSubtitulo.Location = new System.Drawing.Point(31, 61);
             this.lblSubtitulo.Name = "lblSubtitulo";
-            this.lblSubtitulo.Size = new System.Drawing.Size(323, 13);
+            this.lblSubtitulo.Size = new System.Drawing.Size(318, 13);
             this.lblSubtitulo.TabIndex = 1;
             this.lblSubtitulo.Text = "Cálculo y registro del índice de riesgo financiero de una propiedad";
             // 
@@ -76,7 +78,7 @@ namespace UI.Forms
             this.lblTitulo.ForeColor = System.Drawing.Color.White;
             this.lblTitulo.Location = new System.Drawing.Point(29, 24);
             this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(272, 29);
+            this.lblTitulo.Size = new System.Drawing.Size(266, 29);
             this.lblTitulo.TabIndex = 0;
             this.lblTitulo.Text = "Control de Morosidad";
             // 
@@ -150,7 +152,7 @@ namespace UI.Forms
             this.lblFacturasPendientes.AutoSize = true;
             this.lblFacturasPendientes.Location = new System.Drawing.Point(38, 160);
             this.lblFacturasPendientes.Name = "lblFacturasPendientes";
-            this.lblFacturasPendientes.Size = new System.Drawing.Size(104, 13);
+            this.lblFacturasPendientes.Size = new System.Drawing.Size(106, 13);
             this.lblFacturasPendientes.TabIndex = 4;
             this.lblFacturasPendientes.Text = "Facturas pendientes:";
             // 
@@ -167,7 +169,7 @@ namespace UI.Forms
             this.lblMesesMora.AutoSize = true;
             this.lblMesesMora.Location = new System.Drawing.Point(38, 120);
             this.lblMesesMora.Name = "lblMesesMora";
-            this.lblMesesMora.Size = new System.Drawing.Size(79, 13);
+            this.lblMesesMora.Size = new System.Drawing.Size(82, 13);
             this.lblMesesMora.TabIndex = 2;
             this.lblMesesMora.Text = "Meses de mora:";
             // 
@@ -218,7 +220,7 @@ namespace UI.Forms
             this.lblFechaCalculo.AutoSize = true;
             this.lblFechaCalculo.Location = new System.Drawing.Point(399, 84);
             this.lblFechaCalculo.Name = "lblFechaCalculo";
-            this.lblFechaCalculo.Size = new System.Drawing.Size(91, 13);
+            this.lblFechaCalculo.Size = new System.Drawing.Size(92, 13);
             this.lblFechaCalculo.TabIndex = 4;
             this.lblFechaCalculo.Text = "Fecha de cálculo:";
             // 
@@ -235,7 +237,7 @@ namespace UI.Forms
             this.lblClasificacion.AutoSize = true;
             this.lblClasificacion.Location = new System.Drawing.Point(38, 84);
             this.lblClasificacion.Name = "lblClasificacion";
-            this.lblClasificacion.Size = new System.Drawing.Size(70, 13);
+            this.lblClasificacion.Size = new System.Drawing.Size(69, 13);
             this.lblClasificacion.TabIndex = 2;
             this.lblClasificacion.Text = "Clasificación:";
             // 
@@ -252,7 +254,7 @@ namespace UI.Forms
             this.lblIndiceRiesgo.AutoSize = true;
             this.lblIndiceRiesgo.Location = new System.Drawing.Point(38, 43);
             this.lblIndiceRiesgo.Name = "lblIndiceRiesgo";
-            this.lblIndiceRiesgo.Size = new System.Drawing.Size(86, 13);
+            this.lblIndiceRiesgo.Size = new System.Drawing.Size(85, 13);
             this.lblIndiceRiesgo.TabIndex = 0;
             this.lblIndiceRiesgo.Text = "Índice de riesgo:";
             // 
@@ -279,11 +281,33 @@ namespace UI.Forms
             this.btnLimpiar.UseVisualStyleBackColor = true;
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
+            // btnEliminar
+            // 
+            this.btnEliminar.Location = new System.Drawing.Point(337, 554);
+            this.btnEliminar.Name = "btnEliminar";
+            this.btnEliminar.Size = new System.Drawing.Size(75, 23);
+            this.btnEliminar.TabIndex = 10;
+            this.btnEliminar.Text = "Eliminar";
+            this.btnEliminar.UseVisualStyleBackColor = true;
+            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            // 
+            // btnActualizar
+            // 
+            this.btnActualizar.Location = new System.Drawing.Point(220, 554);
+            this.btnActualizar.Name = "btnActualizar";
+            this.btnActualizar.Size = new System.Drawing.Size(75, 23);
+            this.btnActualizar.TabIndex = 11;
+            this.btnActualizar.Text = "Actualizar";
+            this.btnActualizar.UseVisualStyleBackColor = true;
+            this.btnActualizar.Click += new System.EventHandler(this.btnActualizar_Click);
+            // 
             // FrmMorosidad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 620);
+            this.Controls.Add(this.btnActualizar);
+            this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.btnCalcularRegistrar);
             this.Controls.Add(this.grpResultado);
@@ -305,6 +329,7 @@ namespace UI.Forms
             this.grpResultado.ResumeLayout(false);
             this.grpResultado.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -332,5 +357,7 @@ namespace UI.Forms
         private System.Windows.Forms.Label lblFechaCalculo;
         private System.Windows.Forms.Button btnCalcularRegistrar;
         private System.Windows.Forms.Button btnLimpiar;
+        private System.Windows.Forms.Button btnEliminar;
+        private System.Windows.Forms.Button btnActualizar;
     }
 }

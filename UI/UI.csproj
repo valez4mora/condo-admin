@@ -114,6 +114,9 @@
     <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
       <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmMorosidad.resx">
+      <DependentUpon>FrmMorosidad.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPenalizacion.resx">
       <DependentUpon>FrmPenalizacion.cs</DependentUpon>
     </EmbeddedResource>

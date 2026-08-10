@@ -24,6 +24,7 @@ namespace UI.Forms
             InitializeComponent();
             ConfigurarColumnas();
             dgvPropietarios.CellClick += dgvPropietarios_CellClick;
+            btnActualizarLista.Click += btnActualizarLista_Click;
         }
 
         private void ConfigurarColumnas()
@@ -168,13 +169,23 @@ namespace UI.Forms
         {
             try
             {
-                List<PropietarioDTO> propietarios = propietarioBLL.ObtenerTodos();
-                dgvPropietarios.DataSource = new BindingList<PropietarioDTO>(propietarios);
+                dgvPropietarios.DataSource = null;
+
+                List<PropietarioDTO> propietarios =
+                    propietarioBLL.ObtenerTodos();
+
+                dgvPropietarios.DataSource =
+                    new BindingList<PropietarioDTO>(propietarios);
+
+                dgvPropietarios.ClearSelection();
+
+                idPropietarioSeleccionado = 0;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "No se pudo cargar la lista de propietarios: " + ex.Message,
+                    "No se pudo cargar la lista de propietarios: "
+                    + ex.Message,
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -185,6 +196,13 @@ namespace UI.Forms
         private void btnActualizarLista_Click(object sender, EventArgs e)
         {
             CargarListaPropietarios();
+
+            MessageBox.Show(
+                "Lista actualizada correctamente.",
+                "Actualización",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         // Consulta el API de Hacienda con la identificación digitada
@@ -345,7 +363,14 @@ namespace UI.Forms
             txtTelefono.Clear();
             txtEmail.Clear();
             txtDireccion.Clear();
+
             cmbSexo.SelectedIndex = -1;
+
+            idPropietarioSeleccionado = 0;
+
+            dgvPropietarios.ClearSelection();
+
+            txtIdentificacion.Focus();
         }
 
         private void btnLimpiarFormulario_Click(object sender, EventArgs e)
@@ -353,5 +378,75 @@ namespace UI.Forms
             LimpiarFormulario();
         }
 
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Verificar que se haya seleccionado un propietario
+                if (idPropietarioSeleccionado <= 0)
+                {
+                    MessageBox.Show(
+                        "Seleccione un propietario de la lista.",
+                        "Propietario no seleccionado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                }
+
+                // Pedir confirmación antes de eliminar
+                DialogResult resultado = MessageBox.Show(
+                    "¿Está seguro de que desea eliminar este propietario?",
+                    "Confirmar eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                if (resultado == DialogResult.No)
+                    return;
+
+                // Eliminar mediante la BLL
+                bool eliminado =
+                    propietarioBLL.Eliminar(idPropietarioSeleccionado);
+
+                if (eliminado)
+                {
+                    MessageBox.Show(
+                        "Propietario eliminado correctamente.",
+                        "Eliminación exitosa",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
+                    LimpiarFormulario();
+
+                    // Quitar la selección actual
+                    idPropietarioSeleccionado = 0;
+
+                    // Actualizar DataGridView
+                    CargarListaPropietarios();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No se pudo eliminar el propietario.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudo eliminar el propietario.\n\n" +
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
+        }
     }
 }

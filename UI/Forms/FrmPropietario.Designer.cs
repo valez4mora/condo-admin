@@ -42,6 +42,7 @@ namespace UI.Forms
             this.txtIdentificacion = new System.Windows.Forms.TextBox();
             this.lblIdentificacion = new System.Windows.Forms.Label();
             this.lblFormTitulo = new System.Windows.Forms.Label();
+            this.btnEliminar = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
             this.pnlContenedor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPropietarios)).BeginInit();
@@ -55,7 +56,7 @@ namespace UI.Forms
             this.pnlHeader.Controls.Add(this.lblTitulo);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
-            this.pnlHeader.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(2);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1060, 73);
             this.pnlHeader.TabIndex = 0;
@@ -92,7 +93,7 @@ namespace UI.Forms
             this.pnlContenedor.Controls.Add(this.pnlFormulario);
             this.pnlContenedor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContenedor.Location = new System.Drawing.Point(0, 73);
-            this.pnlContenedor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlContenedor.Margin = new System.Windows.Forms.Padding(2);
             this.pnlContenedor.Name = "pnlContenedor";
             this.pnlContenedor.Padding = new System.Windows.Forms.Padding(15, 16, 15, 16);
             this.pnlContenedor.Size = new System.Drawing.Size(1060, 505);
@@ -106,7 +107,7 @@ namespace UI.Forms
             this.dgvPropietarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPropietarios.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPropietarios.Location = new System.Drawing.Point(294, 44);
-            this.dgvPropietarios.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvPropietarios.Margin = new System.Windows.Forms.Padding(2);
             this.dgvPropietarios.Name = "dgvPropietarios";
             this.dgvPropietarios.ReadOnly = true;
             this.dgvPropietarios.RowHeadersVisible = false;
@@ -132,6 +133,7 @@ namespace UI.Forms
             // pnlFormulario
             // 
             this.pnlFormulario.BackColor = System.Drawing.Color.White;
+            this.pnlFormulario.Controls.Add(this.btnEliminar);
             this.pnlFormulario.Controls.Add(this.btnLimpiarFormulario);
             this.pnlFormulario.Controls.Add(this.btnGuardar);
             this.pnlFormulario.Controls.Add(this.txtDireccion);
@@ -152,7 +154,7 @@ namespace UI.Forms
             this.pnlFormulario.Controls.Add(this.lblFormTitulo);
             this.pnlFormulario.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlFormulario.Location = new System.Drawing.Point(15, 16);
-            this.pnlFormulario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlFormulario.Margin = new System.Windows.Forms.Padding(2);
             this.pnlFormulario.Name = "pnlFormulario";
             this.pnlFormulario.Padding = new System.Windows.Forms.Padding(11, 12, 11, 12);
             this.pnlFormulario.Size = new System.Drawing.Size(279, 473);
@@ -164,7 +166,7 @@ namespace UI.Forms
             this.btnLimpiarFormulario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLimpiarFormulario.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.btnLimpiarFormulario.Location = new System.Drawing.Point(120, 358);
-            this.btnLimpiarFormulario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnLimpiarFormulario.Margin = new System.Windows.Forms.Padding(2);
             this.btnLimpiarFormulario.Name = "btnLimpiarFormulario";
             this.btnLimpiarFormulario.Size = new System.Drawing.Size(98, 28);
             this.btnLimpiarFormulario.TabIndex = 17;
@@ -178,7 +180,7 @@ namespace UI.Forms
             this.btnGuardar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGuardar.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.btnGuardar.Location = new System.Drawing.Point(11, 358);
-            this.btnGuardar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnGuardar.Margin = new System.Windows.Forms.Padding(2);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(98, 28);
             this.btnGuardar.TabIndex = 16;
@@ -189,7 +191,7 @@ namespace UI.Forms
             // txtDireccion
             // 
             this.txtDireccion.Location = new System.Drawing.Point(11, 302);
-            this.txtDireccion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtDireccion.Margin = new System.Windows.Forms.Padding(2);
             this.txtDireccion.Multiline = true;
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.Size = new System.Drawing.Size(207, 41);
@@ -208,7 +210,7 @@ namespace UI.Forms
             // txtEmail
             // 
             this.txtEmail.Location = new System.Drawing.Point(11, 262);
-            this.txtEmail.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtEmail.Margin = new System.Windows.Forms.Padding(2);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(207, 20);
             this.txtEmail.TabIndex = 13;
@@ -226,7 +228,7 @@ namespace UI.Forms
             // txtTelefono
             // 
             this.txtTelefono.Location = new System.Drawing.Point(11, 221);
-            this.txtTelefono.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtTelefono.Margin = new System.Windows.Forms.Padding(2);
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.Size = new System.Drawing.Size(207, 20);
             this.txtTelefono.TabIndex = 11;
@@ -246,7 +248,7 @@ namespace UI.Forms
             this.cmbSexo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSexo.FormattingEnabled = true;
             this.cmbSexo.Location = new System.Drawing.Point(11, 180);
-            this.cmbSexo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cmbSexo.Margin = new System.Windows.Forms.Padding(2);
             this.cmbSexo.Name = "cmbSexo";
             this.cmbSexo.Size = new System.Drawing.Size(207, 21);
             this.cmbSexo.TabIndex = 9;
@@ -264,7 +266,7 @@ namespace UI.Forms
             // txtApellidos
             // 
             this.txtApellidos.Location = new System.Drawing.Point(11, 140);
-            this.txtApellidos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtApellidos.Margin = new System.Windows.Forms.Padding(2);
             this.txtApellidos.Name = "txtApellidos";
             this.txtApellidos.Size = new System.Drawing.Size(207, 20);
             this.txtApellidos.TabIndex = 7;
@@ -282,7 +284,7 @@ namespace UI.Forms
             // txtNombre
             // 
             this.txtNombre.Location = new System.Drawing.Point(11, 99);
-            this.txtNombre.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNombre.Margin = new System.Windows.Forms.Padding(2);
             this.txtNombre.Name = "txtNombre";
             this.txtNombre.Size = new System.Drawing.Size(207, 20);
             this.txtNombre.TabIndex = 5;
@@ -303,7 +305,7 @@ namespace UI.Forms
             this.btnBuscarHacienda.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBuscarHacienda.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.btnBuscarHacienda.Location = new System.Drawing.Point(177, 51);
-            this.btnBuscarHacienda.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnBuscarHacienda.Margin = new System.Windows.Forms.Padding(2);
             this.btnBuscarHacienda.Name = "btnBuscarHacienda";
             this.btnBuscarHacienda.Size = new System.Drawing.Size(77, 33);
             this.btnBuscarHacienda.TabIndex = 3;
@@ -314,7 +316,7 @@ namespace UI.Forms
             // txtIdentificacion
             // 
             this.txtIdentificacion.Location = new System.Drawing.Point(11, 58);
-            this.txtIdentificacion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtIdentificacion.Margin = new System.Windows.Forms.Padding(2);
             this.txtIdentificacion.Name = "txtIdentificacion";
             this.txtIdentificacion.Size = new System.Drawing.Size(144, 20);
             this.txtIdentificacion.TabIndex = 2;
@@ -341,6 +343,16 @@ namespace UI.Forms
             this.lblFormTitulo.TabIndex = 0;
             this.lblFormTitulo.Text = "Registrar Propietario";
             // 
+            // btnEliminar
+            // 
+            this.btnEliminar.Location = new System.Drawing.Point(61, 409);
+            this.btnEliminar.Name = "btnEliminar";
+            this.btnEliminar.Size = new System.Drawing.Size(94, 23);
+            this.btnEliminar.TabIndex = 18;
+            this.btnEliminar.Text = "Eliminar";
+            this.btnEliminar.UseVisualStyleBackColor = true;
+            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            // 
             // FrmPropietario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -348,7 +360,7 @@ namespace UI.Forms
             this.ClientSize = new System.Drawing.Size(1060, 578);
             this.Controls.Add(this.pnlContenedor);
             this.Controls.Add(this.pnlHeader);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FrmPropietario";
             this.Text = "Propietarios";
             this.Load += new System.EventHandler(this.FrmPropietario_Load);
@@ -389,5 +401,6 @@ namespace UI.Forms
         private System.Windows.Forms.TextBox txtDireccion;
         private System.Windows.Forms.Button btnGuardar;
         private System.Windows.Forms.Button btnLimpiarFormulario;
+        private System.Windows.Forms.Button btnEliminar;
     }
 }

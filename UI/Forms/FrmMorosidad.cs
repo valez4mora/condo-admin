@@ -139,5 +139,15 @@ namespace UI.Forms
             lblPropietarioValor.Text = "-";
             cmbPropiedad.Focus();
         }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnActualizar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
