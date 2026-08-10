@@ -1,5 +1,6 @@
 using BLL;
 using DTO;
+using Entities;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -10,6 +11,7 @@ namespace UI.Forms
     {
         private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
         private readonly IndicadorMorosidadBLL indicadorMorosidadBLL = new IndicadorMorosidadBLL();
+
 
         public FrmMorosidad()
         {
@@ -142,12 +144,87 @@ namespace UI.Forms
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
+            try
+            {
+                if (cmbPropiedad.SelectedIndex == -1 || cmbPropiedad.SelectedValue == null)
+                    throw new Exception("Debe seleccionar una propiedad para eliminar su indicador.");
 
+                int idPropiedad = Convert.ToInt32(cmbPropiedad.SelectedValue);
+                PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
+
+                DialogResult confirmacion = MessageBox.Show(
+                    $"¿Está seguro de que desea eliminar el indicador de morosidad de la propiedad {propiedad?.Codigo}?",
+                    "Confirmar eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (confirmacion != DialogResult.Yes)
+                    return;
+
+                indicadorMorosidadBLL.EliminarPorPropiedad(idPropiedad);
+
+                MessageBox.Show(
+                    "El indicador de morosidad fue eliminado correctamente.",
+                    "Eliminación exitosa",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                btnLimpiar_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private void btnActualizar_Click(object sender, EventArgs e)
         {
+            try
+            {
+                if (cmbPropiedad.SelectedIndex == -1 || cmbPropiedad.SelectedValue == null)
+                    throw new Exception("Debe seleccionar una propiedad para actualizar.");
 
+                if (nudMesesMora.Value <= 0)
+                    throw new Exception("Los meses de mora deben ser mayores a cero.");
+
+                if (nudFacturasPendientes.Value <= 0)
+                    throw new Exception("Debe existir al menos una factura pendiente.");
+
+                if (nudMontoAdeudado.Value <= 0)
+                    throw new Exception("El monto adeudado debe ser mayor a cero.");
+
+                IndicadorMorosidadDTO indicador = new IndicadorMorosidadDTO
+                {
+                    IdPropiedad = Convert.ToInt32(cmbPropiedad.SelectedValue),
+                    MesesMora = Convert.ToInt32(nudMesesMora.Value),
+                    FacturasPendientes = Convert.ToInt32(nudFacturasPendientes.Value),
+                    MontoAdeudado = nudMontoAdeudado.Value
+                };
+
+                IndicadorMorosidadDTO resultado = indicadorMorosidadBLL.ActualizarIndicador(indicador);
+
+                txtIndiceRiesgo.Text = resultado.IndiceRiesgo.ToString("N2");
+                txtClasificacion.Text = resultado.Clasificacion;
+                txtFechaCalculo.Text = resultado.FechaCalculo.ToString("dd/MM/yyyy HH:mm");
+
+                MessageBox.Show(
+                    "El indicador de morosidad fue actualizado correctamente.",
+                    "Actualización exitosa",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

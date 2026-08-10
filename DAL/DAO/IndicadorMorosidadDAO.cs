@@ -102,5 +102,36 @@ namespace DAL.DAO
                 FechaCalculo = Convert.ToDateTime(dr["FechaCalculo"])
             };
         }
+        public bool Eliminar(int idPropiedad)
+        {
+            using (SqlConnection cn = conexion.ObtenerConexion())
+            {
+                cn.Open();
+                SqlCommand cmd = new SqlCommand("sp_EliminarIndicadorMorosidad", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
+                int filas = cmd.ExecuteNonQuery();
+                return filas > 0;
+            }
+        }
+
+        public bool Actualizar(IndicadorMorosidad indicador)
+        {
+            using (SqlConnection cn = conexion.ObtenerConexion())
+            {
+                cn.Open();
+                SqlCommand cmd = new SqlCommand("sp_ActualizarIndicadorMorosidad", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdPropiedad", indicador.IdPropiedad);
+                cmd.Parameters.AddWithValue("@MesesMora", indicador.MesesMora);
+                cmd.Parameters.AddWithValue("@FacturasPendientes", indicador.FacturasPendientes);
+                cmd.Parameters.AddWithValue("@MontoAdeudado", indicador.MontoAdeudado);
+                cmd.Parameters.AddWithValue("@IndiceRiesgo", indicador.IndiceRiesgo);
+                cmd.Parameters.AddWithValue("@Clasificacion", indicador.Clasificacion);
+                cmd.Parameters.AddWithValue("@FechaCalculo", indicador.FechaCalculo);
+                int filas = cmd.ExecuteNonQuery();
+                return filas > 0;
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace UI.Forms
 
         private void ConfigurarColumnas()
         {
+            dgvPropietarios.AutoGenerateColumns = false; // ← esta línea faltaba
             dgvPropietarios.Columns.Clear();
 
             dgvPropietarios.Columns.Add(new DataGridViewTextBoxColumn
