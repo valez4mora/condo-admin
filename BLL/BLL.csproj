@@ -45,6 +45,7 @@
     <Compile Include="FacturaBLL.cs" />
     <Compile Include="FondoReservaBLL.cs" />
     <Compile Include="IndicadorMorosidadBLL.cs" />
+    <Compile Include="PagoBLL.cs" />
     <Compile Include="PenalizacionBLL.cs" />
     <Compile Include="PersonaBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

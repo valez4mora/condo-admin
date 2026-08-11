@@ -46,6 +46,7 @@
     <Compile Include="DAO\FacturaDAO.cs" />
     <Compile Include="DAO\FondoReservaDAO.cs" />
     <Compile Include="DAO\IndicadorMorosidadDAO.cs" />
+    <Compile Include="DAO\PagoDAO.cs" />
     <Compile Include="DAO\PersonaDAO.cs" />
     <Compile Include="DAO\PropiedadDAO.cs" />
     <Compile Include="DAO\PropietarioDAO.cs" />
