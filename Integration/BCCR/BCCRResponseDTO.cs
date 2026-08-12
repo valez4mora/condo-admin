@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Integration.BCCR
 {
-    internal class BCCRResponseDTO
+    public class BCCRResponseDTO
     {
+        public int CodigoIndicador { get; set; }
+
+        public DateTime Fecha { get; set; }
+
+        public decimal Valor { get; set; }
     }
 }

@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Integration.Provincias
 {
-    internal class ProvinciaDTO
+    public class ProvinciaDTO
     {
+        public int Id { get; set; }
+
+        public string Nombre { get; set; }
+
+        public override string ToString()
+        {
+            return Nombre;
+        }
     }
 }

@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Integration.BCCR
 {
-    internal interface IBCCRService
+    public interface IBCCRService
     {
+        BCCRResponseDTO ObtenerTipoCambioVenta();
+
+        decimal ConvertirColonesADolares(decimal colones);
+
+        decimal ConvertirDolaresAColones(decimal dolares);
     }
 }

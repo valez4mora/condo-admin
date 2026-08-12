@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Integration.Provincias
 {
-    internal interface IProvinciaService
+    public interface IProvinciaService
     {
+        List<ProvinciaDTO> ObtenerProvincias();
     }
 }
