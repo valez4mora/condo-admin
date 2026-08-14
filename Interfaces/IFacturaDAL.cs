@@ -7,20 +7,27 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
+    /// <summary>
+    /// Contrato de acceso a datos para la entidad Factura.
+    /// </summary>
     public interface IFacturaDAL
     {
+        /// <summary>Inserta una factura con su detalle. Retorna el Id generado.</summary>
+        int Registrar(FacturaDTO factura);
 
-        int Registrar(FacturaDTO factura); //inserta una factura con su detalle en la base de datos 
+        /// <summary>Cambia el estado de la factura a "Anulada".</summary>
+        bool Anular(int idFactura);
 
-        List<FacturaDTO> ObtenerPorPropiedad(int idPropiedad); //obtiene todas las facturas de una propiedad
+        /// <summary>Guarda el string XML de la factura en la base de datos.</summary>
+        bool GuardarXml(int idFactura, string xmlContent);
 
-        List<FacturaDTO> ObtenerTodas();//obtiene todas las facturas de todas las propiedades
+        /// <summary>Obtiene una factura por su Id (incluye detalles).</summary>
+        FacturaDTO ObtenerPorId(int idFactura);
 
+        /// <summary>Todas las facturas de una propiedad.</summary>
+        List<FacturaDTO> ObtenerPorPropiedad(int idPropiedad);
 
-
-
-
-
-
+        /// <summary>Todas las facturas del sistema.</summary>
+        List<FacturaDTO> ObtenerTodas();
     }
 }

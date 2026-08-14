@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Enumeraciones\TipoCargo.cs" />
     <Compile Include="Enumeraciones\TipoPropiedad.cs" />
+    <Compile Include="Factura\EmailUtil.cs" />
+    <Compile Include="Factura\XmlFacturaUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

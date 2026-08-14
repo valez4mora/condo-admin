@@ -76,6 +76,10 @@
       <Project>{b874985c-e836-4a9f-b528-ceb08932ac9e}</Project>
       <Name>Factory</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Integration\Integration.csproj">
+      <Project>{385606f4-84cf-4915-bf7c-a412222a562c}</Project>
+      <Name>Integration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{8bbb3a97-4701-4ed9-b815-8e5810f67d78}</Project>
       <Name>Interfaces</Name>

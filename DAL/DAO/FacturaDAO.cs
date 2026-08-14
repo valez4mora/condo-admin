@@ -11,63 +11,135 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
-    public class FacturaDAO: IFacturaDAL
+    /// <summary>
+    /// Acceso a datos para la tabla Factura / DetalleFactura.
+    /// Usa stored procedures para todas las operaciones.
+    /// </summary>
+    public class FacturaDAO : IFacturaDAL
     {
+        private readonly Conexion _cn = Conexion.Instancia;
 
-        Conexion conexion = Conexion.Instancia;
-
+        // ── REGISTRAR ─────────────────────────────────────────────────
+        /// <summary>
+        /// Llama a sp_RegistrarFactura y retorna el Id generado.
+        /// </summary>
         public int Registrar(FacturaDTO factura)
         {
             int idGenerado = 0;
-
-            //se toma el primer detalle
             DetalleFacturaDTO detalle = factura.Detalles[0];
 
-            using (SqlConnection cn = conexion.ObtenerConexion())
+            using (SqlConnection cn = _cn.ObtenerConexion())
             {
                 cn.Open();
 
-                //se llama al stored procedure para registrar la factura 
                 SqlCommand cmd = new SqlCommand("sp_RegistrarFactura", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-
-                // Parámetros de la cabecera de la Factura
+                // Encabezado
                 cmd.Parameters.AddWithValue("@Fecha", factura.Fecha);
                 cmd.Parameters.AddWithValue("@TotalColones", factura.TotalColones);
                 cmd.Parameters.AddWithValue("@TotalDolares", factura.TotalDolares);
                 cmd.Parameters.AddWithValue("@IdPropiedad", factura.IdPropiedad);
                 cmd.Parameters.AddWithValue("@Estado", factura.Estado);
 
-                // Parámetros del detalle (la cuota ordinaria)
+                // Detalle (un único cargo por llamada)
                 cmd.Parameters.AddWithValue("@IdCargo", detalle.IdCargo);
                 cmd.Parameters.AddWithValue("@Cantidad", detalle.Cantidad);
                 cmd.Parameters.AddWithValue("@Precio", detalle.Precio);
                 cmd.Parameters.AddWithValue("@Subtotal", detalle.SubTotal);
 
-
-                //  el store procedure nos retorna el IdFactura generado
+                // Parámetro de salida
                 SqlParameter paramId = new SqlParameter("@IdFactura", SqlDbType.Int);
                 paramId.Direction = ParameterDirection.Output;
                 cmd.Parameters.Add(paramId);
 
                 cmd.ExecuteNonQuery();
-
-                //se recupera el id generado por la base de datos 
                 idGenerado = Convert.ToInt32(paramId.Value);
             }
 
             return idGenerado;
         }
 
-        //obtiene todas las facturas de una propiedad.
-        // llama al stored procedure sp_ObtenerFacturasPorPropiedad.
+        // ── ANULAR ────────────────────────────────────────────────────
+        /// <summary>
+        /// Cambia el estado de la factura a "Anulada".
+        /// Llama a sp_AnularFactura.
+        /// </summary>
+        public bool Anular(int idFactura)
+        {
+            using (SqlConnection cn = _cn.ObtenerConexion())
+            {
+                cn.Open();
 
+                SqlCommand cmd = new SqlCommand("sp_AnularFactura", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdFactura", idFactura);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // ── GUARDAR XML ───────────────────────────────────────────────
+        /// <summary>
+        /// Persiste el XML de la factura en la columna XmlFactura.
+        /// Llama a sp_GuardarXmlFactura.
+        /// </summary>
+        public bool GuardarXml(int idFactura, string xmlContent)
+        {
+            using (SqlConnection cn = _cn.ObtenerConexion())
+            {
+                cn.Open();
+
+                SqlCommand cmd = new SqlCommand("sp_GuardarXmlFactura", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdFactura", idFactura);
+                cmd.Parameters.AddWithValue("@XmlFactura", xmlContent);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // ── OBTENER POR ID ────────────────────────────────────────────
+        /// <summary>
+        /// Retorna la factura completa (encabezado + detalles) por su Id.
+        /// Llama a sp_ObtenerFacturaPorId.
+        /// </summary>
+        public FacturaDTO ObtenerPorId(int idFactura)
+        {
+            FacturaDTO factura = null;
+
+            using (SqlConnection cn = _cn.ObtenerConexion())
+            {
+                cn.Open();
+
+                SqlCommand cmd = new SqlCommand("sp_ObtenerFacturaPorId", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdFactura", idFactura);
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    // Primera tabla: encabezado
+                    if (dr.Read())
+                        factura = MapearEncabezado(dr);
+
+                    // Segunda tabla: detalles
+                    if (factura != null && dr.NextResult())
+                    {
+                        while (dr.Read())
+                            factura.Detalles.Add(MapearDetalle(dr));
+                    }
+                }
+            }
+
+            return factura;
+        }
+
+        // ── OBTENER POR PROPIEDAD ─────────────────────────────────────
         public List<FacturaDTO> ObtenerPorPropiedad(int idPropiedad)
         {
             List<FacturaDTO> lista = new List<FacturaDTO>();
 
-            using (SqlConnection cn = conexion.ObtenerConexion())
+            using (SqlConnection cn = _cn.ObtenerConexion())
             {
                 cn.Open();
 
@@ -75,41 +147,41 @@ namespace DAL.DAO
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(MapearFactura(dr));
+                    while (dr.Read())
+                        lista.Add(MapearEncabezado(dr));
                 }
             }
 
             return lista;
         }
 
-        //obtiene todas las facturas del sistema.
-        //llama al stored procedure sp_ObtenerTodasLasFacturas.
+        // ── OBTENER TODAS ─────────────────────────────────────────────
         public List<FacturaDTO> ObtenerTodas()
         {
             List<FacturaDTO> lista = new List<FacturaDTO>();
 
-            using (SqlConnection cn = conexion.ObtenerConexion())
+            using (SqlConnection cn = _cn.ObtenerConexion())
             {
                 cn.Open();
 
                 SqlCommand cmd = new SqlCommand("sp_ObtenerTodasLasFacturas", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(MapearFactura(dr));
+                    while (dr.Read())
+                        lista.Add(MapearEncabezado(dr));
                 }
             }
 
             return lista;
         }
 
-        // convierte una fila del DataReader en FacturaDTO.
-        private FacturaDTO MapearFactura(SqlDataReader dr)
+        // ── MAPEO PRIVADO ─────────────────────────────────────────────
+
+        private static FacturaDTO MapearEncabezado(SqlDataReader dr)
         {
             return new FacturaDTO
             {
@@ -122,8 +194,19 @@ namespace DAL.DAO
                 Estado = dr["Estado"].ToString()
             };
         }
+
+        private static DetalleFacturaDTO MapearDetalle(SqlDataReader dr)
+        {
+            return new DetalleFacturaDTO
+            {
+                IdDetalle = Convert.ToInt32(dr["IdDetalle"]),
+                IdFactura = Convert.ToInt32(dr["IdFactura"]),
+                IdCargo = Convert.ToInt32(dr["IdCargo"]),
+                DescripcionCargo = dr["DescripcionCargo"].ToString(),
+                Cantidad = Convert.ToInt32(dr["Cantidad"]),
+                Precio = Convert.ToDecimal(dr["Precio"]),
+                SubTotal = Convert.ToDecimal(dr["SubTotal"])
+            };
+        }
     }
 }
-
-
-
