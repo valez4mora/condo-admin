@@ -1,101 +1,410 @@
 using BLL;
 using DTO;
 using Integration.Hacienda;
+using Integration.Provincias;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace UI.Forms
 {
+    /// <summary>
+    /// Gestión de Propietarios.
+    /// CRUD completo con validación de cédula vía API Hacienda,
+    /// soporte de pasaportes, carga de provincias desde API GitHub,
+    /// fotografía, estado de morosidad y búsqueda en tiempo real.
+    /// </summary>
     public partial class FrmPropietario : Form
     {
-        private readonly PropietarioBLL propietarioBLL = new PropietarioBLL();
-        private readonly IHaciendaService haciendaService = new HaciendaService();
-        private int idPropietarioSeleccionado = 0;
+        // ── Servicios ─────────────────────────────────────────────────
+        private readonly PropietarioBLL    _bll             = new PropietarioBLL();
+        private readonly IHaciendaService  _haciendaService = new HaciendaService();
+        private ProvinciaService _provinciaService;
 
+        // ── Estado interno ────────────────────────────────────────────
+        private int _idSeleccionado = 0;
+
+        /// <summary>Lista completa cargada desde BD; se filtra localmente.</summary>
+        private List<PropietarioDTO> _listaTodos = new List<PropietarioDTO>();
+
+        // ─────────────────────────────────────────────────────────────
         public FrmPropietario()
         {
             InitializeComponent();
-            this.Load += FrmPropietario_Load;
-            dgvPropietarios.CellClick += dgvPropietarios_CellClick;
-            btnActualizarLista.Click += btnActualizarLista_Click;
         }
 
+        // ═════════════════════════════════════════════════════════════
+        // CARGA INICIAL
+        // ═════════════════════════════════════════════════════════════
         private void FrmPropietario_Load(object sender, EventArgs e)
         {
-            ConfigurarColumnas();
-
-            cmbSexo.Items.Clear();
-            cmbSexo.Items.AddRange(new[] { "M", "F" });
-            cmbSexo.SelectedIndex = -1;
-
-            CargarListaPropietarios();
+            InicializarServicios();
+            ConfigurarGrid();
+            CargarSexo();
+            CargarProvincias();
+            CargarTodos();
+            rdoCedula.Checked = true;
         }
 
-        private void ConfigurarColumnas()
+        // ── Grid ──────────────────────────────────────────────────────
+        private void ConfigurarGrid()
         {
             dgvPropietarios.AutoGenerateColumns = false;
             dgvPropietarios.Columns.Clear();
 
             dgvPropietarios.Columns.AddRange(new DataGridViewColumn[]
             {
-                new DataGridViewTextBoxColumn { DataPropertyName = "Identificacion", HeaderText = "Identificación", Width = 110 },
-                new DataGridViewTextBoxColumn { DataPropertyName = "Nombre",         HeaderText = "Nombre",         Width = 110 },
-                new DataGridViewTextBoxColumn { DataPropertyName = "Apellidos",      HeaderText = "Apellidos",      Width = 120 },
-                new DataGridViewTextBoxColumn { DataPropertyName = "Telefono",       HeaderText = "Teléfono",       Width = 90  },
-                new DataGridViewTextBoxColumn { DataPropertyName = "Email",          HeaderText = "Correo",         Width = 150 },
-                new DataGridViewCheckBoxColumn { DataPropertyName = "EstadoMorosidad", HeaderText = "Moroso",       Width = 60  }
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Identificacion",
+                    HeaderText       = "Identificación",
+                    Width            = 110
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Nombre",
+                    HeaderText       = "Nombre",
+                    Width            = 120
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Apellidos",
+                    HeaderText       = "Apellidos",
+                    Width            = 140
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Sexo",
+                    HeaderText       = "Sexo",
+                    Width            = 50,
+                    DefaultCellStyle = new DataGridViewCellStyle
+                                       { Alignment = DataGridViewContentAlignment.MiddleCenter }
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Telefono",
+                    HeaderText       = "Teléfono",
+                    Width            = 95
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Email",
+                    HeaderText       = "Correo",
+                    Width            = 180,
+                    AutoSizeMode     = DataGridViewAutoSizeColumnMode.Fill
+                },
+                new DataGridViewCheckBoxColumn
+                {
+                    DataPropertyName = "EstadoMorosidad",
+                    HeaderText       = "Moroso",
+                    Width            = 65,
+                    DefaultCellStyle = new DataGridViewCellStyle
+                                       { Alignment = DataGridViewContentAlignment.MiddleCenter }
+                }
             });
+
+            // Estilos
+            dgvPropietarios.ColumnHeadersDefaultCellStyle.BackColor  = Color.FromArgb(243, 244, 246);
+            dgvPropietarios.ColumnHeadersDefaultCellStyle.ForeColor  = Color.FromArgb(55, 65, 81);
+            dgvPropietarios.ColumnHeadersDefaultCellStyle.Font       = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            dgvPropietarios.EnableHeadersVisualStyles               = false;
+            dgvPropietarios.DefaultCellStyle.Font                   = new Font("Segoe UI", 9F);
+            dgvPropietarios.DefaultCellStyle.SelectionBackColor     = Color.FromArgb(219, 234, 254);
+            dgvPropietarios.DefaultCellStyle.SelectionForeColor     = Color.FromArgb(30, 64, 175);
+            dgvPropietarios.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 250, 251);
+            dgvPropietarios.RowTemplate.Height                      = 28;
         }
 
-        private void CargarListaPropietarios()
+        // ── ComboBox Sexo ─────────────────────────────────────────────
+
+        /// <summary>
+        /// Inicializa los servicios que pueden fallar (configuración faltante).
+        /// Se llama desde Load para que el designer no falle al renderizar.
+        /// </summary>
+        private void InicializarServicios()
+        {
+            try { _provinciaService = new ProvinciaService(); }
+            catch { _provinciaService = null; }
+        }
+
+        private void CargarSexo()
+        {
+            cmbSexo.Items.Clear();
+            cmbSexo.Items.AddRange(new object[] { "M", "F" });
+            cmbSexo.SelectedIndex = -1;
+        }
+
+        // ── ComboBox Provincias (API GitHub) ──────────────────────────
+        private void CargarProvincias()
         {
             try
             {
-                List<PropietarioDTO> propietarios = propietarioBLL.ObtenerTodos();
-                dgvPropietarios.DataSource = new BindingList<PropietarioDTO>(propietarios);
-                dgvPropietarios.ClearSelection();
-                idPropietarioSeleccionado = 0;
+                if (_provinciaService == null) { cmbProvincia.Items.Add("(Sin configurar)"); return; }
+                List<ProvinciaDTO> provincias = _provinciaService.ObtenerProvincias();
+                cmbProvincia.DataSource    = provincias;
+                cmbProvincia.DisplayMember = "Nombre";
+                cmbProvincia.ValueMember   = "Id";
+                cmbProvincia.SelectedIndex = -1;
             }
-            catch (Exception ex)
+            catch
             {
-                MostrarError("No se pudo cargar la lista de propietarios.", ex);
+                // Si el servicio no está disponible, la provincia queda vacía.
+                // No es crítico para el formulario.
+                cmbProvincia.Items.Add("(Sin conexión)");
+                cmbProvincia.SelectedIndex = 0;
             }
         }
 
+        // ── Cargar grid ───────────────────────────────────────────────
+        private void CargarTodos()
+        {
+            try
+            {
+                _listaTodos = _bll.ObtenerTodos();
+                MostrarEnGrid(_listaTodos);
+            }
+            catch (Exception ex)
+            {
+                MostrarError("No se pudo cargar la lista: " + ex.Message);
+            }
+        }
+
+        private void MostrarEnGrid(List<PropietarioDTO> lista)
+        {
+            dgvPropietarios.DataSource = new BindingList<PropietarioDTO>(lista);
+            dgvPropietarios.ClearSelection();
+            lblInfoGrid.Text = lista.Count > 0
+                ? $"  {lista.Count} propietario(s).  Haga clic en una fila para editar."
+                : "  No se encontraron resultados.";
+        }
+
+        // ═════════════════════════════════════════════════════════════
+        // TIPO DE IDENTIFICACIÓN
+        // ═════════════════════════════════════════════════════════════
+        private void rdoTipoId_CheckedChanged(object sender, EventArgs e)
+        {
+            bool esCedula = rdoCedula.Checked;
+
+            // Solo las cédulas nacionales se consultan vía Hacienda
+            btnBuscarHacienda.Visible = esCedula;
+            txtIdentificacion.MaxLength = esCedula ? 12 : 10;
+            txtIdentificacion.Clear();
+        }
+
+        // ═════════════════════════════════════════════════════════════
+        // CONSULTA HACIENDA
+        // ═════════════════════════════════════════════════════════════
+        private void btnBuscarHacienda_Click(object sender, EventArgs e)
+        {
+            string id = txtIdentificacion.Text.Trim();
+
+            if (string.IsNullOrEmpty(id))
+            {
+                MostrarAviso("Ingrese una cédula antes de consultar.");
+                txtIdentificacion.Focus();
+                return;
+            }
+
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                btnBuscarHacienda.Enabled = false;
+                btnBuscarHacienda.Text    = "Consultando…";
+
+                HaciendaResponseDTO resp = _haciendaService.ConsultarIdentificacion(id);
+
+                if (resp == null || string.IsNullOrWhiteSpace(resp.Nombre))
+                {
+                    MostrarAviso("No se encontró información para esa cédula en Hacienda.");
+                    return;
+                }
+
+                SepararNombre(resp.Nombre, out string nombres, out string apellidos);
+                txtNombre.Text    = nombres;
+                txtApellidos.Text = apellidos;
+                txtNombre.Focus();
+            }
+            catch (Exception ex)
+            {
+                MostrarError("Error al consultar Hacienda: " + ex.Message);
+            }
+            finally
+            {
+                Cursor                    = Cursors.Default;
+                btnBuscarHacienda.Enabled = true;
+                btnBuscarHacienda.Text    = "↗ Consultar Hacienda";
+            }
+        }
+
+        // ═════════════════════════════════════════════════════════════
+        // FOTOGRAFÍA
+        // ═════════════════════════════════════════════════════════════
+        private void btnSeleccionarFoto_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dlg = new OpenFileDialog())
+            {
+                dlg.Title  = "Seleccionar fotografía";
+                dlg.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp|Todos los archivos|*.*";
+
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                try
+                {
+                    Image img = Image.FromFile(dlg.FileName);
+                    picFoto.Image = img;
+                }
+                catch
+                {
+                    MostrarError("No se pudo cargar la imagen seleccionada.");
+                }
+            }
+        }
+
+        private void btnQuitarFoto_Click(object sender, EventArgs e)
+        {
+            picFoto.Image?.Dispose();
+            picFoto.Image = null;
+        }
+
+        // ═════════════════════════════════════════════════════════════
+        // BÚSQUEDA / FILTRO EN TIEMPO REAL
+        // ═════════════════════════════════════════════════════════════
+
+        private const string PLACEHOLDER_BUSCAR = "Buscar por nombre, identificacion o correo...";
+
+        private void txtBuscar_Enter(object sender, EventArgs e)
+        {
+            if (txtBuscar.Text == PLACEHOLDER_BUSCAR)
+            {
+                txtBuscar.Text      = string.Empty;
+                txtBuscar.ForeColor = System.Drawing.Color.FromArgb(17, 24, 39);
+            }
+        }
+
+        private void txtBuscar_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtBuscar.Text))
+            {
+                txtBuscar.Text      = PLACEHOLDER_BUSCAR;
+                txtBuscar.ForeColor = System.Drawing.Color.FromArgb(107, 114, 128);
+            }
+        }
+
+        private void txtBuscar_TextChanged(object sender, EventArgs e)
+        {
+            string termino = txtBuscar.Text.Trim().ToLower();
+
+            if (string.IsNullOrEmpty(termino))
+            {
+                MostrarEnGrid(_listaTodos);
+                return;
+            }
+
+            var filtrado = _listaTodos.Where(p =>
+                (p.Identificacion ?? "").ToLower().Contains(termino) ||
+                (p.Nombre         ?? "").ToLower().Contains(termino) ||
+                (p.Apellidos      ?? "").ToLower().Contains(termino) ||
+                (p.Email          ?? "").ToLower().Contains(termino)
+            ).ToList();
+
+            MostrarEnGrid(filtrado);
+        }
+
+        private void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            // El filtrado ya ocurre en TextChanged; este botón también lo dispara.
+            txtBuscar_TextChanged(sender, e);
+        }
+
+        private void btnVerTodos_Click(object sender, EventArgs e)
+        {
+            txtBuscar.Clear();
+            CargarTodos();
+        }
+
+        // ═════════════════════════════════════════════════════════════
+        // SELECCIÓN EN GRID → CARGA EN FORMULARIO
+        // ═════════════════════════════════════════════════════════════
         private void dgvPropietarios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            if (dgvPropietarios.Rows[e.RowIndex].DataBoundItem is PropietarioDTO propietario)
-            {
-                idPropietarioSeleccionado = propietario.IdPersona;
-                txtIdentificacion.Text = propietario.Identificacion;
-                txtNombre.Text = propietario.Nombre;
-                txtApellidos.Text = propietario.Apellidos;
-                cmbSexo.Text = propietario.Sexo;
-                txtTelefono.Text = propietario.Telefono;
-                txtEmail.Text = propietario.Email;
-                txtDireccion.Text = propietario.Direccion;
-            }
+            if (dgvPropietarios.Rows[e.RowIndex].DataBoundItem is PropietarioDTO p)
+                CargarEnFormulario(p);
         }
 
+        private void CargarEnFormulario(PropietarioDTO p)
+        {
+            _idSeleccionado = p.IdPersona;
+
+            txtIdentificacion.Text    = p.Identificacion;
+            txtNombre.Text            = p.Nombre;
+            txtApellidos.Text         = p.Apellidos;
+            cmbSexo.SelectedItem      = p.Sexo;
+            txtTelefono.Text          = p.Telefono;
+            txtEmail.Text             = p.Email;
+            chkMoroso.Checked         = p.EstadoMorosidad;
+
+            // Separar provincia de dirección si fue combinada al guardar
+            SepararProvinciaYDireccion(p.Direccion,
+                out string provincia, out string direccion);
+
+            txtDireccion.Text = direccion;
+
+            // Seleccionar provincia en el combo
+            if (!string.IsNullOrEmpty(provincia))
+            {
+                foreach (ProvinciaDTO prov in cmbProvincia.Items)
+                {
+                    if (prov.Nombre.Equals(provincia, StringComparison.OrdinalIgnoreCase))
+                    {
+                        cmbProvincia.SelectedItem = prov;
+                        break;
+                    }
+                }
+            }
+
+            // Foto
+            picFoto.Image?.Dispose();
+            picFoto.Image = null;
+
+            if (p.Fotografia != null && p.Fotografia.Length > 0)
+            {
+                try
+                {
+                    using (MemoryStream ms = new MemoryStream(p.Fotografia))
+                        picFoto.Image = Image.FromStream(ms);
+                }
+                catch { /* imagen corrupta: ignorar */ }
+            }
+
+            // Tipo de ID (heurística: pasaporte empieza con letra)
+            bool esPasaporte = !string.IsNullOrEmpty(p.Identificacion) &&
+                               char.IsLetter(p.Identificacion[0]);
+
+            rdoPasaporte.Checked = esPasaporte;
+            rdoCedula.Checked    = !esPasaporte;
+        }
+
+        // ═════════════════════════════════════════════════════════════
+        // CRUD
+        // ═════════════════════════════════════════════════════════════
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                ValidarCamposObligatorios();
+                PropietarioDTO dto = ConstruirDTO();
+                bool ok = _bll.Registrar(dto);
 
-                PropietarioDTO propietario = ConstruirPropietarioDesdeFormulario();
-                bool registrado = propietarioBLL.Registrar(propietario);
-
-                if (registrado)
+                if (ok)
                 {
-                    MessageBox.Show("El propietario se registró correctamente.",
-                        "Registro exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MostrarExito("Propietario registrado correctamente.");
                     LimpiarFormulario();
-                    CargarListaPropietarios();
+                    CargarTodos();
                 }
             }
             catch (Exception ex)
@@ -108,22 +417,19 @@ namespace UI.Forms
         {
             try
             {
-                if (idPropietarioSeleccionado <= 0)
-                    throw new Exception("Seleccione un propietario de la lista.");
+                if (_idSeleccionado <= 0)
+                    throw new Exception("Seleccione un propietario de la lista antes de actualizar.");
 
-                ValidarCamposObligatorios();
+                PropietarioDTO dto = ConstruirDTO();
+                dto.IdPersona = _idSeleccionado;
 
-                PropietarioDTO propietario = ConstruirPropietarioDesdeFormulario();
-                propietario.IdPersona = idPropietarioSeleccionado;
+                bool ok = _bll.Modificar(dto);
 
-                bool actualizado = propietarioBLL.Modificar(propietario);
-
-                if (actualizado)
+                if (ok)
                 {
-                    MessageBox.Show("Propietario actualizado correctamente.",
-                        "Actualización exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MostrarExito("Propietario actualizado correctamente.");
                     LimpiarFormulario();
-                    CargarListaPropietarios();
+                    CargarTodos();
                 }
             }
             catch (Exception ex)
@@ -136,128 +442,120 @@ namespace UI.Forms
         {
             try
             {
-                if (idPropietarioSeleccionado <= 0)
-                    throw new Exception("Seleccione un propietario de la lista.");
+                if (_idSeleccionado <= 0)
+                    throw new Exception("Seleccione un propietario de la lista antes de eliminar.");
 
-                DialogResult confirmacion = MessageBox.Show(
-                    "¿Está seguro de que desea eliminar este propietario?",
-                    "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                string nombre = $"{txtNombre.Text} {txtApellidos.Text}".Trim();
 
-                if (confirmacion == DialogResult.No) return;
+                DialogResult confirm = MessageBox.Show(
+                    $"¿Eliminar a {nombre}?\n\nEsta acción no se puede deshacer.",
+                    "Confirmar eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2);
 
-                bool eliminado = propietarioBLL.Eliminar(idPropietarioSeleccionado);
+                if (confirm != DialogResult.Yes) return;
 
-                if (eliminado)
+                bool ok = _bll.Eliminar(_idSeleccionado);
+
+                if (ok)
                 {
-                    MessageBox.Show("Propietario eliminado correctamente.",
-                        "Eliminación exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MostrarExito("Propietario eliminado correctamente.");
                     LimpiarFormulario();
-                    CargarListaPropietarios();
-                }
-                else
-                {
-                    MostrarError("No se pudo eliminar el propietario.");
+                    CargarTodos();
                 }
             }
             catch (Exception ex)
             {
-                MostrarError("No se pudo eliminar el propietario.", ex);
+                MostrarError(ex.Message);
             }
         }
 
-        private void btnActualizarLista_Click(object sender, EventArgs e)
+        private void btnLimpiar_Click(object sender, EventArgs e) => LimpiarFormulario();
+
+        // ═════════════════════════════════════════════════════════════
+        // HELPERS PRIVADOS
+        // ═════════════════════════════════════════════════════════════
+
+        /// <summary>Construye el DTO con los datos actuales del formulario.</summary>
+        private PropietarioDTO ConstruirDTO()
         {
-            CargarListaPropietarios();
-            MessageBox.Show("Lista actualizada correctamente.",
-                "Actualización", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+            // Validar tipo de identificación
+            string id = txtIdentificacion.Text.Trim();
+            ValidarIdentificacion(id);
 
-        private void btnBuscarHacienda_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtIdentificacion.Text))
-            {
-                MessageBox.Show("Digite una identificación antes de buscar.",
-                    "Identificación requerida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            // Combinar provincia + dirección en el campo Direccion del DTO
+            // (el DTO/entidad no tiene campo Provincia separado)
+            string provincia = (cmbProvincia.SelectedItem as ProvinciaDTO)?.Nombre ?? "";
+            string dir       = txtDireccion.Text.Trim();
+            string dirFinal  = string.IsNullOrEmpty(provincia)
+                               ? dir
+                               : $"{provincia}|{dir}";
 
-            try
-            {
-                Cursor = Cursors.WaitCursor;
-                HaciendaResponseDTO resultado = haciendaService.ConsultarIdentificacion(txtIdentificacion.Text.Trim());
-
-                if (resultado == null || string.IsNullOrWhiteSpace(resultado.Nombre))
-                {
-                    MessageBox.Show("No se encontró información para esa identificación en Hacienda.",
-                        "Sin resultados", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                SepararNombreCompleto(resultado.Nombre, out string nombres, out string apellidos);
-                txtNombre.Text = nombres;
-                txtApellidos.Text = apellidos;
-            }
-            catch (Exception ex)
-            {
-                MostrarError("No se pudo consultar el API de Hacienda.", ex);
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
-        }
-
-        private void btnLimpiarFormulario_Click(object sender, EventArgs e) => LimpiarFormulario();
-
-        // ── Helpers ──────────────────────────────────────────────────────────
-
-        private PropietarioDTO ConstruirPropietarioDesdeFormulario()
-        {
             return new PropietarioDTO
             {
-                Identificacion = txtIdentificacion.Text.Trim(),
-                Nombre = txtNombre.Text.Trim(),
-                Apellidos = txtApellidos.Text.Trim(),
-                Sexo = cmbSexo.SelectedItem?.ToString(),
-                Telefono = txtTelefono.Text.Trim(),
-                Email = txtEmail.Text.Trim(),
-                Direccion = txtDireccion.Text.Trim(),
-                EstadoMorosidad = false
+                Identificacion  = id,
+                Nombre          = txtNombre.Text.Trim(),
+                Apellidos       = txtApellidos.Text.Trim(),
+                Sexo            = cmbSexo.SelectedItem?.ToString(),
+                Telefono        = txtTelefono.Text.Trim(),
+                Email           = txtEmail.Text.Trim(),
+                Direccion       = dirFinal,
+                EstadoMorosidad = chkMoroso.Checked,
+                Fotografia      = ImagenABytes()
             };
         }
 
-        private void ValidarCamposObligatorios()
+        /// <summary>
+        /// Valida el formato de identificación:
+        /// Cédula  → solo dígitos, hasta 12 chars
+        /// Pasaporte → letra inicial + exactamente 6 dígitos
+        /// </summary>
+        private void ValidarIdentificacion(string id)
         {
-            if (string.IsNullOrWhiteSpace(txtIdentificacion.Text))
+            if (string.IsNullOrWhiteSpace(id))
                 throw new Exception("La identificación es obligatoria.");
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-                throw new Exception("El nombre es obligatorio.");
-            if (string.IsNullOrWhiteSpace(txtApellidos.Text))
-                throw new Exception("Los apellidos son obligatorios.");
+
+            if (rdoPasaporte.Checked)
+            {
+                if (id.Length < 2 || !char.IsLetter(id[0]) || !id.Substring(1).All(char.IsDigit))
+                    throw new Exception(
+                        "El pasaporte debe iniciar con una letra seguida de dígitos (ej. A123456).");
+            }
+            else
+            {
+                if (!id.All(char.IsDigit))
+                    throw new Exception("La cédula solo debe contener dígitos.");
+            }
         }
 
-        private void LimpiarFormulario()
+        /// <summary>Convierte la imagen del PictureBox a byte[].</summary>
+        private byte[] ImagenABytes()
         {
-            txtIdentificacion.Clear();
-            txtNombre.Clear();
-            txtApellidos.Clear();
-            txtTelefono.Clear();
-            txtEmail.Clear();
-            txtDireccion.Clear();
-            cmbSexo.SelectedIndex = -1;
-            idPropietarioSeleccionado = 0;
-            dgvPropietarios.ClearSelection();
-            txtIdentificacion.Focus();
+            if (picFoto.Image == null) return null;
+
+            try
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    picFoto.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    return ms.ToArray();
+                }
+            }
+            catch { return null; }
         }
 
-        private void SepararNombreCompleto(string nombreCompleto, out string nombres, out string apellidos)
+        /// <summary>
+        /// Separa el nombre completo devuelto por Hacienda en Nombre y Apellidos.
+        /// La convención en CR: últimas dos palabras = dos apellidos.
+        /// </summary>
+        private void SepararNombre(string completo, out string nombres, out string apellidos)
         {
             nombres = apellidos = string.Empty;
+            if (string.IsNullOrWhiteSpace(completo)) return;
 
-            if (string.IsNullOrWhiteSpace(nombreCompleto)) return;
-
-            string[] partes = nombreCompleto.Trim()
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] partes = completo.Trim()
+                              .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             switch (partes.Length)
             {
@@ -265,20 +563,67 @@ namespace UI.Forms
                     nombres = partes[0];
                     break;
                 case 2:
-                    nombres = partes[0];
+                    nombres   = partes[0];
                     apellidos = partes[1];
                     break;
                 default:
                     apellidos = $"{partes[partes.Length - 2]} {partes[partes.Length - 1]}";
-                    nombres = string.Join(" ", partes, 0, partes.Length - 2);
+                    nombres   = string.Join(" ", partes, 0, partes.Length - 2);
                     break;
             }
         }
 
-        private static void MostrarError(string mensaje, Exception ex = null)
+        /// <summary>Separa provincia y dirección almacenadas con separador '|'.</summary>
+        private void SepararProvinciaYDireccion(
+            string campo, out string provincia, out string direccion)
         {
-            string texto = ex != null ? $"{mensaje}\n\n{ex.Message}" : mensaje;
-            MessageBox.Show(texto, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            provincia = string.Empty;
+            direccion = campo ?? string.Empty;
+
+            if (string.IsNullOrEmpty(campo)) return;
+
+            int sep = campo.IndexOf('|');
+            if (sep < 0) return;
+
+            provincia = campo.Substring(0, sep).Trim();
+            direccion = campo.Substring(sep + 1).Trim();
         }
+
+        /// <summary>Restablece el formulario a su estado inicial.</summary>
+        private void LimpiarFormulario()
+        {
+            _idSeleccionado = 0;
+
+            txtIdentificacion.Clear();
+            txtNombre.Clear();
+            txtApellidos.Clear();
+            txtTelefono.Clear();
+            txtEmail.Clear();
+            txtDireccion.Clear();
+            txtBuscar.Clear();
+
+            cmbSexo.SelectedIndex      = -1;
+            cmbProvincia.SelectedIndex = -1;
+            chkMoroso.Checked          = false;
+            rdoCedula.Checked          = true;
+
+            picFoto.Image?.Dispose();
+            picFoto.Image = null;
+
+            dgvPropietarios.ClearSelection();
+            txtIdentificacion.Focus();
+
+            CargarTodos();
+        }
+
+        // ── Mensajes ──────────────────────────────────────────────────
+        private void MostrarExito(string msg) =>
+            MessageBox.Show(msg, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        private void MostrarAviso(string msg) =>
+            MessageBox.Show(msg, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+        private void MostrarError(string msg) =>
+            MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }

@@ -55,11 +55,29 @@
     <Compile Include="Forms\FrmAreasComunes.Designer.cs">
       <DependentUpon>FrmAreasComunes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmBitacora.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmBitacora.Designer.cs">
+      <DependentUpon>FrmBitacora.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmControlAcceso.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmControlAcceso.Designer.cs">
+      <DependentUpon>FrmControlAcceso.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmGenerarCuota.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FrmGenerarCuota.Designer.cs">
       <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmLogin.Designer.cs">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmMorosidad.cs">
       <SubType>Form</SubType>
@@ -79,6 +97,12 @@
     <Compile Include="Forms\FrmPenalizacion.Designer.cs">
       <DependentUpon>FrmPenalizacion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmPermisos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPermisos.Designer.cs">
+      <DependentUpon>FrmPermisos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmPropiedad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +114,12 @@
     </Compile>
     <Compile Include="Forms\FrmPropietario.Designer.cs">
       <DependentUpon>FrmPropietario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmReportes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmReportes.Designer.cs">
+      <DependentUpon>FrmReportes.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmReservas.cs">
       <SubType>Form</SubType>
@@ -109,6 +139,18 @@
     <Compile Include="Forms\FrmResidente.Designer.cs">
       <DependentUpon>FrmResidente.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmRoles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmRoles.Designer.cs">
+      <DependentUpon>FrmRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmUsuarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmUsuarios.Designer.cs">
+      <DependentUpon>FrmUsuarios.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
@@ -120,14 +162,11 @@
     <EmbeddedResource Include="Forms\FrmPenalizacion.resx">
       <DependentUpon>FrmPenalizacion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmPropiedad.resx">
-      <DependentUpon>FrmPropiedad.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMenu.resx">
       <DependentUpon>FrmMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmPropietario.resx">
-      <DependentUpon>FrmPropietario.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmPropiedad.resx">
+      <DependentUpon>FrmPropiedad.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

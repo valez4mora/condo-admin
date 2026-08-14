@@ -1,5 +1,6 @@
 ﻿using DAL.Singleton;
 using DTO;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DAL.DAO
 {
-    public class PagoDAO
+    public class PagoDAO : IPagoDAL
     {
         Conexion conexion = Conexion.Instancia;
 

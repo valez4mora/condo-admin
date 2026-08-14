@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AreaComunBLL.cs" />
+    <Compile Include="BitacoraBLL.cs" />
     <Compile Include="CargoFacturableBLL.cs" />
     <Compile Include="FacturaBLL.cs" />
     <Compile Include="FondoReservaBLL.cs" />
@@ -51,7 +53,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropiedadBLL.cs" />
     <Compile Include="PropietarioBLL.cs" />
+    <Compile Include="ReservaBLL.cs" />
     <Compile Include="ResidenteBLL.cs" />
+    <Compile Include="RolBLL.cs" />
+    <Compile Include="UsuarioBLL.cs" />
+    <Compile Include="VisitaBLL.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj">

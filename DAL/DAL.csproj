@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\AreaComunDAO.cs" />
+    <Compile Include="DAO\BitacoraDAO.cs" />
     <Compile Include="DAO\CargoFacturableDAO.cs" />
     <Compile Include="DAO\FacturaDAO.cs" />
     <Compile Include="DAO\FondoReservaDAO.cs" />
@@ -50,7 +52,11 @@
     <Compile Include="DAO\PersonaDAO.cs" />
     <Compile Include="DAO\PropiedadDAO.cs" />
     <Compile Include="DAO\PropietarioDAO.cs" />
+    <Compile Include="DAO\ReservaDAO.cs" />
     <Compile Include="DAO\ResidenteDAO.cs" />
+    <Compile Include="DAO\RolDAO.cs" />
+    <Compile Include="DAO\UsuarioDAO.cs" />
+    <Compile Include="DAO\VisitaDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Singleton\Conexion.cs" />
   </ItemGroup>
