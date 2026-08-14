@@ -41,7 +41,7 @@ namespace Factory
             return new CargoFacturableDTO
             {
                 Descripcion = "Fondo de reserva",
-                Tipo = "CuotaMantenimiento",
+                Tipo = "FondoReserva",
                 MontoBase = montoBase,
                 IVA = 0,
                 Total = montoBase,

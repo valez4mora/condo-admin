@@ -11,7 +11,7 @@ namespace Facade
 {
     public class GestionFinancieraFacade
     {
-        private readonly CargoFacturableBILL cargoBLL = new CargoFacturableBILL();
+        private readonly CargoFacturableBLL cargoBLL = new CargoFacturableBLL();
         private readonly FondoReservaBLL fondoReservaBLL = new FondoReservaBLL();
         private readonly IndicadorMorosidadBLL indicadorBLL = new IndicadorMorosidadBLL();
 
@@ -43,16 +43,10 @@ namespace Facade
             return GestionFinancieraFactory.CrearInteresMora(idPropiedad, saldo, tasa, meses);
         }
 
-
-
         //------------ 4. Indicador de morosidad ----------
         public void CrearPenalizacion(CargoFacturableDTO idPropiedad, decimal monto, string descripcion)
         {
 
         }
-
     }
 }
-
-
-

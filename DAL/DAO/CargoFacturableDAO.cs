@@ -10,112 +10,210 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
+    /// <summary>
+    /// Acceso a datos para la tabla CargoFacturable.
+    /// Implementa ICargoFacturableDAL con operaciones CRUD completas.
+    /// </summary>
     public class CargoFacturableDAO : ICargoFacturableDAL
     {
+        // ── REGISTRAR ─────────────────────────────────────────────────
         public bool Registrar(CargoFacturableDTO cargo)
         {
             using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
             {
                 cn.Open();
 
-                // se agrego SELECT SCOPE_IDENTITY() para recuperar el id generado
-                string sql = @"INSERT INTO CargoFacturable
-           (Descripcion, Tipo, MontoBase, IVA, Total, FechaEmision, 
-            FechaVencimiento, Estado, IdPropiedad)
-            VALUES
-           (@Descripcion, @Tipo, @MontoBase, @IVA, @Total, @FechaEmision,
-            @FechaVencimiento, @Estado, @IdPropiedad);
-            SELECT SCOPE_IDENTITY();";
+                const string sql = @"
+                    INSERT INTO CargoFacturable
+                        (Descripcion, Tipo, MontoBase, IVA, Total,
+                         FechaEmision, FechaVencimiento, Estado, IdPropiedad)
+                    VALUES
+                        (@Descripcion, @Tipo, @MontoBase, @IVA, @Total,
+                         @FechaEmision, @FechaVencimiento, @Estado, @IdPropiedad);
+                    SELECT SCOPE_IDENTITY();";
 
-                SqlCommand cmd = new SqlCommand(sql, cn);
-                cmd.Parameters.AddWithValue("@Descripcion", cargo.Descripcion);
-                cmd.Parameters.AddWithValue("@Tipo", cargo.Tipo);
-                cmd.Parameters.AddWithValue("@MontoBase", cargo.MontoBase);
-                cmd.Parameters.AddWithValue("@IVA", cargo.IVA);
-                cmd.Parameters.AddWithValue("@Total", cargo.Total);
-                cmd.Parameters.AddWithValue("@FechaEmision", cargo.FechaEmision);
-                cmd.Parameters.AddWithValue("@FechaVencimiento", cargo.FechaVencimiento);
-                cmd.Parameters.AddWithValue("@Estado", cargo.Estado);
-                cmd.Parameters.AddWithValue("@IdPropiedad", cargo.IdPropiedad);
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    AsignarParametros(cmd, cargo);
 
-                // executeScalar retorna el id generado por la base de datos
-                int idGenerado = Convert.ToInt32(cmd.ExecuteScalar());
-
-                // se asigna el id al DTO para que el BLL lo pueda usar
-                cargo.IdCargo = idGenerado;
-
-                return idGenerado > 0;
+                    int idGenerado = Convert.ToInt32(cmd.ExecuteScalar());
+                    cargo.IdCargo = idGenerado;
+                    return idGenerado > 0;
+                }
             }
         }
 
-        public List<CargoFacturableDTO> ObtenerPorPropiedad(PropiedadDTO propiedad)
+        // ── MODIFICAR ─────────────────────────────────────────────────
+        public bool Modificar(CargoFacturableDTO cargo)
         {
-            //se utiliza una lista ,ya que una propiedad puede tener varios cargos
-            List<CargoFacturableDTO> lista = new List<CargoFacturableDTO>(); //se crea la lista
+            using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
+            {
+                cn.Open();
+
+                const string sql = @"
+                    UPDATE CargoFacturable SET
+                        Descripcion      = @Descripcion,
+                        Tipo             = @Tipo,
+                        MontoBase        = @MontoBase,
+                        IVA              = @IVA,
+                        Total            = @Total,
+                        FechaEmision     = @FechaEmision,
+                        FechaVencimiento = @FechaVencimiento,
+                        Estado           = @Estado
+                    WHERE IdCargo = @IdCargo";
+
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    AsignarParametros(cmd, cargo);
+                    cmd.Parameters.AddWithValue("@IdCargo", cargo.IdCargo);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // ── ELIMINAR ──────────────────────────────────────────────────
+        public bool Eliminar(int idCargo)
+        {
+            using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
+            {
+                cn.Open();
+
+                const string sql = "DELETE FROM CargoFacturable WHERE IdCargo = @IdCargo";
+
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.AddWithValue("@IdCargo", idCargo);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // ── MARCAR COMO PAGADO ────────────────────────────────────────
+        public bool MarcarComoPagado(int idCargo)
+        {
+            using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
+            {
+                cn.Open();
+
+                const string sql = @"
+                    UPDATE CargoFacturable
+                    SET Estado = 'Pagado'
+                    WHERE IdCargo = @IdCargo AND Estado = 'Pendiente'";
+
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.AddWithValue("@IdCargo", idCargo);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // ── OBTENER POR ID ────────────────────────────────────────────
+        public CargoFacturableDTO ObtenerPorId(int idCargo)
+        {
+            using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
+            {
+                cn.Open();
+
+                const string sql = "SELECT * FROM CargoFacturable WHERE IdCargo = @IdCargo";
+
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.AddWithValue("@IdCargo", idCargo);
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                            return LeerFila(dr);
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ── OBTENER POR PROPIEDAD ─────────────────────────────────────
+        public List<CargoFacturableDTO> ObtenerPorPropiedad(int idPropiedad)
+        {
+            var lista = new List<CargoFacturableDTO>();
 
             using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
             {
                 cn.Open();
 
-                string sql = "SELECT *FROM CargoFacturable WHERE IdPropiedad=@IdPropiedad";
-                SqlCommand cmd = new SqlCommand(sql, cn);
-                cmd.Parameters.AddWithValue("@IdPropiedad", propiedad.IdPropiedad);
+                const string sql = @"
+                    SELECT * FROM CargoFacturable
+                    WHERE IdPropiedad = @IdPropiedad
+                    ORDER BY FechaEmision DESC";
 
-                //DataReader ya que necesitamos leer los resultados
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read()) //avanza a la siguiente fila del resultado 
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
                 {
-                    CargoFacturableDTO c = new CargoFacturableDTO();//por cada vuelta se crea un objeto nuevo
-                    //se lee el valor de cada columna y se castea 
-                    c.IdCargo = Convert.ToInt32(dr["IdCargo"]);
-                    c.Descripcion = dr["Descripcion"].ToString();
-                    c.Tipo = dr["Tipo"].ToString();
-                    c.MontoBase = Convert.ToDecimal(dr["MontoBase"]);
-                    c.IVA = Convert.ToDecimal(dr["IVA"]);
-                    c.Total = Convert.ToDecimal(dr["Total"]);
-                    c.FechaEmision = Convert.ToDateTime(dr["FechaEmision"]);
-                    c.FechaVencimiento = Convert.ToDateTime(dr["FechaVencimiento"]);
-                    c.Estado = dr["Estado"].ToString();
-                    c.IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]);
+                    cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
 
-                    lista.Add(c);//se agrega a la lista
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                            lista.Add(LeerFila(dr));
+                    }
                 }
             }
             return lista;
         }
 
+        // ── OBTENER TODOS ─────────────────────────────────────────────
         public List<CargoFacturableDTO> ObtenerTodos()
         {
-            List<CargoFacturableDTO> lista = new List<CargoFacturableDTO>();
+            var lista = new List<CargoFacturableDTO>();
 
             using (SqlConnection cn = Conexion.Instancia.ObtenerConexion())
             {
                 cn.Open();
 
-                string sql = "SELECT*FROM CargoFacturable"; //se seleccionan todos 
-                SqlCommand cmd = new SqlCommand(sql, cn);
+                const string sql = @"
+                    SELECT * FROM CargoFacturable
+                    ORDER BY FechaEmision DESC";
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    CargoFacturableDTO c = new CargoFacturableDTO();
-                    c.IdCargo = Convert.ToInt32(dr["IdCargo"]);
-                    c.Descripcion = dr["Descripcion"].ToString();
-                    c.Tipo = dr["Tipo"].ToString();
-                    c.MontoBase = Convert.ToDecimal(dr["MontoBase"]);
-                    c.IVA = Convert.ToDecimal(dr["IVA"]);
-                    c.Total = Convert.ToDecimal(dr["Total"]);
-                    c.FechaEmision = Convert.ToDateTime(dr["FechaEmision"]);
-                    c.FechaVencimiento = Convert.ToDateTime(dr["FechaVencimiento"]);
-                    c.Estado = dr["Estado"].ToString();
-                    c.IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]);
-
-                    lista.Add(c);
+                    while (dr.Read())
+                        lista.Add(LeerFila(dr));
                 }
             }
             return lista;
         }
 
-       
+        // ── HELPERS PRIVADOS ──────────────────────────────────────────
+
+        /// <summary>Asigna los parámetros comunes para INSERT y UPDATE.</summary>
+        private static void AsignarParametros(SqlCommand cmd, CargoFacturableDTO c)
+        {
+            cmd.Parameters.AddWithValue("@Descripcion", c.Descripcion);
+            cmd.Parameters.AddWithValue("@Tipo", c.Tipo);
+            cmd.Parameters.AddWithValue("@MontoBase", c.MontoBase);
+            cmd.Parameters.AddWithValue("@IVA", c.IVA);
+            cmd.Parameters.AddWithValue("@Total", c.Total);
+            cmd.Parameters.AddWithValue("@FechaEmision", c.FechaEmision);
+            cmd.Parameters.AddWithValue("@FechaVencimiento", c.FechaVencimiento);
+            cmd.Parameters.AddWithValue("@Estado", c.Estado);
+            cmd.Parameters.AddWithValue("@IdPropiedad", c.IdPropiedad);
+        }
+
+        /// <summary>Mapea una fila del DataReader a un CargoFacturableDTO.</summary>
+        private static CargoFacturableDTO LeerFila(SqlDataReader dr)
+        {
+            return new CargoFacturableDTO
+            {
+                IdCargo = Convert.ToInt32(dr["IdCargo"]),
+                Descripcion = dr["Descripcion"].ToString(),
+                Tipo = dr["Tipo"].ToString(),
+                MontoBase = Convert.ToDecimal(dr["MontoBase"]),
+                IVA = Convert.ToDecimal(dr["IVA"]),
+                Total = Convert.ToDecimal(dr["Total"]),
+                FechaEmision = Convert.ToDateTime(dr["FechaEmision"]),
+                FechaVencimiento = Convert.ToDateTime(dr["FechaVencimiento"]),
+                Estado = dr["Estado"].ToString(),
+                IdPropiedad = Convert.ToInt32(dr["IdPropiedad"])
+            };
+        }
     }
 }

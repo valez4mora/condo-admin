@@ -9,27 +9,27 @@ using System.Threading.Tasks;
 
 namespace BLL
 {
-    public  class FacturaBLL
+    public class FacturaBLL
     {
 
         //tasa de cambio 
         private const decimal TIPO_CAMBIO = 515.00m;
 
         private readonly IFacturaDAL _facturaDAL;
-        private readonly CargoFacturableBILL _cargoBLL;
+        private readonly CargoFacturableBLL _cargoBLL;
 
         //constructor
         public FacturaBLL()
         {
             _facturaDAL = new FacturaDAO();
-            _cargoBLL = new CargoFacturableBILL();
+            _cargoBLL = new CargoFacturableBLL();
         }
 
         public FacturaDTO GenerarFacturaCuotaOrdinaria(PropiedadDTO propiedad)
         {
-            if(propiedad== null)
+            if (propiedad == null)
             {
-                throw new ArgumentNullException( "La propiedad no puede ser nula.");
+                throw new ArgumentNullException("La propiedad no puede ser nula.");
             }
 
             CargoFacturableDTO cargo = _cargoBLL.GenerarCuotaOrdinaria(propiedad);
@@ -84,8 +84,5 @@ namespace BLL
         {
             return _facturaDAL.ObtenerTodas();
         }
-
-
-
     }
 }

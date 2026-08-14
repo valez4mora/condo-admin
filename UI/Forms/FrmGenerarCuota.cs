@@ -16,7 +16,7 @@ namespace UI.Forms
     {
         //Intancias
         PropiedadBLL propiedadBLL = new PropiedadBLL();
-        CargoFacturableBILL cargoBLL = new CargoFacturableBILL();
+        CargoFacturableBLL cargoBLL = new CargoFacturableBLL();
         FacturaBLL facturaBLL = new FacturaBLL();
 
             private CargoFacturableDTO cargoGenerado=null;

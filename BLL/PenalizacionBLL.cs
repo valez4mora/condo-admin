@@ -20,7 +20,7 @@ namespace BLL
         public CargoFacturableDTO AplicarPenalizacion(PropiedadDTO idPropiedad)
         {
             // Se traen los cargos de esa propiedad
-            List<CargoFacturableDTO> cargos = _cargoDAL.ObtenerPorPropiedad( idPropiedad);
+            List<CargoFacturableDTO> cargos = _cargoDAL.ObtenerPorPropiedad(idPropiedad.IdPropiedad);
 
             // Se busca el cargo de cuota vencido
             CargoFacturableDTO vencido = cargos.FirstOrDefault(c =>
