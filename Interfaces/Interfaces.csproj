@@ -50,6 +50,7 @@
     <Compile Include="IPersonaDAL.cs" />
     <Compile Include="IPropiedadDAL.cs" />
     <Compile Include="IPropietarioDAL.cs" />
+    <Compile Include="IReporteDAL.cs" />
     <Compile Include="IReservaDAL.cs" />
     <Compile Include="IResidenteDAL.cs" />
     <Compile Include="ICargoFacturableDAL.cs" />

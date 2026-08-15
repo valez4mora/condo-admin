@@ -52,6 +52,7 @@
     <Compile Include="DAO\PersonaDAO.cs" />
     <Compile Include="DAO\PropiedadDAO.cs" />
     <Compile Include="DAO\PropietarioDAO.cs" />
+    <Compile Include="DAO\ReporteDAO.cs" />
     <Compile Include="DAO\ReservaDAO.cs" />
     <Compile Include="DAO\ResidenteDAO.cs" />
     <Compile Include="DAO\RolDAO.cs" />
