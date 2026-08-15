@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace UI.Forms
@@ -18,26 +11,35 @@ namespace UI.Forms
             this.IsMdiContainer = true;
         }
 
-        private void personasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void áreasComunesReservasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FrmAreasComunes frm = new FrmAreasComunes();
-            frm.MdiParent = this;
-            frm.Show();
-        }
-
         private void FrmMenu_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void penalizacionesToolStripMenuItem_Click(object sender, EventArgs e)
+        // ============================================================
+        // PROPIEDADES
+        // ============================================================
+
+        private void gestionDePropiedadesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmPenalizacion frm = new FrmPenalizacion();
+            FrmPropiedad frm = new FrmPropiedad();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        // ============================================================
+        // PERSONAS
+        // ============================================================
+
+        private void personasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Este es solamente el menú principal "Personas".
+            // No necesita abrir un formulario.
+        }
+
+        private void gestionDePropietariosResidentesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmPropietario frm = new FrmPropietario();
             frm.MdiParent = this;
             frm.Show();
         }
@@ -49,32 +51,58 @@ namespace UI.Forms
             frm.Show();
         }
 
-        private void gestionDePropietariosResidentesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FrmPropietario frm = new FrmPropietario();
-            frm.MdiParent = this;
-            frm.Show();
-        }
+        // ============================================================
+        // FACTURACIÓN
+        // ============================================================
 
-        private void gestionDePropiedadesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void facturaciónToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmPropiedad frm = new FrmPropiedad();
-            frm.MdiParent = this;
-            frm.Show();
+            // Este es solamente el menú principal "Facturación".
+            // No necesita abrir ningún formulario.
         }
 
         private void cargosFacturablesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmCargoFacturable frm = new FrmCargoFacturable();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void cargosFacturablesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            FrmCargoFacturable frm = new FrmCargoFacturable();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void generarCuotasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FrmGenerarCuota frm = new FrmGenerarCuota();
             frm.MdiParent = this;
             frm.Show();
         }
 
-        private void reservasToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void facturasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmAreasComunes frm = new FrmAreasComunes();
+            FrmFacturacion frm = new FrmFacturacion();
             frm.MdiParent = this;
             frm.Show();
+        }
+
+        private void registroDePagosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmPagos frm = new FrmPagos();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        // ============================================================
+        // FINANCIERO
+        // ============================================================
+
+        private void morosidadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void controlDeMorosidadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -83,23 +111,117 @@ namespace UI.Forms
             frm.MdiParent = this;
             frm.Show();
         }
-    
-
-    private void facturaciónToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FrmGenerarCuota frm = new FrmGenerarCuota();
-            frm.MdiParent = this;
-            frm.Show();
-        }
-
-        private void morosidadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void controlDeMorosidadToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             FrmMorosidad frm = new FrmMorosidad();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void penalizacionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmPenalizacion frm = new FrmPenalizacion();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void fondoDeReservaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmFondoReserva frm = new FrmFondoReserva();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        // ============================================================
+        // ÁREAS Y RESERVAS
+        // ============================================================
+
+        private void áreasComunesReservasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmAreasComunes frm = new FrmAreasComunes();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void reservasToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            FrmReservas frm = new FrmReservas();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        // ============================================================
+        // ACCESO
+        // ============================================================
+
+        private void controlDeVisitasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmControlAcceso frm = new FrmControlAcceso();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        // ============================================================
+        // SEGURIDAD
+        // ============================================================
+
+        private void usuariosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmUsuarios frm = new FrmUsuarios();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmRoles frm = new FrmRoles();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void permisosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmPermisos frm = new FrmPermisos();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void bitácoraToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmBitacora frm = new FrmBitacora();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        // ============================================================
+        // REPORTES
+        // ============================================================
+
+        private void reportepropiedadesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            FrmReportes frm = new FrmReportes();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void facturaciónPorPropiedadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmReportes frm = new FrmReportes();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void propiedadesMorosasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmReportes frm = new FrmReportes();
+            frm.MdiParent = this;
+            frm.Show();
+        }
+
+        private void ingresosMensualesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmReportes frm = new FrmReportes();
             frm.MdiParent = this;
             frm.Show();
         }

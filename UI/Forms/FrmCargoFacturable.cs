@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace UI.Forms
 {
-    public partial class FrmReportes : Form
+    public partial class FrmCargoFacturable : Form
     {
-        public FrmReportes()
+        public FrmCargoFacturable()
         {
             InitializeComponent();
-        }
-
-        private void FrmReportes_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

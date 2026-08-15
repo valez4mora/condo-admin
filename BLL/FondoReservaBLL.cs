@@ -13,15 +13,28 @@ namespace BLL
     {
         private readonly FondoReservaDAO dal = new FondoReservaDAO();
 
-        public void RegistrarFondo(PropiedadDTO propiedad)
+        public void RegistrarFondo(
+            PropiedadDTO propiedad,
+            decimal montoCuota)
         {
-            decimal cuota = (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo;
+            if (propiedad == null)
+                throw new ArgumentNullException(
+                    nameof(propiedad),
+                    "Debe indicar una propiedad válida.");
+
+            if (propiedad.IdPropiedad <= 0)
+                throw new ArgumentException(
+                    "La propiedad indicada no es válida.");
+
+            if (montoCuota <= 0)
+                throw new ArgumentException(
+                    "El monto de la cuota debe ser mayor que cero.");
 
             FondoReserva fondo = new FondoReserva
             {
                 IdPropiedad = propiedad.IdPropiedad,
                 Porcentaje = 10,
-                Monto = cuota * 0.10m,
+                Monto = montoCuota * 0.10m,
                 Fecha = DateTime.Now
             };
 

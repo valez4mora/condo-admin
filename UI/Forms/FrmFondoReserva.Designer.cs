@@ -1,6 +1,6 @@
 ﻿namespace UI.Forms
 {
-    partial class FrmReportes
+    partial class FrmFondoReserva
     {
         /// <summary>
         /// Required designer variable.
@@ -28,18 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // FrmReportes
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "FrmReportes";
-            this.Text = "FrmReportes";
-            this.Load += new System.EventHandler(this.FrmReportes_Load);
-            this.ResumeLayout(false);
-
+            this.Text = "FrmFondoReserva";
         }
 
         #endregion

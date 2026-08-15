@@ -7,7 +7,7 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
-    public class ResidenteDAL
+    public class ResidenteDAO
     {
         Conexion conexion = Conexion.Instancia;
 

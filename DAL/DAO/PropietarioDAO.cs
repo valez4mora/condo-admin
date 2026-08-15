@@ -10,7 +10,7 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
-    public class PropietarioDAL
+    public class PropietarioDAO
     {
         Conexion conexion = Conexion.Instancia;
 
