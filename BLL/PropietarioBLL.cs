@@ -11,7 +11,7 @@ namespace BLL
     public class PropietarioBLL
     {
         private PersonaDAO personaDAL = new PersonaDAO();
-        private PropietarioDAL propietarioDAL = new PropietarioDAL();
+        private PropietarioDAO propietarioDAL = new PropietarioDAO();
 
         public bool Registrar(PropietarioDTO propietario)
         {

@@ -33,6 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.8.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.8.0\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
     </Reference>
@@ -47,6 +52,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\FrmAreasComunes.cs">
@@ -61,11 +67,11 @@
     <Compile Include="Forms\FrmBitacora.Designer.cs">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FrmCargoFacturable.cs">
+    <Compile Include="Forms\FrmCargosFacturables.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FrmCargoFacturable.Designer.cs">
-      <DependentUpon>FrmCargoFacturable.cs</DependentUpon>
+    <Compile Include="Forms\FrmCargosFacturables.Designer.cs">
+      <DependentUpon>FrmCargosFacturables.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmControlAcceso.cs">
       <SubType>Form</SubType>
@@ -78,6 +84,12 @@
     </Compile>
     <Compile Include="Forms\FrmFacturacion.Designer.cs">
       <DependentUpon>FrmFacturacion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmFacturas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmFacturas.Designer.cs">
+      <DependentUpon>FrmFacturas.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmFondoReserva.cs">
       <SubType>Form</SubType>
@@ -199,6 +211,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

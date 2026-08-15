@@ -63,14 +63,14 @@ namespace UI.Forms
 
         private void cargosFacturablesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmCargoFacturable frm = new FrmCargoFacturable();
+            FrmCargosFacturables frm = new FrmCargosFacturables();
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void cargosFacturablesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            FrmCargoFacturable frm = new FrmCargoFacturable();
+            FrmCargosFacturables frm = new FrmCargosFacturables();
             frm.MdiParent = this;
             frm.Show();
         }
@@ -84,7 +84,7 @@ namespace UI.Forms
 
         private void facturasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmFacturacion frm = new FrmFacturacion();
+            FrmFacturas frm = new FrmFacturas();
             frm.MdiParent = this;
             frm.Show();
         }

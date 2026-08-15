@@ -11,7 +11,7 @@ namespace BLL
 {
     public class PropiedadBLL
     {
-        DAL.DAO.PropiedadDAO dal = new DAL.DAO.PropiedadDAO();
+        PropiedadDAO dal = new PropiedadDAO();
 
         public bool Registrar(PropiedadDTO propiedad)
         {
