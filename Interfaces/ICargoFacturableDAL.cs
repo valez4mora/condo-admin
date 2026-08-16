@@ -7,30 +7,28 @@ using DTO;
 
 namespace Interfaces
 {
-    /// <summary>
     /// Contrato de acceso a datos para la entidad CargoFacturable.
-    /// </summary>
     public interface ICargoFacturableDAL
     {
-        /// <summary>Inserta un cargo y retorna true si el Id generado es mayor a 0.</summary>
+        ///Inserta un cargo y retorna true si el Id generado es mayor a 0.
         bool Registrar(CargoFacturableDTO cargo);
 
-        /// <summary>Actualiza descripción, tipo, montos, fechas y estado de un cargo existente.</summary>
+        ///Actualiza descripción, tipo, montos, fechas y estado de un cargo existente.
         bool Modificar(CargoFacturableDTO cargo);
 
-        /// <summary>Elimina un cargo por su Id. Solo debe llamarse si el cargo está Pendiente.</summary>
+        ///Elimina un cargo por su Id. Solo debe llamarse si el cargo está Pendiente.
         bool Eliminar(int idCargo);
 
-        /// <summary>Cambia el estado del cargo a "Pagado".</summary>
+        ///Cambia el estado del cargo a "Pagado".
         bool MarcarComoPagado(int idCargo);
 
-        /// <summary>Obtiene un cargo por su Id primario.</summary>
+        ///Obtiene un cargo por su Id primario.
         CargoFacturableDTO ObtenerPorId(int idCargo);
 
-        /// <summary>Todos los cargos de una propiedad específica.</summary>
+        ///Todos los cargos de una propiedad específica.
         List<CargoFacturableDTO> ObtenerPorPropiedad(int idPropiedad);
 
-        /// <summary>Todos los cargos de todas las propiedades.</summary>
+        ///Todos los cargos de todas las propiedades.
         List<CargoFacturableDTO> ObtenerTodos();
     }
 }

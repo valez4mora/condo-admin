@@ -20,7 +20,7 @@ namespace Interfaces
         bool GuardarXml(int idFactura, string xmlContent);
         bool ExisteFacturaParaCargo(int idCargo);
 
-        ///>Obtiene una factura por su Id (incluye detalles).
+        ///Obtiene una factura por su Id (incluye detalles).
         FacturaDTO ObtenerPorId(int idFactura);
 
         ///Todas las facturas de una propiedad.

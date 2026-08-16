@@ -11,14 +11,9 @@ using System.Data;
 
 namespace DAL.DAO
 {
-        /// Acceso a datos para los reportes del condominio.
-        /// Ejecuta los procedimientos almacenados y convierte
-        /// sus resultados en DTO específicos para cada reporte.
         public class ReporteDAO : IReporteDAL
         {
-            // ============================================================
             // REPORTE 1: PROPIEDADES
-            // ============================================================
 
             /// Obtiene el listado de propiedades con su propietario
             /// y su estado financiero.
@@ -32,80 +27,35 @@ namespace DAL.DAO
                 List<ReportePropiedadDTO> lista =
                     new List<ReportePropiedadDTO>();
 
-                using (SqlConnection conexion =
-                    Conexion.Instancia.ObtenerConexion())
+                using (SqlConnection conexion = Conexion.Instancia.ObtenerConexion())
                 {
-                    using (SqlCommand comando =
-                        new SqlCommand(
-                            "sp_ReportePropiedades",
-                            conexion))
+                    using (SqlCommand comando = new SqlCommand("sp_ReportePropiedades", conexion))
                     {
-                        comando.CommandType =
-                            CommandType.StoredProcedure;
+                        comando.CommandType = CommandType.StoredProcedure;
 
-                        SqlParameter parametroPropietario =
-                            comando.Parameters.Add(
-                                "@IdPropietario",
-                                SqlDbType.Int);
+                        SqlParameter parametroPropietario = comando.Parameters.Add("@IdPropietario", SqlDbType.Int);
 
-                        parametroPropietario.Value =
-                            idPropietario.HasValue
-                                ? (object)idPropietario.Value
-                                : DBNull.Value;
+                        parametroPropietario.Value = idPropietario.HasValue ? (object)idPropietario.Value : DBNull.Value;
 
                         conexion.Open();
 
-                        using (SqlDataReader reader =
-                            comando.ExecuteReader())
+                        using (SqlDataReader reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                ReportePropiedadDTO reporte =
-                                    new ReportePropiedadDTO
+                                ReportePropiedadDTO reporte = new ReportePropiedadDTO
                                     {
-                                        IdPropiedad =
-                                            Convert.ToInt32(
-                                                reader["IdPropiedad"]),
-
-                                        Codigo =
-                                            reader["Codigo"].ToString(),
-
-                                        Tipo =
-                                            reader["Tipo"].ToString(),
-
-                                        Area =
-                                            Convert.ToDecimal(
-                                                reader["Area"]),
-
-                                        CantidadResidentes =
-                                            Convert.ToInt32(
-                                                reader[
-                                                    "CantidadResidentes"]),
-
-                                        CuotaMantenimiento =
-                                            Convert.ToDecimal(
-                                                reader[
-                                                    "CuotaMantenimiento"]),
-
-                                        IdPropietario =
-                                            Convert.ToInt32(
-                                                reader["IdPropietario"]),
-
-                                        NombrePropietario =
-                                            reader[
-                                                "NombrePropietario"]
-                                                .ToString(),
-
-                                        CedulaPropietario =
-                                            reader[
-                                                "CedulaPropietario"]
-                                                .ToString(),
-
-                                        EsMorosa =
-                                            Convert.ToBoolean(
-                                                reader["EsMorosa"])
+                                        IdPropiedad = Convert.ToInt32(reader["IdPropiedad"]),
+                                        Codigo = reader["Codigo"].ToString(),
+                                        Tipo = reader["Tipo"].ToString(),
+                                        Area = Convert.ToDecimal(reader["Area"]),
+                                        CantidadResidentes = Convert.ToInt32(reader["CantidadResidentes"]),
+                                        CuotaMantenimiento = Convert.ToDecimal(reader["CuotaMantenimiento"]),
+                                        IdPropietario = Convert.ToInt32(reader["IdPropietario"]),
+                                        NombrePropietario = reader["NombrePropietario"].ToString(),
+                                        CedulaPropietario = reader["CedulaPropietario"].ToString(),
+                                        EsMorosa = Convert.ToBoolean(reader["EsMorosa"])
                                     };
-
                                 lista.Add(reporte);
                             }
                         }
@@ -115,9 +65,7 @@ namespace DAL.DAO
                 return lista;
             }
 
-            // ============================================================
             // REPORTE 2: FACTURACIÓN POR PROPIEDAD
-            // ============================================================
 
             /// Obtiene todos los cargos facturables pertenecientes
             /// a una propiedad.
@@ -125,53 +73,29 @@ namespace DAL.DAO
             /// El rango de fechas es opcional.
             
             public List<ReporteFacturacionPropiedadDTO>
-                ObtenerFacturacionPorPropiedad(
-                    int idPropiedad,
-                    DateTime? fechaInicio,
-                    DateTime? fechaFin)
+                ObtenerFacturacionPorPropiedad(int idPropiedad, DateTime? fechaInicio, DateTime? fechaFin)
             {
-                List<ReporteFacturacionPropiedadDTO> lista =
-                    new List<ReporteFacturacionPropiedadDTO>();
+                List<ReporteFacturacionPropiedadDTO> lista = new List<ReporteFacturacionPropiedadDTO>();
 
-                using (SqlConnection conexion =
-                    Conexion.Instancia.ObtenerConexion())
+                using (SqlConnection conexion = Conexion.Instancia.ObtenerConexion())
                 {
-                    using (SqlCommand comando =
-                        new SqlCommand(
-                            "sp_ReporteFacturacionPorPropiedad",
-                            conexion))
+                    using (SqlCommand comando = new SqlCommand("sp_ReporteFacturacionPorPropiedad", conexion))
                     {
-                        comando.CommandType =
-                            CommandType.StoredProcedure;
+                        comando.CommandType = CommandType.StoredProcedure;
 
-                        comando.Parameters.Add(
-                            "@IdPropiedad",
-                            SqlDbType.Int).Value = idPropiedad;
+                        comando.Parameters.Add("@IdPropiedad", SqlDbType.Int).Value = idPropiedad;
 
-                        SqlParameter parametroInicio =
-                            comando.Parameters.Add(
-                                "@FechaInicio",
-                                SqlDbType.Date);
+                        SqlParameter parametroInicio = comando.Parameters.Add("@FechaInicio", SqlDbType.Date);
 
-                        parametroInicio.Value =
-                            fechaInicio.HasValue
-                                ? (object)fechaInicio.Value.Date
-                                : DBNull.Value;
+                        parametroInicio.Value = fechaInicio.HasValue ? (object)fechaInicio.Value.Date : DBNull.Value;
 
-                        SqlParameter parametroFin =
-                            comando.Parameters.Add(
-                                "@FechaFin",
-                                SqlDbType.Date);
+                        SqlParameter parametroFin = comando.Parameters.Add("@FechaFin", SqlDbType.Date);
 
-                        parametroFin.Value =
-                            fechaFin.HasValue
-                                ? (object)fechaFin.Value.Date
-                                : DBNull.Value;
+                        parametroFin.Value = fechaFin.HasValue ? (object)fechaFin.Value.Date : DBNull.Value;
 
                         conexion.Open();
 
-                        using (SqlDataReader reader =
-                            comando.ExecuteReader())
+                        using (SqlDataReader reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
@@ -244,29 +168,22 @@ namespace DAL.DAO
             public List<ReporteMorosidadDTO>
                 ObtenerPropiedadesMorosas()
             {
-                List<ReporteMorosidadDTO> lista =
-                    new List<ReporteMorosidadDTO>();
+                List<ReporteMorosidadDTO> lista = new List<ReporteMorosidadDTO>();
 
-                using (SqlConnection conexion =
-                    Conexion.Instancia.ObtenerConexion())
+                using (SqlConnection conexion = Conexion.Instancia.ObtenerConexion())
                 {
                     using (SqlCommand comando =
-                        new SqlCommand(
-                            "sp_ReportePropiedadesMorosas",
-                            conexion))
+                        new SqlCommand("sp_ReportePropiedadesMorosas", conexion))
                     {
-                        comando.CommandType =
-                            CommandType.StoredProcedure;
+                        comando.CommandType = CommandType.StoredProcedure;
 
                         conexion.Open();
 
-                        using (SqlDataReader reader =
-                            comando.ExecuteReader())
+                        using (SqlDataReader reader = comando.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                ReporteMorosidadDTO reporte =
-                                    new ReporteMorosidadDTO
+                                ReporteMorosidadDTO reporte = new ReporteMorosidadDTO
                                     {
                                         IdPropiedad =
                                             Convert.ToInt32(
@@ -323,27 +240,18 @@ namespace DAL.DAO
                 return lista;
             }
 
-            // ============================================================
             // REPORTE 4: INGRESOS MENSUALES
-            // ============================================================
-
-            /// <summary>
+ 
             /// Obtiene el total facturado en colones y dólares
             /// para cada uno de los doce meses del año indicado.
-            /// </summary>
             public List<IngresoMensualDTO>
                 ObtenerIngresosMensuales(int anio)
             {
-                List<IngresoMensualDTO> lista =
-                    new List<IngresoMensualDTO>();
+                List<IngresoMensualDTO> lista = new List<IngresoMensualDTO>();
 
-                using (SqlConnection conexion =
-                    Conexion.Instancia.ObtenerConexion())
+                using (SqlConnection conexion = Conexion.Instancia.ObtenerConexion())
                 {
-                    using (SqlCommand comando =
-                        new SqlCommand(
-                            "sp_ReporteIngresosMensuales",
-                            conexion))
+                    using (SqlCommand comando = new SqlCommand("sp_ReporteIngresosMensuales", conexion))
                     {
                         comando.CommandType =
                             CommandType.StoredProcedure;

@@ -20,10 +20,7 @@ namespace BLL
             reporteDAL = new ReporteDAO();
         }
 
-        // ============================================================
         // REPORTE DE PROPIEDADES
-        // ============================================================
-
         /// Obtiene todas las propiedades o las propiedades
         /// correspondientes a un propietario específico.
         public List<ReportePropiedadDTO> ObtenerPropiedades(
@@ -40,10 +37,8 @@ namespace BLL
             return reporteDAL.ObtenerPropiedades(idPropietario);
         }
 
-        // ============================================================
-        // REPORTE DE FACTURACIÓN POR PROPIEDAD
-        // ============================================================
 
+        // REPORTE DE FACTURACIÓN POR PROPIEDAD
         /// Obtiene los cargos facturables de una propiedad.
         /// El rango de fechas es opcional.
         public List<ReporteFacturacionPropiedadDTO>
@@ -76,10 +71,8 @@ namespace BLL
             );
         }
 
-        // ============================================================
-        // REPORTE DE PROPIEDADES MOROSAS
-        // ============================================================
 
+        // REPORTE DE PROPIEDADES MOROSAS
         /// Obtiene todas las propiedades con al menos
         /// un cargo vencido y todavía no pagado.
         public List<ReporteMorosidadDTO>
@@ -88,10 +81,7 @@ namespace BLL
             return reporteDAL.ObtenerPropiedadesMorosas();
         }
 
-        // ============================================================
         // REPORTE DE INGRESOS MENSUALES
-        // ============================================================
-
         /// Obtiene el total facturado para cada mes
         /// del año indicado.
         public List<IngresoMensualDTO>
@@ -109,10 +99,7 @@ namespace BLL
             return reporteDAL.ObtenerIngresosMensuales(anio);
         }
 
-        // ============================================================
         // CÁLCULOS PARA LA INTERFAZ
-        // ============================================================
-
         /// Suma las cuotas de las propiedades mostradas.
         public decimal CalcularTotalCuotas(
             List<ReportePropiedadDTO> propiedades)

@@ -9,14 +9,12 @@ using Factory;
 
 namespace Facade
 {
-    /// <summary>
     /// Fachada para las principales operaciones financieras del condominio.
     /// Centraliza el acceso a cuotas de mantenimiento, fondo de reserva,
     /// intereses por mora, penalizaciones e indicador de morosidad.
-    ///
+
     /// La fachada no contiene las reglas de negocio:
     /// delega los cálculos y validaciones a las clases BLL y al Factory.
-    /// </summary>
     public class GestionFinancieraFacade
     {
         private readonly CargoFacturableBLL cargoBLL;
@@ -32,14 +30,10 @@ namespace Facade
             penalizacionBLL = new PenalizacionBLL();
         }
 
-        // ============================================================
         // 1. CUOTA DE MANTENIMIENTO
-        // ============================================================
 
-        /// <summary>
         /// Genera y registra la cuota ordinaria de mantenimiento
         /// correspondiente a una propiedad.
-        /// </summary>
         public CargoFacturableDTO GenerarCuotaOrdinaria(
             PropiedadDTO propiedad)
         {
@@ -51,15 +45,10 @@ namespace Facade
             return cargoBLL.GenerarCuotaOrdinaria(propiedad);
         }
 
-
-        // ============================================================
         // 2. FONDO DE RESERVA
-        // ============================================================
 
-        /// <summary>
         /// Calcula el aporte al fondo de reserva y registra
         /// el movimiento histórico correspondiente.
-        /// </summary>
         public CargoFacturableDTO GenerarFondoReserva(
             PropiedadDTO propiedad,
             decimal montoCuota)
@@ -89,15 +78,10 @@ namespace Facade
             return fondo;
         }
 
-
-        // ============================================================
         // 3. INTERÉS POR MORA
-        // ============================================================
 
-        /// <summary>
         /// Calcula y registra un cargo correspondiente al interés
         /// generado por morosidad.
-        /// </summary>
         public CargoFacturableDTO GenerarInteresMora(
             int idPropiedad,
             decimal saldoPendiente,
@@ -130,15 +114,10 @@ namespace Facade
             return cargoBLL.RegistrarManual(interes);
         }
 
-
-        // ============================================================
         // 4. PENALIZACIÓN POR MORA
-        // ============================================================
 
-        /// <summary>
         /// Aplica automáticamente la penalización correspondiente
         /// según la antigüedad de la deuda de una propiedad.
-        /// </summary>
         public CargoFacturableDTO AplicarPenalizacion(
             PropiedadDTO propiedad)
         {
@@ -155,14 +134,10 @@ namespace Facade
         }
 
 
-        // ============================================================
         // 5. INDICADOR DE MOROSIDAD
-        // ============================================================
 
-        /// <summary>
         /// Calcula y registra el indicador de riesgo financiero
         /// correspondiente a una propiedad.
-        /// </summary>
         public IndicadorMorosidadDTO CalcularIndicadorMorosidad(
             IndicadorMorosidadDTO indicador)
         {

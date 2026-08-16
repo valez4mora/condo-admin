@@ -10,10 +10,6 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
-    /// <summary>
-    /// Acceso a datos para la tabla CargoFacturable.
-    /// Implementa ICargoFacturableDAL con operaciones CRUD completas.
-    /// </summary>
     public class CargoFacturableDAO : ICargoFacturableDAL
     {
         // ── REGISTRAR ─────────────────────────────────────────────────
@@ -184,7 +180,7 @@ namespace DAL.DAO
 
         // ── HELPERS PRIVADOS ──────────────────────────────────────────
 
-        /// <summary>Asigna los parámetros comunes para INSERT y UPDATE.</summary>
+        ///Asigna los parámetros comunes para INSERT y UPDATE.
         private static void AsignarParametros(SqlCommand cmd, CargoFacturableDTO c)
         {
             cmd.Parameters.AddWithValue("@Descripcion", c.Descripcion);
@@ -198,7 +194,7 @@ namespace DAL.DAO
             cmd.Parameters.AddWithValue("@IdPropiedad", c.IdPropiedad);
         }
 
-        /// <summary>Mapea una fila del DataReader a un CargoFacturableDTO.</summary>
+        ///Mapea una fila del DataReader a un CargoFacturableDTO.
         private static CargoFacturableDTO LeerFila(SqlDataReader dr)
         {
             return new CargoFacturableDTO
