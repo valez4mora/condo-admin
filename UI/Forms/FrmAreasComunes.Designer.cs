@@ -29,23 +29,23 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.txtDescripcion = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtNombre = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.btnGuardar = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
             this.btnNuevo = new System.Windows.Forms.Button();
@@ -53,8 +53,8 @@
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAreas)).BeginInit();
             this.SuspendLayout();
@@ -70,6 +70,18 @@
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(210)))), ((int)(((byte)(240)))));
+            this.label2.Location = new System.Drawing.Point(33, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(384, 15);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Registro, búsqueda y administración de áreas comunes del condominio";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -83,18 +95,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "      Área Común";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(210)))), ((int)(((byte)(240)))));
-            this.label2.Location = new System.Drawing.Point(33, 59);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(384, 15);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Registro, búsqueda y administración de áreas comunes del condominio";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // groupBox1
             // 
@@ -112,22 +112,12 @@
             this.groupBox1.Text = "Datos del Área Común";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
-            // label3
+            // txtDescripcion
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label3.Location = new System.Drawing.Point(20, 28);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 15);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Nombre";
-            // 
-            // txtNombre
-            // 
-            this.txtNombre.Location = new System.Drawing.Point(70, 25);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(229, 23);
-            this.txtNombre.TabIndex = 1;
+            this.txtDescripcion.Location = new System.Drawing.Point(90, 65);
+            this.txtDescripcion.Name = "txtDescripcion";
+            this.txtDescripcion.Size = new System.Drawing.Size(209, 23);
+            this.txtDescripcion.TabIndex = 3;
             // 
             // label4
             // 
@@ -139,12 +129,22 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "Descripción";
             // 
-            // txtDescripcion
+            // txtNombre
             // 
-            this.txtDescripcion.Location = new System.Drawing.Point(90, 65);
-            this.txtDescripcion.Name = "txtDescripcion";
-            this.txtDescripcion.Size = new System.Drawing.Size(209, 23);
-            this.txtDescripcion.TabIndex = 3;
+            this.txtNombre.Location = new System.Drawing.Point(70, 25);
+            this.txtNombre.Name = "txtNombre";
+            this.txtNombre.Size = new System.Drawing.Size(229, 23);
+            this.txtNombre.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.label3.Location = new System.Drawing.Point(20, 28);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 15);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Nombre";
             // 
             // groupBox2
             // 
@@ -161,22 +161,12 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Capacidad y Tarifa";
             // 
-            // numericUpDown1
+            // numericUpDown2
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(89, 25);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(120, 23);
-            this.numericUpDown1.TabIndex = 0;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label5.Location = new System.Drawing.Point(19, 27);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 15);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Capacidad";
+            this.numericUpDown2.Location = new System.Drawing.Point(59, 59);
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(120, 23);
+            this.numericUpDown2.TabIndex = 3;
             // 
             // label6
             // 
@@ -188,12 +178,22 @@
             this.label6.TabIndex = 2;
             this.label6.Text = "Tarifa";
             // 
-            // numericUpDown2
+            // label5
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(59, 59);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(120, 23);
-            this.numericUpDown2.TabIndex = 3;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.label5.Location = new System.Drawing.Point(19, 27);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(63, 15);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Capacidad";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(89, 25);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(120, 23);
+            this.numericUpDown1.TabIndex = 0;
             // 
             // groupBox3
             // 
@@ -210,15 +210,21 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Horario de Uso";
             // 
-            // label7
+            // dateTimePicker2
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label7.Location = new System.Drawing.Point(19, 37);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(98, 15);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "Hora de Apertura";
+            this.dateTimePicker2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dateTimePicker2.Location = new System.Drawing.Point(123, 70);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(200, 23);
+            this.dateTimePicker2.TabIndex = 5;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dateTimePicker1.Location = new System.Drawing.Point(123, 31);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(200, 23);
+            this.dateTimePicker1.TabIndex = 4;
             // 
             // label8
             // 
@@ -231,21 +237,15 @@
             this.label8.Text = "Hora de Cierre";
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
-            // dateTimePicker1
+            // label7
             // 
-            this.dateTimePicker1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.dateTimePicker1.Location = new System.Drawing.Point(123, 31);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 23);
-            this.dateTimePicker1.TabIndex = 4;
-            // 
-            // dateTimePicker2
-            // 
-            this.dateTimePicker2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.dateTimePicker2.Location = new System.Drawing.Point(123, 70);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(200, 23);
-            this.dateTimePicker2.TabIndex = 5;
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.label7.Location = new System.Drawing.Point(19, 37);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(98, 15);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "Hora de Apertura";
             // 
             // btnGuardar
             // 
@@ -319,8 +319,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAreas)).EndInit();

@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -151,6 +152,12 @@
     <Compile Include="Forms\FrmReporteFacturacionPropiedad.Designer.cs">
       <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmReporteIngresoMensual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmReporteIngresoMensual.Designer.cs">
+      <DependentUpon>FrmReporteIngresoMensual.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmReportePropiedades.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmReporteFacturacionPropiedad.resx">
       <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmReporteIngresoMensual.resx">
+      <DependentUpon>FrmReporteIngresoMensual.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
