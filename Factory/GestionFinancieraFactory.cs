@@ -15,14 +15,19 @@ namespace Factory
         // Cuota = (Area x Tarifa) + CargoFijo
         public static CargoFacturableDTO CrearCuotaMantenimiento(int idPropiedad, decimal montoBase)
         {
-            decimal iva = montoBase * PORCENTAJE_IVA;
-            decimal total = montoBase + iva;
+            decimal baseRedondeada = decimal.Round(
+                montoBase, 2, MidpointRounding.AwayFromZero);
+            decimal iva = decimal.Round(
+                baseRedondeada * PORCENTAJE_IVA,
+                2,
+                MidpointRounding.AwayFromZero);
+            decimal total = baseRedondeada + iva;
 
             return new CargoFacturableDTO // se crea el objeto
             {
                 Descripcion = "Cuota de mantenimiento",
                 Tipo = "CuotaMantenimiento",
-                MontoBase = montoBase,
+                MontoBase = baseRedondeada,
                 IVA = iva,
                 Total = total,
                 FechaEmision = DateTime.Now,

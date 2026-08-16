@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using Util.Enumeraciones;
@@ -28,8 +29,11 @@ namespace UI.Forms
         private int _idPropiedadSeleccionada = 0;
 
         // ── Parámetros de configuración (App.config) ──────────────────
-        private readonly decimal _tarifaPorM2;
-        private readonly decimal _cargoFijo;
+        private readonly decimal _tarifaConfigurada;
+        private readonly decimal _cargoFijoConfigurado;
+        private decimal _tarifaActual;
+        private decimal _cargoFijoActual;
+        private decimal _cuotaActual;
 
         // ── Constante financiera ──────────────────────────────────────
         private const decimal PORCENTAJE_FONDO_RESERVA = 0.10m;   // 10 %
@@ -39,8 +43,9 @@ namespace UI.Forms
         {
             InitializeComponent();
 
-            _tarifaPorM2 = LeerParametroMonetario("TarifaPorM2");
-            _cargoFijo = LeerParametroMonetario("CargoFijoMantenimiento");
+            _tarifaConfigurada = LeerParametroMonetario("TarifaPorM2", 450m);
+            _cargoFijoConfigurado = LeerParametroMonetario("CargoFijoMantenimiento", 5000m);
+            RestaurarParametrosConfigurados();
         }
 
         // CARGA DEL FORMULARIO
@@ -51,8 +56,7 @@ namespace UI.Forms
             CargarPropietarios();
             CargarTodas();
 
-            txtTarifaM2.Text = $"₡ {_tarifaPorM2:N2} / m²";
-            txtCargoFijo.Text = $"₡ {_cargoFijo:N2}";
+            MostrarParametrosFinancieros();
             RecalcularValoresFinancieros();
             btnActualizar.Enabled = false;
             btnEliminar.Enabled = false;
@@ -134,13 +138,13 @@ namespace UI.Forms
             });
             dgvPropiedades.CellFormatting += dgvPropiedades_CellFormatting;
 
-            dgvPropiedades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(36, 50, 56);
+            dgvPropiedades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 41, 59);
             dgvPropiedades.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvPropiedades.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             dgvPropiedades.EnableHeadersVisualStyles = false;
-            dgvPropiedades.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(244, 241, 234);
+            dgvPropiedades.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             dgvPropiedades.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            dgvPropiedades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(56, 110, 105);
+            dgvPropiedades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(37, 99, 235);
             dgvPropiedades.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvPropiedades.RowTemplate.Height = 28;
         }
@@ -223,12 +227,12 @@ namespace UI.Forms
 
         private void RecalcularValoresFinancieros()
         {
-            decimal cuota = (nudArea.Value * _tarifaPorM2) + _cargoFijo;
-            if (nudArea.Value <= 0)
-                cuota = 0m;
-            decimal fondo = cuota * PORCENTAJE_FONDO_RESERVA;
+            _cuotaActual = nudArea.Value > 0
+                ? (nudArea.Value * _tarifaActual) + _cargoFijoActual
+                : 0m;
+            decimal fondo = _cuotaActual * PORCENTAJE_FONDO_RESERVA;
 
-            txtCuotaColones.Text = $"₡ {cuota:N2}";
+            txtCuotaColones.Text = $"₡ {_cuotaActual:N2}";
             txtFondoReserva.Text = $"₡ {fondo:N2}";
             txtCuotaDolares.Text = "$ —";
         }
@@ -237,18 +241,22 @@ namespace UI.Forms
         {
             try
             {
-                decimal cuotaColones = ObtenerCuotaActual();
-
-                if (cuotaColones <= 0)
+                if (nudArea.Value <= 0)
                 {
                     MostrarAviso("Ingrese el área primero para calcular la cuota.");
+                    return;
+                }
+
+                if (_cuotaActual <= 0)
+                {
+                    MostrarAviso("No se puede convertir porque la cuota calculada no es válida.");
                     return;
                 }
 
                 btnConvertirDolar.Enabled = false;
                 btnConvertirDolar.Text = "...";
 
-                decimal dolares = _bccrService.ConvertirColonesADolares(cuotaColones);
+                decimal dolares = _bccrService.ConvertirColonesADolares(_cuotaActual);
                 txtCuotaDolares.Text = $"$ {dolares:N2}";
             }
             catch (Exception ex)
@@ -265,8 +273,7 @@ namespace UI.Forms
 
         private decimal ObtenerCuotaActual()
         {
-            string raw = txtCuotaColones.Text.Replace("₡", "").Replace(",", "").Trim();
-            return decimal.TryParse(raw, out decimal valor) ? valor : 0m;
+            return _cuotaActual;
         }
 
         // BÚSQUEDA
@@ -333,7 +340,12 @@ namespace UI.Forms
             txtCodigo.Text = p.Codigo;
             txtDireccion.Text = p.Direccion;
             nudResidentes.Value = p.CantidadResidentes;
-            nudArea.Value = p.Area;   // dispara nudArea_ValueChanged
+
+            _tarifaActual = p.TarifaMetro > 0 ? p.TarifaMetro : _tarifaConfigurada;
+            _cargoFijoActual = p.CargoFijo >= 0 ? p.CargoFijo : _cargoFijoConfigurado;
+            MostrarParametrosFinancieros();
+            nudArea.Value = p.Area;
+            RecalcularValoresFinancieros();
 
             cmbTipo.SelectedItem = null;
             if (Enum.TryParse(p.Tipo, out TipoPropiedad tipo))
@@ -353,12 +365,12 @@ namespace UI.Forms
 
             if (esMorosa)
             {
-                lblEstadoValor.BackColor = Color.FromArgb(155, 75, 72);
+                lblEstadoValor.BackColor = Color.FromArgb(220, 38, 38);
                 lblEstadoValor.Text = "MOROSO";
             }
             else
             {
-                lblEstadoValor.BackColor = Color.FromArgb(56, 110, 105);
+                lblEstadoValor.BackColor = Color.FromArgb(22, 163, 74);
                 lblEstadoValor.Text = "AL DÍA";
             }
         }
@@ -478,8 +490,8 @@ namespace UI.Forms
                 Direccion = txtDireccion.Text.Trim(),
                 Area = nudArea.Value,
                 CantidadResidentes = (int)nudResidentes.Value,
-                TarifaMetro = _tarifaPorM2,
-                CargoFijo = _cargoFijo,
+                TarifaMetro = _tarifaActual,
+                CargoFijo = _cargoFijoActual,
                 CuotaMantenimiento = ObtenerCuotaActual(),
                 IdPropietario = Convert.ToInt32(cmbPropietario.SelectedValue)
             };
@@ -487,10 +499,10 @@ namespace UI.Forms
 
         private void ValidarCamposObligatorios()
         {
-            if (_tarifaPorM2 <= 0)
+            if (_tarifaActual <= 0)
                 throw new Exception("La tarifa por metro cuadrado no está configurada correctamente.");
 
-            if (_cargoFijo < 0)
+            if (_cargoFijoActual < 0)
                 throw new Exception("El cargo fijo no está configurado correctamente.");
 
             if (string.IsNullOrWhiteSpace(txtCodigo.Text))
@@ -512,6 +524,8 @@ namespace UI.Forms
         private void LimpiarFormulario()
         {
             _idPropiedadSeleccionada = 0;
+            RestaurarParametrosConfigurados();
+            MostrarParametrosFinancieros();
 
             txtCodigo.Clear();
             txtDireccion.Clear();
@@ -531,18 +545,38 @@ namespace UI.Forms
             btnEliminar.Enabled = false;
 
             // Estado neutro al limpiar
-            lblEstadoValor.BackColor = Color.FromArgb(112, 105, 96);
+            lblEstadoValor.BackColor = Color.FromArgb(100, 116, 139);
             lblEstadoValor.Text = "Sin datos";
 
             dgvPropiedades.ClearSelection();
             txtCodigo.Focus();
         }
 
-        private static decimal LeerParametroMonetario(string clave)
+        private static decimal LeerParametroMonetario(string clave, decimal valorPredeterminado)
         {
             decimal valor;
             string configurado = ConfigurationManager.AppSettings[clave];
-            return decimal.TryParse(configurado, out valor) ? valor : -1m;
+            if (decimal.TryParse(configurado, NumberStyles.Number,
+                CultureInfo.InvariantCulture, out valor) && valor >= 0)
+                return valor;
+
+            if (decimal.TryParse(configurado, NumberStyles.Number,
+                CultureInfo.CurrentCulture, out valor) && valor >= 0)
+                return valor;
+
+            return valorPredeterminado;
+        }
+
+        private void RestaurarParametrosConfigurados()
+        {
+            _tarifaActual = _tarifaConfigurada;
+            _cargoFijoActual = _cargoFijoConfigurado;
+        }
+
+        private void MostrarParametrosFinancieros()
+        {
+            txtTarifaM2.Text = $"₡ {_tarifaActual:N2} / m²";
+            txtCargoFijo.Text = $"₡ {_cargoFijoActual:N2}";
         }
 
         private void dgvPropiedades_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
