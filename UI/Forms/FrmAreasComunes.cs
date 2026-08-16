@@ -16,6 +16,7 @@ namespace UI.Forms
     {
         private readonly AreaComunBLL _bll = new AreaComunBLL();
         private int _idSeleccionado = 0;
+        private bool _limpiando = false;
         public FrmAreasComunes()
         {
             InitializeComponent();
@@ -118,24 +119,17 @@ namespace UI.Forms
         //selecionar en el grid
         private void dgvAreas_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvAreas.CurrentRow == null)
-            {
-                return;
-            }
-                
-            //  devuelve el DTO directamente desde el DataSource
+            if (_limpiando) return; // si estamos limpiando, ignoramos el evento
+            if (dgvAreas.CurrentRow == null) return;
+
             AreaComunDTO area = dgvAreas.CurrentRow.DataBoundItem as AreaComunDTO;
             if (area == null) return;
 
             _idSeleccionado = area.IdArea;
-
-            // se llenan los datos del formulario
             txtNombre.Text = area.Nombre;
             txtDescripcion.Text = area.Descripcion;
             numericUpDown1.Value = area.CapacidadMaxima;
             numericUpDown2.Value = area.Tarifa;
-
-
             dateTimePicker1.Value = DateTime.Today.Add(area.HoraApertura);
             dateTimePicker2.Value = DateTime.Today.Add(area.HoraCierre);
         }
@@ -224,6 +218,7 @@ namespace UI.Forms
 
         private void LimpiarFormulario()
         {
+            _limpiando = true; 
             _idSeleccionado = 0;
             txtNombre.Text = string.Empty;
             txtDescripcion.Text = string.Empty;
@@ -232,6 +227,7 @@ namespace UI.Forms
             dateTimePicker1.Value = DateTime.Today.AddHours(8);
             dateTimePicker2.Value = DateTime.Today.AddHours(22);
             dgvAreas.ClearSelection();
+            _limpiando = false; 
         }
 
         private void dgvAreas_CellContentClick(object sender, DataGridViewCellEventArgs e)
