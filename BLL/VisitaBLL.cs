@@ -1,49 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DAL.DAO;
 using DTO;
-using DAL.DAO;  
+using Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace BLL
 {
+ 
     public class VisitaBLL
     {
-        private readonly VisitaDAO visitaDAO = new VisitaDAO();
+     
+        private readonly IVisitaDAL _dal;
 
-        // -------------------------------------------------------
-        // Registra una visita nueva y genera su código QR
-        // Devuelve el VisitaDTO con IdVisita y CodigoQR asignados
-        // -------------------------------------------------------
+        public VisitaBLL()
+        {
+            _dal = new VisitaDAO();
+        }
+
+     //registrar visita y generar QR
         public VisitaDTO RegistrarVisita(VisitaDTO visita)
         {
             ValidarVisita(visita);
 
-            // 1. Insertar en BD (sin QR todavía, el ID no existe aún)
+            // Hora de entrada 
+            visita.HoraEntrada = DateTime.Now.TimeOfDay;
             visita.CodigoQR = string.Empty;
-            int idGenerado = visitaDAO.Registrar(visita);
+
+            //  insertar y obtener el Id generado por la BD
+            int idGenerado = _dal.Registrar(visita);
 
             if (idGenerado <= 0)
                 throw new Exception("No se pudo registrar la visita en la base de datos.");
 
             visita.IdVisita = idGenerado;
 
-            // 2. Generar código QR con el ID ya conocido
-            visita.CodigoQR = GenerarCodigoQR(idGenerado, visita.IdPropiedad, visita.Fecha);
+            //  generar código QR con el Id ya conocido
+            visita.CodigoQR = $"VISITA-{idGenerado}-{visita.IdPropiedad}-{visita.Fecha:yyyyMMdd}";
 
-            // 3. Actualizar el QR en la BD
-            visitaDAO.ActualizarQR(idGenerado, visita.CodigoQR);
+            //  guardar el QR en la BD
+            _dal.ActualizarQR(idGenerado, visita.CodigoQR);
 
             return visita;
         }
 
-        // -------------------------------------------------------
-        // Registra la salida de un visitante
-        // -------------------------------------------------------
+       
+        // Validar el QR
+        // El guardia escanea o escribe el código QR
+        public VisitaDTO ValidarAccesoQR(string codigoQR)
+        {
+            if (string.IsNullOrWhiteSpace(codigoQR))
+                throw new Exception("El código QR no puede estar vacío.");
+
+            VisitaDTO visita = _dal.ObtenerPorQR(codigoQR);
+
+            if (visita == null)
+                throw new Exception(
+                    "Código QR no válido. No se encontró ninguna visita con ese código.");
+
+            if (visita.HoraSalida.HasValue)
+                throw new Exception(
+                    $"Este QR ya fue utilizado. " +
+                    $"{visita.NombreVisitante} registró salida a las {visita.HoraSalidaTexto}.");
+
+            return visita;
+        }
+
+      //registrar salida
         public bool RegistrarSalida(int idVisita)
         {
-            VisitaDTO visita = visitaDAO.ObtenerPorId(idVisita);
+            if (idVisita <= 0)
+                throw new Exception("Id de visita inválido.");
+
+            VisitaDTO visita = _dal.ObtenerPorId(idVisita);
 
             if (visita == null)
                 throw new Exception("La visita no existe.");
@@ -51,50 +79,33 @@ namespace BLL
             if (visita.HoraSalida.HasValue)
                 throw new Exception("Esta visita ya tiene registrada una hora de salida.");
 
-            return visitaDAO.RegistrarSalida(idVisita, DateTime.Now);
+            // Hora de salida
+            return _dal.RegistrarSalida(idVisita, DateTime.Now.TimeOfDay);
         }
 
-        // -------------------------------------------------------
-        // Obtiene el historial con filtros opcionales
-        // -------------------------------------------------------
-        public List<VisitaDTO> ObtenerPorFiltros(int? idPropiedad, DateTime? fecha, string estado)
+        // historial con filtros
+        public List<VisitaDTO> ObtenerHistorial(int? idPropiedad, DateTime? fecha, string estado)
         {
-            return visitaDAO.ObtenerPorFiltros(idPropiedad, fecha, estado);
+            return _dal.ObtenerPorFiltros(idPropiedad, fecha, estado);
         }
 
-        // -------------------------------------------------------
-        // Valida un código QR escaneado: devuelve la visita o null
-        // -------------------------------------------------------
-        public VisitaDTO ValidarQR(string codigoQR)
-        {
-            if (string.IsNullOrWhiteSpace(codigoQR))
-                throw new Exception("El código QR no puede estar vacío.");
-
-            return visitaDAO.ObtenerPorQR(codigoQR);
-        }
-
-        // -------------------------------------------------------
-        // Genera el texto que se codifica en el QR
-        // Formato: VISITA-{IdVisita}-{IdPropiedad}-{Fecha:yyyyMMdd}
-        // -------------------------------------------------------
-        public string GenerarCodigoQR(int idVisita, int idPropiedad, DateTime fecha)
-        {
-            return $"VISITA-{idVisita}-{idPropiedad}-{fecha:yyyyMMdd}";
-        }
-
-        // -------------------------------------------------------
-        // Validaciones de negocio
-        // -------------------------------------------------------
+        //validaciones 
         private void ValidarVisita(VisitaDTO visita)
         {
             if (string.IsNullOrWhiteSpace(visita.NombreVisitante))
                 throw new Exception("El nombre del visitante es obligatorio.");
+
+            if (visita.NombreVisitante.Length > 100)
+                throw new Exception("El nombre no puede superar 100 caracteres.");
 
             if (visita.IdPropiedad <= 0)
                 throw new Exception("Debe seleccionar una propiedad de destino.");
 
             if (visita.Fecha == DateTime.MinValue)
                 throw new Exception("La fecha de visita no es válida.");
+
+            if (visita.Fecha.Date < DateTime.Today)
+                throw new Exception("La fecha de visita no puede ser en el pasado.");
         }
     }
 }

@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTO;
+using Interfaces;
 
 namespace DAL.DAO
 {
-    public class VisitaDAO
+    public class VisitaDAO : IVisitaDAL
     {
         private readonly Conexion conexion = Conexion.Instancia;
 
@@ -25,15 +26,18 @@ namespace DAL.DAO
                 SqlCommand cmd = new SqlCommand("sp_RegistrarVisita", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+
                 cmd.Parameters.AddWithValue("@NombreVisitante", visita.NombreVisitante);
                 cmd.Parameters.AddWithValue("@Fecha", visita.Fecha.Date);
                 cmd.Parameters.AddWithValue("@HoraEntrada", visita.HoraEntrada);
+                cmd.Parameters.AddWithValue("@CodigoQR",
+                    string.IsNullOrEmpty(visita.CodigoQR)
+                    ? (object)DBNull.Value : visita.CodigoQR);
                 cmd.Parameters.AddWithValue("@IdPropiedad", visita.IdPropiedad);
-                cmd.Parameters.AddWithValue("@CodigoQR", visita.CodigoQR ?? (object)DBNull.Value);
 
-                // El SP devuelve el ID generado con OUTPUT
                 object resultado = cmd.ExecuteScalar();
-                return resultado != null ? Convert.ToInt32(resultado) : 0;
+                return resultado != null && resultado != DBNull.Value
+                       ? Convert.ToInt32(resultado) : 0;
             }
         }
 
@@ -50,15 +54,15 @@ namespace DAL.DAO
 
                 cmd.Parameters.AddWithValue("@IdVisita", idVisita);
                 cmd.Parameters.AddWithValue("@CodigoQR", codigoQR);
-
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
         }
 
         // -------------------------------------------------------
         // Registra la hora de salida de una visita
         // -------------------------------------------------------
-        public bool RegistrarSalida(int idVisita, DateTime horaSalida)
+        public bool RegistrarSalida(int idVisita, TimeSpan horaSalida)
         {
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
@@ -69,7 +73,9 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@IdVisita", idVisita);
                 cmd.Parameters.AddWithValue("@HoraSalida", horaSalida);
 
-                return cmd.ExecuteNonQuery() > 0;
+
+                cmd.ExecuteNonQuery();
+                return true;
             }
         }
 
@@ -86,6 +92,7 @@ namespace DAL.DAO
                 SqlCommand cmd = new SqlCommand("sp_ObtenerVisitas", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                //en caso de que no haya filtro el sp ignora el parametro 
                 cmd.Parameters.AddWithValue("@IdPropiedad",
                     idPropiedad.HasValue ? (object)idPropiedad.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Fecha",
@@ -97,7 +104,7 @@ namespace DAL.DAO
                 {
                     while (dr.Read())
                     {
-                        lista.Add(MapearVisita(dr));
+                        lista.Add(MapearFila(dr));
                     }
                 }
             }
@@ -119,7 +126,7 @@ namespace DAL.DAO
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
-                        return MapearVisita(dr);
+                        return MapearFila(dr);
                 }
             }
             return null;
@@ -140,7 +147,7 @@ namespace DAL.DAO
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     if (dr.Read())
-                        return MapearVisita(dr);
+                        return MapearFila(dr);
                 }
             }
             return null;
@@ -149,18 +156,21 @@ namespace DAL.DAO
         // -------------------------------------------------------
         // Mapea un DataReader a un VisitaDTO
         // -------------------------------------------------------
-        private VisitaDTO MapearVisita(SqlDataReader dr)
+        private VisitaDTO MapearFila(SqlDataReader dr)
         {
             return new VisitaDTO
             {
                 IdVisita = Convert.ToInt32(dr["IdVisita"]),
                 NombreVisitante = dr["NombreVisitante"].ToString(),
                 Fecha = Convert.ToDateTime(dr["Fecha"]),
-                HoraEntrada = Convert.ToDateTime(dr["HoraEntrada"]),
+                HoraEntrada = (TimeSpan)dr["HoraEntrada"],
+                // HoraSalida puede ser null (visitante aún dentro)
                 HoraSalida = dr["HoraSalida"] == DBNull.Value
-                                    ? (DateTime?)null
-                                    : Convert.ToDateTime(dr["HoraSalida"]),
-                CodigoQR = dr["CodigoQR"].ToString(),
+                                  ? (TimeSpan?)null
+                                  : (TimeSpan)dr["HoraSalida"],
+                CodigoQR = dr["CodigoQR"] == DBNull.Value
+                                  ? string.Empty
+                                  : dr["CodigoQR"].ToString(),
                 IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]),
                 CodigoPropiedad = dr["CodigoPropiedad"].ToString()
             };

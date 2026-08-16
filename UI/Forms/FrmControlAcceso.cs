@@ -16,7 +16,7 @@ namespace UI.Forms
     public partial class FrmControlAcceso : Form
     {
         // ── Dependencias ──────────────────────────────────────────
-        private readonly VisitaBLL visitaBLL = new VisitaBLL();
+        private readonly VisitaBLL _bll = new VisitaBLL();
         private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
 
         // ── Estado interno ────────────────────────────────────────
@@ -57,7 +57,7 @@ namespace UI.Forms
             };
         }
 
-        /// <summary>Carga el combo de propiedades en ambas pestañas.</summary>
+        //Carga el combo de propiedades en ambas pestañas
         private void CargarPropiedades()
         {
             try
@@ -89,7 +89,7 @@ namespace UI.Forms
             }
         }
 
-        /// <summary>Define las columnas del DataGridView de historial.</summary>
+        //Define las columnas del DataGridView de historial.
         private void ConfigurarGrilla()
         {
             dgvHistorial.Columns.Clear();
@@ -187,12 +187,12 @@ namespace UI.Forms
                 {
                     NombreVisitante = txtNombreVisitante.Text.Trim(),
                     Fecha           = dtpFecha.Value.Date,
-                    HoraEntrada     = dtpHoraEntrada.Value,
+                    HoraEntrada = dtpHoraEntrada.Value.TimeOfDay,
                     IdPropiedad     = (int)cmbPropiedad.SelectedValue
                 };
 
                 // Registrar en BLL (devuelve el DTO con IdVisita y CodigoQR asignados)
-                VisitaDTO registrada = visitaBLL.RegistrarVisita(visita);
+                VisitaDTO registrada = _bll.RegistrarVisita(visita);
 
                 _idVisitaActual = registrada.IdVisita;
 
@@ -228,7 +228,7 @@ namespace UI.Forms
 
             try
             {
-                visitaBLL.RegistrarSalida(_idVisitaActual);
+                _bll.RegistrarSalida(_idVisitaActual);
 
                 MessageBox.Show("Salida registrada correctamente.",
                     "Salida registrada", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -263,10 +263,10 @@ namespace UI.Forms
             }
         }
 
-        /// <summary>
-        /// Genera la imagen QR a partir del texto del código
-        /// usando la librería QRCoder (NuGet).
-        /// </summary>
+        
+        //Genera la imagen QR a partir del texto del código
+        // usando la librería QRCoder (NuGet).
+      
         private void MostrarQR(string contenido)
         {
             QRCodeGenerator qrGen = new QRCodeGenerator();
@@ -290,7 +290,7 @@ namespace UI.Forms
         }
 
         // ============================================================
-        // TAB 2 — HISTORIAL
+        //  HISTORIAL
         // ============================================================
 
         private void CargarHistorial()
@@ -307,7 +307,7 @@ namespace UI.Forms
 
                 string estado = cmbFiltroEstado.SelectedItem?.ToString();
 
-                List<VisitaDTO> lista = visitaBLL.ObtenerPorFiltros(idPropiedad, fecha, estado);
+                List<VisitaDTO> lista = _bll.ObtenerHistorial(idPropiedad, fecha, estado);
 
                 dgvHistorial.DataSource = null;
                 dgvHistorial.DataSource = lista;
@@ -353,10 +353,9 @@ namespace UI.Forms
             dtpFiltroFecha.Enabled = chkUsarFecha.Checked;
         }
 
-        /// <summary>
         /// Al hacer clic en el grid: carga el idVisita seleccionado
         /// y habilita el botón Registrar Salida si la visita sigue activa.
-        /// </summary>
+    
         private void dgvHistorial_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -385,11 +384,11 @@ namespace UI.Forms
 
             try
             {
-                VisitaDTO visita = visitaBLL.ValidarQR(codigo);
+                VisitaDTO visita = _bll.ValidarAccesoQR(codigo);
 
                 if (visita == null)
                 {
-                    lblResultadoQR.Text = "❌  Código QR no encontrado.";
+                    lblResultadoQR.Text = "  Código QR no encontrado.";
                     lblResultadoQR.ForeColor = Color.Red;
                 }
                 else

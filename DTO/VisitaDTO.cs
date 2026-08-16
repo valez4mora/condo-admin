@@ -11,13 +11,23 @@ namespace DTO
         public int IdVisita { get; set; }
         public string NombreVisitante { get; set; }
         public DateTime Fecha { get; set; }
-        public DateTime HoraEntrada { get; set; }
-        public DateTime? HoraSalida { get; set; }   // nullable: null = aún dentro
+        public TimeSpan HoraEntrada { get; set; }
+        public Nullable<TimeSpan> HoraSalida { get; set; }
+
         public string CodigoQR { get; set; }
         public int IdPropiedad { get; set; }
-
-        // Solo para mostrar en grids (no se guarda en BD)
         public string CodigoPropiedad { get; set; }
+
         public string Estado => HoraSalida.HasValue ? "Fuera" : "Dentro";
+
+        public string FechaTexto => Fecha.ToString("dd/MM/yyyy");
+
+        public string HoraEntradaTexto =>
+            DateTime.Today.Add(HoraEntrada).ToString("hh:mm tt");
+
+        public string HoraSalidaTexto =>
+            HoraSalida.HasValue
+            ? DateTime.Today.Add(HoraSalida.Value).ToString("hh:mm tt")
+            : "—";
     }
 }

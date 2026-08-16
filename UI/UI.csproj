@@ -194,6 +194,12 @@
     <Compile Include="Forms\FrmUsuarios.Designer.cs">
       <DependentUpon>FrmUsuarios.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Visitas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Visitas.Designer.cs">
+      <DependentUpon>Visitas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
@@ -216,6 +222,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmReservas.resx">
       <DependentUpon>FrmReservas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Visitas.resx">
+      <DependentUpon>Visitas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
