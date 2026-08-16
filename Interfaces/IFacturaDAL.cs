@@ -28,5 +28,6 @@ namespace Interfaces
 
         ///Todas las facturas del sistema.
         List<FacturaDTO> ObtenerTodas();
+        
     }
 }

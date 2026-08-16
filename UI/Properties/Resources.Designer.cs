@@ -93,9 +93,69 @@ namespace UI.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ciudad__1_1 {
+            get {
+                object obj = ResourceManager.GetObject("ciudad (1)1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ciudad__1_2 {
+            get {
+                object obj = ResourceManager.GetObject("ciudad (1)2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ciudad__1_3 {
+            get {
+                object obj = ResourceManager.GetObject("ciudad (1)3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cyber_security {
             get {
                 object obj = ResourceManager.GetObject("cyber-security", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap flecha_de_circulo_de_disquete_a_la_derecha {
+            get {
+                object obj = ResourceManager.GetObject("flecha-de-circulo-de-disquete-a-la-derecha", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap flecha_de_circulo_de_disquete_a_la_derecha__1_ {
+            get {
+                object obj = ResourceManager.GetObject("flecha-de-circulo-de-disquete-a-la-derecha (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap flecha_de_circulo_de_disquete_a_la_derecha__1_1 {
+            get {
+                object obj = ResourceManager.GetObject("flecha-de-circulo-de-disquete-a-la-derecha (1)1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
