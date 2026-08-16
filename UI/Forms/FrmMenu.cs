@@ -243,10 +243,7 @@ namespace UI.Forms
 
         private void ingresosMensualesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmReporteIngresoMensual frm = new FrmReporteIngresoMensual();
-            frm.MdiParent = this;
-            frm.WindowState = FormWindowState.Maximized;
-            frm.Show();
+
         }
     }
 }

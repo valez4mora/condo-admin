@@ -11,11 +11,9 @@ using Util.Enumeraciones;
 
 namespace BLL
 {
-    /// <summary>
     /// Lógica de negocio para cargos facturables.
     /// Maneja la generación automática de cuotas, el registro manual de
     /// multas / cuotas extraordinarias / reservas, y el CRUD completo.
-    /// </summary>
     public class CargoFacturableBLL
     {
         private readonly ICargoFacturableDAL _dal = new CargoFacturableDAO();
@@ -23,18 +21,23 @@ namespace BLL
         // Tasa de IVA vigente (13 %)
         private const decimal PORCENTAJE_IVA = 0.13m;
 
-        // ═════════════════════════════════════════════════════════════
         // GENERACIÓN AUTOMÁTICA — Cuota de mantenimiento
         // Cuota = (Área × TarifaM2) + CargoFijo
-        // ═════════════════════════════════════════════════════════════
-
-        /// <summary>
         /// Calcula y persiste la cuota de mantenimiento ordinaria para una propiedad.
         /// Usa la Factory para construir el DTO con IVA aplicado.
-        /// </summary>
         public CargoFacturableDTO GenerarCuotaOrdinaria(PropiedadDTO propiedad)
         {
             ValidarPropiedad(propiedad);
+
+            DateTime hoy = DateTime.Today;
+            bool yaExiste = _dal.ObtenerPorPropiedad(propiedad.IdPropiedad).Any(c =>
+                c.Tipo == TipoCargo.CuotaMantenimiento.ToString() &&
+                c.FechaEmision.Year == hoy.Year &&
+                c.FechaEmision.Month == hoy.Month &&
+                c.Estado != "Anulado");
+            if (yaExiste)
+                throw new Exception("Ya existe una cuota de mantenimiento para esta propiedad en " +
+                    hoy.ToString("MMMM yyyy") + ".");
 
             decimal montoBase = (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo;
 
@@ -44,17 +47,15 @@ namespace BLL
             if (!_dal.Registrar(cargo))
                 throw new Exception("No se pudo guardar la cuota en la base de datos.");
 
+            // Registra el aporte histórico del 10 % solicitado por el proyecto.
+            new FondoReservaBLL().RegistrarFondo(propiedad, montoBase);
+
             return cargo;
         }
 
-        // ═════════════════════════════════════════════════════════════
         // REGISTRO MANUAL — Multa / Cuota Extraordinaria / Reserva / etc.
-        // ═════════════════════════════════════════════════════════════
-
-        /// <summary>
         /// Registra un cargo facturable creado manualmente por el administrador.
         /// Aplica IVA solo a CuotaMantenimiento y CuotaExtraordinaria.
-        /// </summary>
         public CargoFacturableDTO RegistrarManual(CargoFacturableDTO cargo)
         {
             ValidarCargoManual(cargo);
@@ -79,10 +80,7 @@ namespace BLL
             return cargo;
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CRUD
-        // ═════════════════════════════════════════════════════════════
-
         public bool Modificar(CargoFacturableDTO cargo)
         {
             if (cargo == null)
@@ -122,7 +120,7 @@ namespace BLL
             return _dal.Eliminar(idCargo);
         }
 
-        /// <summary>Marca un cargo como pagado. Solo aplica si está en estado Pendiente.</summary>
+        ///Marca un cargo como pagado. Solo aplica si está en estado Pendiente.
         public bool MarcarComoPagado(int idCargo)
         {
             if (idCargo <= 0)
@@ -138,10 +136,7 @@ namespace BLL
             return _dal.MarcarComoPagado(idCargo);
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CONSULTAS
-        // ═════════════════════════════════════════════════════════════
-
         public CargoFacturableDTO ObtenerPorId(int idCargo)
         {
             if (idCargo <= 0)
@@ -163,7 +158,7 @@ namespace BLL
             return _dal.ObtenerPorPropiedad(idPropiedad);
         }
 
-        /// <summary>Devuelve solo los cargos pendientes de una propiedad.</summary>
+        ///Devuelve solo los cargos pendientes de una propiedad.
         public List<CargoFacturableDTO> ObtenerPendientesPorPropiedad(int idPropiedad)
         {
             return ObtenerPorPropiedad(idPropiedad)
@@ -171,10 +166,8 @@ namespace BLL
                 .ToList();
         }
 
-        /// <summary>
         /// Devuelve los cargos vencidos (Pendiente y FechaVencimiento pasada).
         /// Se usa para calcular morosidad e intereses.
-        /// </summary>
         public List<CargoFacturableDTO> ObtenerVencidosPorPropiedad(int idPropiedad)
         {
             return ObtenerPorPropiedad(idPropiedad)
@@ -182,10 +175,7 @@ namespace BLL
                 .ToList();
         }
 
-        // ═════════════════════════════════════════════════════════════
         // HELPERS PRIVADOS
-        // ═════════════════════════════════════════════════════════════
-
         private void ValidarPropiedad(PropiedadDTO propiedad)
         {
             if (propiedad == null)
@@ -223,10 +213,8 @@ namespace BLL
                 throw new Exception("La fecha de vencimiento debe ser posterior a la fecha de emisión.");
         }
 
-        /// <summary>
         /// Determina si el tipo de cargo tiene IVA (13 %) según el reglamento del proyecto.
         /// Multas, penalizaciones, fondo de reserva e intereses no llevan IVA.
-        /// </summary>
         private bool AplicaIVA(string tipo)
         {
             return tipo == TipoCargo.CuotaMantenimiento.ToString() ||

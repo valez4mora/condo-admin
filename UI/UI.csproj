@@ -151,12 +151,6 @@
     <Compile Include="Forms\FrmReporteFacturacionPropiedad.Designer.cs">
       <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FrmReporteIngresoMensual.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FrmReporteIngresoMensual.Designer.cs">
-      <DependentUpon>FrmReporteIngresoMensual.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FrmReportePropiedades.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -203,6 +197,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
       <DependentUpon>FrmAreasComunes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmFondoReserva.resx">
+      <DependentUpon>FrmFondoReserva.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
       <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
