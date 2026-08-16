@@ -205,6 +205,9 @@
     <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
       <DependentUpon>FrmAreasComunes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmBitacora.resx">
+      <DependentUpon>FrmBitacora.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
       <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
     </EmbeddedResource>
