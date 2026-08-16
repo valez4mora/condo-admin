@@ -11,8 +11,6 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
-    /// Acceso a datos para la tabla Factura / DetalleFactura.
-    /// Usa stored procedures para todas las operaciones.
     public class FacturaDAO : IFacturaDAL
     {
         private readonly Conexion _cn = Conexion.Instancia;
