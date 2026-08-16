@@ -15,6 +15,7 @@ namespace BLL
 
         public bool Registrar(PropiedadDTO propiedad)
         {
+            CalcularCuota(propiedad);
             if (string.IsNullOrWhiteSpace(propiedad.Codigo))
                 throw new Exception("El código es obligatorio.");
 
@@ -54,6 +55,7 @@ namespace BLL
 
         public bool Modificar(PropiedadDTO propiedad)
         {
+            CalcularCuota(propiedad);
             if (propiedad.IdPropiedad <= 0)
                 throw new Exception("Debe buscar una propiedad antes de actualizar.");
 
@@ -70,6 +72,21 @@ namespace BLL
                 throw new Exception("Debe seleccionar un propietario.");
 
             return dal.Modificar(propiedad);
+        }
+
+        private void CalcularCuota(PropiedadDTO propiedad)
+        {
+            if (propiedad == null)
+                throw new Exception("Los datos de la propiedad son obligatorios.");
+
+            if (propiedad.TarifaMetro <= 0)
+                throw new Exception("La tarifa por metro cuadrado debe ser mayor a cero.");
+
+            if (propiedad.CargoFijo < 0)
+                throw new Exception("El cargo fijo no puede ser negativo.");
+
+            propiedad.CuotaMantenimiento =
+                (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo;
         }
 
         public bool Eliminar(int idPropiedad)

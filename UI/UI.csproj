@@ -211,9 +211,6 @@
     <EmbeddedResource Include="Forms\FrmMenu.resx">
       <DependentUpon>FrmMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmPropiedad.resx">
-      <DependentUpon>FrmPropiedad.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmReporteFacturacionPropiedad.resx">
       <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
     </EmbeddedResource>

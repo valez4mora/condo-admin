@@ -21,6 +21,8 @@ namespace UI.Forms
         private readonly PropiedadBLL _propiedadBLL = new PropiedadBLL();
         private readonly PropietarioBLL _propietarioBLL = new PropietarioBLL();
         private readonly BCCRService _bccrService = new BCCRService();
+        private readonly Dictionary<int, bool> _estadoMorosidadPropietarios =
+            new Dictionary<int, bool>();
 
         // ── Estado interno ────────────────────────────────────────────
         private int _idPropiedadSeleccionada = 0;
@@ -37,13 +39,8 @@ namespace UI.Forms
         {
             InitializeComponent();
 
-            decimal.TryParse(
-                ConfigurationManager.AppSettings["TarifaPorM2"],
-                out _tarifaPorM2);
-
-            decimal.TryParse(
-                ConfigurationManager.AppSettings["CargoFijoMantenimiento"],
-                out _cargoFijo);
+            _tarifaPorM2 = LeerParametroMonetario("TarifaPorM2");
+            _cargoFijo = LeerParametroMonetario("CargoFijoMantenimiento");
         }
 
         // CARGA DEL FORMULARIO
@@ -56,6 +53,9 @@ namespace UI.Forms
 
             txtTarifaM2.Text = $"₡ {_tarifaPorM2:N2} / m²";
             txtCargoFijo.Text = $"₡ {_cargoFijo:N2}";
+            RecalcularValoresFinancieros();
+            btnActualizar.Enabled = false;
+            btnEliminar.Enabled = false;
         }
 
         // ── Configuración del DataGridView ────────────────────────────
@@ -103,21 +103,44 @@ namespace UI.Forms
                 },
                 new DataGridViewTextBoxColumn
                 {
+                    DataPropertyName = "TarifaMetro",
+                    HeaderText       = "Tarifa/m²",
+                    Width            = 95,
+                    DefaultCellStyle = new DataGridViewCellStyle
+                                       { Format = "N2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "CargoFijo",
+                    HeaderText       = "Cargo fijo",
+                    Width            = 95,
+                    DefaultCellStyle = new DataGridViewCellStyle
+                                       { Format = "N2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                },
+                new DataGridViewTextBoxColumn
+                {
                     DataPropertyName = "CuotaMantenimiento",
                     HeaderText       = "Cuota (₡)",
                     Width            = 110,
                     DefaultCellStyle = new DataGridViewCellStyle
                                        { Format = "N2", Alignment = DataGridViewContentAlignment.MiddleRight }
+                },
+                new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "EstadoMorosidad",
+                    HeaderText       = "Estado",
+                    Width            = 80
                 }
             });
+            dgvPropiedades.CellFormatting += dgvPropiedades_CellFormatting;
 
-            dgvPropiedades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(26, 58, 92);
+            dgvPropiedades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(36, 50, 56);
             dgvPropiedades.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvPropiedades.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             dgvPropiedades.EnableHeadersVisualStyles = false;
-            dgvPropiedades.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(235, 243, 252);
+            dgvPropiedades.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(244, 241, 234);
             dgvPropiedades.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            dgvPropiedades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(41, 128, 185);
+            dgvPropiedades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(56, 110, 105);
             dgvPropiedades.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvPropiedades.RowTemplate.Height = 28;
         }
@@ -135,6 +158,11 @@ namespace UI.Forms
             try
             {
                 var lista = _propietarioBLL.ObtenerTodos();
+                _estadoMorosidadPropietarios.Clear();
+                foreach (var propietario in lista)
+                    _estadoMorosidadPropietarios[propietario.IdPersona] =
+                        propietario.EstadoMorosidad;
+
                 var fuente = lista
                     .Select(p => new
                     {
@@ -152,6 +180,17 @@ namespace UI.Forms
             {
                 MostrarError("No se pudo cargar la lista de propietarios: " + ex.Message);
             }
+        }
+
+        private void cmbPropietario_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_idPropiedadSeleccionada > 0 || cmbPropietario.SelectedValue == null)
+                return;
+
+            int idPropietario;
+            if (int.TryParse(cmbPropietario.SelectedValue.ToString(), out idPropietario) &&
+                _estadoMorosidadPropietarios.ContainsKey(idPropietario))
+                MostrarEstado(_estadoMorosidadPropietarios[idPropietario]);
         }
 
         // ── Cargar todas las propiedades ──────────────────────────────
@@ -179,7 +218,14 @@ namespace UI.Forms
         // CÁLCULOS FINANCIEROS AUTOMÁTICOS
         private void nudArea_ValueChanged(object sender, EventArgs e)
         {
+            RecalcularValoresFinancieros();
+        }
+
+        private void RecalcularValoresFinancieros()
+        {
             decimal cuota = (nudArea.Value * _tarifaPorM2) + _cargoFijo;
+            if (nudArea.Value <= 0)
+                cuota = 0m;
             decimal fondo = cuota * PORCENTAJE_FONDO_RESERVA;
 
             txtCuotaColones.Text = $"₡ {cuota:N2}";
@@ -296,6 +342,9 @@ namespace UI.Forms
             cmbPropietario.SelectedValue = p.IdPropietario;
 
             MostrarEstado(p.EstadoMorosidad);
+            btnRegistrar.Enabled = false;
+            btnActualizar.Enabled = true;
+            btnEliminar.Enabled = true;
         }
 
         // ── Badge de estado morosidad ─────────────────────────────────
@@ -304,13 +353,13 @@ namespace UI.Forms
 
             if (esMorosa)
             {
-                lblEstadoValor.BackColor = Color.FromArgb(220, 38, 38);   // rojo
-                lblEstadoValor.Text = "✘ Morosa";
+                lblEstadoValor.BackColor = Color.FromArgb(155, 75, 72);
+                lblEstadoValor.Text = "MOROSO";
             }
             else
             {
-                lblEstadoValor.BackColor = Color.FromArgb(39, 174, 96);   // verde
-                lblEstadoValor.Text = "✔ Al día";
+                lblEstadoValor.BackColor = Color.FromArgb(56, 110, 105);
+                lblEstadoValor.Text = "AL DÍA";
             }
         }
 
@@ -438,6 +487,12 @@ namespace UI.Forms
 
         private void ValidarCamposObligatorios()
         {
+            if (_tarifaPorM2 <= 0)
+                throw new Exception("La tarifa por metro cuadrado no está configurada correctamente.");
+
+            if (_cargoFijo < 0)
+                throw new Exception("El cargo fijo no está configurado correctamente.");
+
             if (string.IsNullOrWhiteSpace(txtCodigo.Text))
                 throw new Exception("El código de la propiedad es obligatorio.");
 
@@ -471,13 +526,37 @@ namespace UI.Forms
 
             cmbTipo.SelectedIndex = -1;
             cmbPropietario.SelectedIndex = -1;
+            btnRegistrar.Enabled = true;
+            btnActualizar.Enabled = false;
+            btnEliminar.Enabled = false;
 
             // Estado neutro al limpiar
-            lblEstadoValor.BackColor = Color.FromArgb(100, 120, 140);
+            lblEstadoValor.BackColor = Color.FromArgb(112, 105, 96);
             lblEstadoValor.Text = "Sin datos";
 
             dgvPropiedades.ClearSelection();
             txtCodigo.Focus();
+        }
+
+        private static decimal LeerParametroMonetario(string clave)
+        {
+            decimal valor;
+            string configurado = ConfigurationManager.AppSettings[clave];
+            return decimal.TryParse(configurado, out valor) ? valor : -1m;
+        }
+
+        private void dgvPropiedades_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex < 0 ||
+                dgvPropiedades.Columns[e.ColumnIndex].DataPropertyName != "EstadoMorosidad" ||
+                e.Value == null)
+                return;
+
+            bool morosa = Convert.ToBoolean(e.Value);
+            e.Value = morosa ? "Morosa" : "Al día";
+            e.CellStyle.ForeColor = morosa ? Color.Firebrick : Color.SeaGreen;
+            e.CellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            e.FormattingApplied = true;
         }
 
         // ── Mensajes ──────────────────────────────────────────────────
