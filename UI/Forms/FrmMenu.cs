@@ -24,6 +24,7 @@ namespace UI.Forms
         {
             FrmPropiedad frm = new FrmPropiedad();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -41,6 +42,7 @@ namespace UI.Forms
         {
             FrmPropietario frm = new FrmPropietario();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -48,6 +50,7 @@ namespace UI.Forms
         {
             FrmResidente frm = new FrmResidente();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -65,6 +68,7 @@ namespace UI.Forms
         {
             FrmCargosFacturables frm = new FrmCargosFacturables();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -72,6 +76,7 @@ namespace UI.Forms
         {
             FrmCargosFacturables frm = new FrmCargosFacturables();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -79,6 +84,7 @@ namespace UI.Forms
         {
             FrmGenerarCuota frm = new FrmGenerarCuota();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -86,6 +92,7 @@ namespace UI.Forms
         {
             FrmFacturas frm = new FrmFacturas();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -93,6 +100,7 @@ namespace UI.Forms
         {
             FrmPagos frm = new FrmPagos();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -109,6 +117,7 @@ namespace UI.Forms
         {
             FrmMorosidad frm = new FrmMorosidad();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -116,6 +125,7 @@ namespace UI.Forms
         {
             FrmMorosidad frm = new FrmMorosidad();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -123,6 +133,7 @@ namespace UI.Forms
         {
             FrmPenalizacion frm = new FrmPenalizacion();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -130,6 +141,7 @@ namespace UI.Forms
         {
             FrmFondoReserva frm = new FrmFondoReserva();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -141,6 +153,7 @@ namespace UI.Forms
         {
             FrmAreasComunes frm = new FrmAreasComunes();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -148,6 +161,7 @@ namespace UI.Forms
         {
             FrmReservas frm = new FrmReservas();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -159,6 +173,7 @@ namespace UI.Forms
         {
             FrmControlAcceso frm = new FrmControlAcceso();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -170,6 +185,7 @@ namespace UI.Forms
         {
             FrmUsuarios frm = new FrmUsuarios();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -177,6 +193,7 @@ namespace UI.Forms
         {
             FrmRoles frm = new FrmRoles();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -184,6 +201,7 @@ namespace UI.Forms
         {
             FrmPermisos frm = new FrmPermisos();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -191,6 +209,7 @@ namespace UI.Forms
         {
             FrmBitacora frm = new FrmBitacora();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
@@ -200,29 +219,33 @@ namespace UI.Forms
 
         private void reportepropiedadesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            FrmReportes frm = new FrmReportes();
+            FrmReportePropiedades frm = new FrmReportePropiedades();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
         private void facturaciónPorPropiedadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmReportes frm = new FrmReportes();
+            FrmReporteFacturacionPropiedad frm = new FrmReporteFacturacionPropiedad();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
         private void propiedadesMorosasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmReportes frm = new FrmReportes();
+            FrmReportePropiedadesMorosas frm = new FrmReportePropiedadesMorosas();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
 
         private void ingresosMensualesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmReportes frm = new FrmReportes();
+            FrmReporteIngresoMensual frm = new FrmReporteIngresoMensual();
             frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
             frm.Show();
         }
     }

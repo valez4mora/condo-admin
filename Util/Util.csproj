@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Enumeraciones\TipoCargo.cs" />
     <Compile Include="Enumeraciones\TipoPropiedad.cs" />
+    <Compile Include="Enumeraciones\TipoReporte.cs" />
     <Compile Include="Factura\EmailUtil.cs" />
     <Compile Include="Factura\XmlFacturaUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
