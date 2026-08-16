@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTO;
 
 namespace Interfaces
 {
@@ -18,7 +19,6 @@ namespace Interfaces
 
         List<ReporteMorosidadDTO> ObtenerPropiedadesMorosas();
 
-        List<IngresoMensualDTO> ObtenerIngresosMensuales(
-            int anio);
+        List<IngresoMensualDTO> ObtenerIngresosMensuales(int anio);
     }
 }

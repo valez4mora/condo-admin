@@ -47,7 +47,7 @@
     <Compile Include="FacturaDTO.cs" />
     <Compile Include="FondoReservaDTO.cs" />
     <Compile Include="IndicadorMorosidadDTO.cs" />
-    <Compile Include="Ingreso Mensual.cs" />
+    <Compile Include="IngresoMensualDTO.cs" />
     <Compile Include="PagoDTO.cs" />
     <Compile Include="PermisoDTO.cs" />
     <Compile Include="PersonaDTO.cs" />
