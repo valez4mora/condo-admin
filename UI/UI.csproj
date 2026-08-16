@@ -201,6 +201,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
+      <DependentUpon>FrmAreasComunes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
       <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
     </EmbeddedResource>
@@ -273,7 +276,9 @@
       <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\ciudad.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\property.png" />
   </ItemGroup>
@@ -294,6 +299,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\persona.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ciudad %281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
