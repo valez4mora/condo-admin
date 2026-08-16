@@ -145,11 +145,29 @@
     <Compile Include="Forms\FrmPropietario.Designer.cs">
       <DependentUpon>FrmPropietario.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FrmReportes.cs">
+    <Compile Include="Forms\FrmReporteFacturacionPropiedad.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FrmReportes.Designer.cs">
-      <DependentUpon>FrmReportes.cs</DependentUpon>
+    <Compile Include="Forms\FrmReporteFacturacionPropiedad.Designer.cs">
+      <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmReporteIngresoMensual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmReporteIngresoMensual.Designer.cs">
+      <DependentUpon>FrmReporteIngresoMensual.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmReportePropiedades.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmReportePropiedades.Designer.cs">
+      <DependentUpon>FrmReportePropiedades.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmReportePropiedadesMorosas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmReportePropiedadesMorosas.Designer.cs">
+      <DependentUpon>FrmReportePropiedadesMorosas.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FrmReservas.cs">
       <SubType>Form</SubType>
@@ -197,9 +215,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPropiedad.resx">
       <DependentUpon>FrmPropiedad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmReportes.resx">
-      <DependentUpon>FrmReportes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
