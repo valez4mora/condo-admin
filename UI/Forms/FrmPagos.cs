@@ -71,7 +71,8 @@ namespace UI.Forms
             {
                 List<FacturaDTO> facturas = _facturaBLL.ObtenerPorPropiedad(prop.IdPropiedad);
                 // Mostrar solo las Emitidas (pendientes de pago)
-                List<FacturaDTO> pendientes = facturas.FindAll(f => f.Estado == "Emitida");
+                List<FacturaDTO> pendientes = facturas.FindAll(f =>
+                    f.Estado == "Emitida" || f.Estado == "ParcialmentePagada");
 
                 dgvFacturasPendientes.DataSource = pendientes;
                 FormatearGridFacturas();
@@ -100,11 +101,14 @@ namespace UI.Forms
             if (_facturaSeleccionada == null) return;
 
             // Prellenar el monto con el total de la factura
-            txtMonto.Text = _facturaSeleccionada.TotalColones.ToString("F2");
+            decimal saldo = _facturaSeleccionada.SaldoPendiente > 0
+                ? _facturaSeleccionada.SaldoPendiente
+                : _facturaSeleccionada.TotalColones;
+            txtMonto.Text = saldo.ToString("F2");
             lblInfoFactura.Text =
                 $"Factura #{_facturaSeleccionada.IdFactura}  |  " +
                 $"Propiedad: {_facturaSeleccionada.CodigoPropiedad}  |  " +
-                $"Total: ₡{_facturaSeleccionada.TotalColones:N2}";
+                $"Total: ₡{_facturaSeleccionada.TotalColones:N2}  |  Saldo: ₡{saldo:N2}";
 
             grpPago.Enabled = true;
         }

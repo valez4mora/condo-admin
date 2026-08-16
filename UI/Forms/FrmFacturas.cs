@@ -22,6 +22,22 @@ namespace UI.Forms
             InitializeComponent();
         }
 
+        private void btnExportarPdf_Click(object sender, EventArgs e)
+        {
+            if (_facturaSeleccionada == null) return;
+            try
+            {
+                string ruta = PdfFacturaUtil.GuardarEnArchivo(_facturaSeleccionada);
+                MessageBox.Show("PDF guardado en:\n" + ruta, "PDF exportado",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al exportar PDF: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         // ── CARGA ─────────────────────────────────────────────────────
 
         private void FrmFacturas_Load(object sender, EventArgs e)
@@ -101,6 +117,7 @@ namespace UI.Forms
             bool esEmitida = f.Estado == "Emitida";
             btnAnular.Enabled      = esEmitida;
             btnExportarXml.Enabled = true;
+            btnExportarPdf.Enabled = true;
             btnEnviarCorreo.Enabled = true;
         }
 
@@ -110,6 +127,7 @@ namespace UI.Forms
             lblColones.Text   = lblDolares.Text = lblEstado.Text = "";
             dgvDetalle.DataSource = null;
             btnAnular.Enabled = btnExportarXml.Enabled = btnEnviarCorreo.Enabled = false;
+            btnExportarPdf.Enabled = false;
         }
 
         // ── ANULAR ────────────────────────────────────────────────────

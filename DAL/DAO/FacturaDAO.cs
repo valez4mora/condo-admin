@@ -11,18 +11,14 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
-    /// <summary>
     /// Acceso a datos para la tabla Factura / DetalleFactura.
     /// Usa stored procedures para todas las operaciones.
-    /// </summary>
     public class FacturaDAO : IFacturaDAL
     {
         private readonly Conexion _cn = Conexion.Instancia;
 
         // ── REGISTRAR ─────────────────────────────────────────────────
-        /// <summary>
         /// Llama a sp_RegistrarFactura y retorna el Id generado.
-        /// </summary>
         public int Registrar(FacturaDTO factura)
         {
             int idGenerado = 0;
@@ -39,6 +35,7 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@Fecha", factura.Fecha);
                 cmd.Parameters.AddWithValue("@TotalColones", factura.TotalColones);
                 cmd.Parameters.AddWithValue("@TotalDolares", factura.TotalDolares);
+                cmd.Parameters.AddWithValue("@TipoCambio", factura.TipoCambio);
                 cmd.Parameters.AddWithValue("@IdPropiedad", factura.IdPropiedad);
                 cmd.Parameters.AddWithValue("@Estado", factura.Estado);
 
@@ -61,10 +58,8 @@ namespace DAL.DAO
         }
 
         // ── ANULAR ────────────────────────────────────────────────────
-        /// <summary>
         /// Cambia el estado de la factura a "Anulada".
         /// Llama a sp_AnularFactura.
-        /// </summary>
         public bool Anular(int idFactura)
         {
             using (SqlConnection cn = _cn.ObtenerConexion())
@@ -80,10 +75,8 @@ namespace DAL.DAO
         }
 
         // ── GUARDAR XML ───────────────────────────────────────────────
-        /// <summary>
         /// Persiste el XML de la factura en la columna XmlFactura.
         /// Llama a sp_GuardarXmlFactura.
-        /// </summary>
         public bool GuardarXml(int idFactura, string xmlContent)
         {
             using (SqlConnection cn = _cn.ObtenerConexion())
@@ -99,11 +92,25 @@ namespace DAL.DAO
             }
         }
 
+        public bool ExisteFacturaParaCargo(int idCargo)
+        {
+            using (SqlConnection cn = _cn.ObtenerConexion())
+            {
+                cn.Open();
+                const string sql = @"SELECT COUNT(1)
+                                     FROM DetalleFactura
+                                     WHERE IdCargo = @IdCargo";
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.Add("@IdCargo", SqlDbType.Int).Value = idCargo;
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
+            }
+        }
+
         // ── OBTENER POR ID ────────────────────────────────────────────
-        /// <summary>
         /// Retorna la factura completa (encabezado + detalles) por su Id.
         /// Llama a sp_ObtenerFacturaPorId.
-        /// </summary>
         public FacturaDTO ObtenerPorId(int idFactura)
         {
             FacturaDTO factura = null;
@@ -191,8 +198,22 @@ namespace DAL.DAO
                 TotalDolares = Convert.ToDecimal(dr["TotalDolares"]),
                 IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]),
                 CodigoPropiedad = dr["CodigoPropiedad"].ToString(),
-                Estado = dr["Estado"].ToString()
+                Estado = dr["Estado"].ToString(),
+                TotalPagado = ExisteColumna(dr, "TotalPagado") && dr["TotalPagado"] != DBNull.Value
+                    ? Convert.ToDecimal(dr["TotalPagado"]) : 0m,
+                SaldoPendiente = ExisteColumna(dr, "SaldoPendiente") && dr["SaldoPendiente"] != DBNull.Value
+                    ? Convert.ToDecimal(dr["SaldoPendiente"]) : Convert.ToDecimal(dr["TotalColones"]),
+                TipoCambio = ExisteColumna(dr, "TipoCambio") && dr["TipoCambio"] != DBNull.Value
+                    ? Convert.ToDecimal(dr["TipoCambio"]) : 0m
             };
+        }
+
+        private static bool ExisteColumna(SqlDataReader dr, string nombre)
+        {
+            for (int i = 0; i < dr.FieldCount; i++)
+                if (string.Equals(dr.GetName(i), nombre,
+                    StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
         }
 
         private static DetalleFacturaDTO MapearDetalle(SqlDataReader dr)

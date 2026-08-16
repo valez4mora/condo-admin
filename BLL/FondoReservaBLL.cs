@@ -13,6 +13,14 @@ namespace BLL
     {
         private readonly FondoReservaDAO dal = new FondoReservaDAO();
 
+        public List<FondoReserva> ObtenerTodos() { return dal.ObtenerTodos(); }
+
+        public List<FondoReserva> ObtenerPorPropiedad(int idPropiedad)
+        {
+            if (idPropiedad <= 0) throw new ArgumentException("Propiedad no válida.");
+            return dal.ObtenerPorPropiedad(idPropiedad);
+        }
+
         public void RegistrarFondo(
             PropiedadDTO propiedad,
             decimal montoCuota)
@@ -42,3 +50,4 @@ namespace BLL
         }
     }
 }
+

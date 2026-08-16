@@ -11,10 +11,12 @@ namespace BLL
     public class PagoBLL
     {
         private readonly PagoDAO pagoDAO;
+        private readonly FacturaBLL facturaBLL;
 
         public PagoBLL()
         {
             pagoDAO = new PagoDAO();
+            facturaBLL = new FacturaBLL();
         }
 
         public bool Registrar(PagoDTO pago)
@@ -110,6 +112,25 @@ namespace BLL
                     "Debe seleccionar un método de pago."
                 );
             }
+
+            FacturaDTO factura = facturaBLL.ObtenerPorId(pago.IdFactura);
+            if (factura == null)
+                throw new ArgumentException("La factura seleccionada no existe.");
+
+            if (factura.Estado == "Anulada")
+                throw new ArgumentException("No se puede pagar una factura anulada.");
+
+            if (factura.Estado == "Pagada")
+                throw new ArgumentException("La factura ya se encuentra pagada.");
+
+            decimal pagado = pagoDAO.ObtenerPorFactura(pago.IdFactura).Sum(x => x.Monto);
+            decimal saldo = factura.TotalColones - pagado;
+            if (saldo <= 0)
+                throw new ArgumentException("La factura no tiene saldo pendiente.");
+
+            if (pago.Monto > saldo)
+                throw new ArgumentException(
+                    "El pago supera el saldo pendiente de la factura: ₡" + saldo.ToString("N2"));
         }
     }
 }

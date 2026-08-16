@@ -25,6 +25,7 @@ namespace UI.Forms
             this.lblEmailLbl         = new System.Windows.Forms.Label();
             this.btnEnviarCorreo     = new System.Windows.Forms.Button();
             this.btnExportarXml      = new System.Windows.Forms.Button();
+            this.btnExportarPdf      = new System.Windows.Forms.Button();
             this.btnAnular           = new System.Windows.Forms.Button();
             this.dgvDetalle          = new System.Windows.Forms.DataGridView();
             this.lblEstado           = new System.Windows.Forms.Label();
@@ -97,6 +98,7 @@ namespace UI.Forms
             this.grpDetalle.Controls.Add(this.lblEmailLbl);
             this.grpDetalle.Controls.Add(this.btnEnviarCorreo);
             this.grpDetalle.Controls.Add(this.btnExportarXml);
+            this.grpDetalle.Controls.Add(this.btnExportarPdf);
             this.grpDetalle.Controls.Add(this.btnAnular);
             this.grpDetalle.Controls.Add(this.dgvDetalle);
             this.grpDetalle.Controls.Add(this.lblEstado);
@@ -154,7 +156,13 @@ namespace UI.Forms
             this.btnExportarXml.ForeColor  = System.Drawing.Color.White; this.btnExportarXml.Enabled = false;
             this.btnExportarXml.Click     += new System.EventHandler(this.btnExportarXml_Click);
 
-            this.btnEnviarCorreo.Location  = new System.Drawing.Point(280, 315); this.btnEnviarCorreo.Size = new System.Drawing.Size(130, 30);
+            this.btnExportarPdf.Location   = new System.Drawing.Point(280, 315); this.btnExportarPdf.Size = new System.Drawing.Size(120, 30);
+            this.btnExportarPdf.Text       = "Exportar PDF"; this.btnExportarPdf.BackColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            this.btnExportarPdf.ForeColor  = System.Drawing.Color.White; this.btnExportarPdf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExportarPdf.FlatAppearance.BorderSize = 0; this.btnExportarPdf.Enabled = false;
+            this.btnExportarPdf.Click     += new System.EventHandler(this.btnExportarPdf_Click);
+
+            this.btnEnviarCorreo.Location  = new System.Drawing.Point(415, 315); this.btnEnviarCorreo.Size = new System.Drawing.Size(140, 30);
             this.btnEnviarCorreo.Text      = "Enviar por correo"; this.btnEnviarCorreo.BackColor = System.Drawing.Color.SeaGreen;
             this.btnEnviarCorreo.ForeColor = System.Drawing.Color.White; this.btnEnviarCorreo.Enabled = false;
             this.btnEnviarCorreo.Click    += new System.EventHandler(this.btnEnviarCorreo_Click);
@@ -190,6 +198,7 @@ namespace UI.Forms
         private System.Windows.Forms.Label    lblEmailLbl;
         private System.Windows.Forms.Button   btnEnviarCorreo;
         private System.Windows.Forms.Button   btnExportarXml;
+        private System.Windows.Forms.Button   btnExportarPdf;
         private System.Windows.Forms.Button   btnAnular;
         private System.Windows.Forms.DataGridView dgvDetalle;
         private System.Windows.Forms.Label    lblEstado;

@@ -11,11 +11,9 @@ using Integration.BCCR;
 
 namespace BLL
 {
-    /// <summary>
     /// Lógica de negocio para facturas.
     /// Genera facturas de cuota ordinaria, cargos manuales (multas, reservas, etc.),
     /// obtiene el tipo de cambio del BCCR, genera XML y coordina el envío por correo.
-    /// </summary>
     public class FacturaBLL
     {
         private readonly IFacturaDAL _facturaDAL;
@@ -27,14 +25,9 @@ namespace BLL
             _cargoBLL = new CargoFacturableBLL();
         }
 
-        // ══════════════════════════════════════════════════════════════
         // 1. GENERAR FACTURA — Cuota ordinaria de mantenimiento
-        // ══════════════════════════════════════════════════════════════
-
-        /// <summary>
         /// Calcula la cuota de mantenimiento, crea el cargo en BD,
         /// obtiene el tipo de cambio BCCR y emite la factura.
-        /// </summary>
         public FacturaDTO GenerarFacturaCuotaOrdinaria(PropiedadDTO propiedad)
         {
             if (propiedad == null)
@@ -48,14 +41,9 @@ namespace BLL
                                               cargo);
         }
 
-        // ══════════════════════════════════════════════════════════════
         // 2. GENERAR FACTURA — Cargo manual (multa, extraordinaria, reserva)
-        // ══════════════════════════════════════════════════════════════
-
-        /// <summary>
         /// Genera la factura para un cargo manual ya registrado en BD.
         /// El cargo debe estar en estado "Pendiente".
-        /// </summary>
         public FacturaDTO GenerarFacturaManual(CargoFacturableDTO cargo, string codigoPropiedad)
         {
             if (cargo == null)
@@ -64,16 +52,24 @@ namespace BLL
             if (cargo.IdPropiedad <= 0)
                 throw new Exception("El cargo debe estar asociado a una propiedad.");
 
-            return ConstruirYPersistirFactura(cargo.IdPropiedad, codigoPropiedad, cargo);
+            if (cargo.IdCargo <= 0)
+                throw new Exception("El cargo debe estar registrado antes de facturarlo.");
+
+            CargoFacturableDTO existente = _cargoBLL.ObtenerPorId(cargo.IdCargo);
+            if (existente == null)
+                throw new Exception("No se encontró el cargo indicado.");
+
+            if (existente.Estado != "Pendiente")
+                throw new Exception("Solo se pueden facturar cargos pendientes.");
+
+            if (_facturaDAL.ExisteFacturaParaCargo(cargo.IdCargo))
+                throw new Exception("El cargo seleccionado ya se encuentra facturado.");
+
+            return ConstruirYPersistirFactura(cargo.IdPropiedad, codigoPropiedad, existente);
         }
 
-        // ══════════════════════════════════════════════════════════════
         // 3. ANULAR FACTURA
-        // ══════════════════════════════════════════════════════════════
-
-        /// <summary>
         /// Anula una factura existente. Solo se pueden anular facturas "Emitidas".
-        /// </summary>
         public bool AnularFactura(int idFactura)
         {
             if (idFactura <= 0)
@@ -92,13 +88,8 @@ namespace BLL
             return _facturaDAL.Anular(idFactura);
         }
 
-        // ══════════════════════════════════════════════════════════════
         // 4. XML Y CORREO
-        // ══════════════════════════════════════════════════════════════
-
-        /// <summary>
         /// Genera el XML de la factura, lo guarda en BD y retorna el string XML.
-        /// </summary>
         public string GenerarYGuardarXml(FacturaDTO factura)
         {
             if (factura == null)
@@ -109,10 +100,8 @@ namespace BLL
             return xml;
         }
 
-        /// <summary>
         /// Envía la factura por correo al destinatario indicado
         /// con los archivos XML (y PDF si se indica la ruta) adjuntos.
-        /// </summary>
         public void EnviarPorCorreo(FacturaDTO factura, string emailDestinatario, string rutaPdf = null)
         {
             if (factura == null)
@@ -133,16 +122,27 @@ namespace BLL
                 factura.TotalColones.ToString("N2"),
                 factura.TotalDolares.ToString("N2"));
 
-            EmailUtil.EnviarFactura(emailDestinatario, asunto, cuerpo, rutaPdf, xml, factura.IdFactura);
+            bool pdfTemporal = string.IsNullOrWhiteSpace(rutaPdf);
+            if (pdfTemporal)
+                rutaPdf = PdfFacturaUtil.GuardarEnArchivo(factura,
+                    System.IO.Path.GetTempPath());
+
+            try
+            {
+                EmailUtil.EnviarFactura(emailDestinatario, asunto, cuerpo,
+                    rutaPdf, xml, factura.IdFactura);
+            }
+            finally
+            {
+                if (pdfTemporal && System.IO.File.Exists(rutaPdf))
+                    System.IO.File.Delete(rutaPdf);
+            }
 
             // Guarda el XML en BD por si se necesita posteriormente
             _facturaDAL.GuardarXml(factura.IdFactura, xml);
         }
 
-        // ══════════════════════════════════════════════════════════════
         // 5. CONSULTAS
-        // ══════════════════════════════════════════════════════════════
-
         public FacturaDTO ObtenerPorId(int idFactura)
         {
             if (idFactura <= 0)
@@ -164,10 +164,7 @@ namespace BLL
             return _facturaDAL.ObtenerTodas();
         }
 
-        // ══════════════════════════════════════════════════════════════
         // HELPER PRIVADO — construye y persiste la factura
-        // ══════════════════════════════════════════════════════════════
-
         private FacturaDTO ConstruirYPersistirFactura(int idPropiedad,
                                                       string codigoPropiedad,
                                                       CargoFacturableDTO cargo)
@@ -185,13 +182,19 @@ namespace BLL
             // Tipo de cambio desde BCCR
             decimal totalColones = detalle.SubTotal;
             BCCRService bccr = new BCCRService();
-            decimal totalDolares = bccr.ConvertirColonesADolares(totalColones);
+            BCCRResponseDTO cambio = bccr.ObtenerTipoCambioVenta();
+            if (cambio == null || cambio.Valor <= 0)
+                throw new Exception("El BCCR no devolvió un tipo de cambio válido.");
+            decimal totalDolares = Math.Round(totalColones / cambio.Valor, 2);
 
             FacturaDTO factura = new FacturaDTO
             {
                 Fecha = DateTime.Now,
                 TotalColones = totalColones,
                 TotalDolares = totalDolares,
+                TipoCambio = cambio.Valor,
+                TotalPagado = 0m,
+                SaldoPendiente = totalColones,
                 IdPropiedad = idPropiedad,
                 CodigoPropiedad = codigoPropiedad,
                 Estado = "Emitida",
@@ -204,6 +207,8 @@ namespace BLL
                 throw new Exception("No se pudo guardar la factura en la base de datos.");
 
             factura.IdFactura = idGenerado;
+            // El XML forma parte de la emisión, no depende de que luego se envíe correo.
+            GenerarYGuardarXml(factura);
             return factura;
         }
     }

@@ -16,9 +16,8 @@ namespace DAL.DAO
         Conexion conexion = Conexion.Instancia;
 
    
-        // inserta un indicador de morosidad calculado en la BD.
-        //llama al stored procedure sp_RegistrarIndicadorMorosidad.
-      
+        //Inserta un indicador de morosidad calculado en la BD.
+        //Llama al stored procedure sp_RegistrarIndicadorMorosidad.
         public void Insertar(IndicadorMorosidad indicador)
         {
             using (SqlConnection cn = conexion.ObtenerConexion())
@@ -41,7 +40,7 @@ namespace DAL.DAO
         }
 
    
-        // obtiene todos los indicadores de morosidad del sistema
+        //Obtiene todos los indicadores de morosidad del sistema
         public List<IndicadorMorosidad> ObtenerTodos()
         {
             List<IndicadorMorosidad> lista = new List<IndicadorMorosidad>();
@@ -63,8 +62,7 @@ namespace DAL.DAO
             return lista;
         }
 
-        //obtiene el último indicador de morosidad de una propiedad
-       
+        //Obtiene el último indicador de morosidad de una propiedad
         public IndicadorMorosidad ObtenerPorPropiedad(int idPropiedad)
         {
             IndicadorMorosidad indicador = null;
@@ -88,8 +86,7 @@ namespace DAL.DAO
         }
 
      
-        // convierte una fila del DataReader en un IndicadorMorosidad.
-      
+        //Convierte una fila del DataReader en un IndicadorMorosidad.
         private IndicadorMorosidad Mapear(SqlDataReader dr)
         {
             return new IndicadorMorosidad

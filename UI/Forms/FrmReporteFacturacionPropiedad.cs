@@ -375,5 +375,10 @@ namespace UI.Forms
                 "Facturación por propiedad",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        private void lblTitulo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    public  class FacturaDTO
+    public class FacturaDTO
     {
         public int IdFactura { get; set; }
         public DateTime Fecha { get; set; }
@@ -15,6 +15,9 @@ namespace DTO
         public int IdPropiedad { get; set; }
         public string CodigoPropiedad { get; set; }
         public string Estado { get; set; }
+        public decimal TotalPagado { get; set; }
+        public decimal SaldoPendiente { get; set; }
+        public decimal TipoCambio { get; set; }
         public List<DetalleFacturaDTO> Detalles { get; set; } = new List<DetalleFacturaDTO>();
     }
 
@@ -28,6 +31,4 @@ namespace DTO
         public decimal Precio { get; set; }
         public decimal SubTotal { get; set; }
     }
-
-
 }
