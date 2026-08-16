@@ -39,7 +39,15 @@ namespace BLL
                 throw new Exception("Ya existe una cuota de mantenimiento para esta propiedad en " +
                     hoy.ToString("MMMM yyyy") + ".");
 
-            decimal montoBase = (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo;
+            decimal montoBase = decimal.Round(
+                (propiedad.Area * propiedad.TarifaMetro) + propiedad.CargoFijo,
+                2,
+                MidpointRounding.AwayFromZero);
+
+            if (montoBase <= 0)
+                throw new Exception("La cuota calculada debe ser mayor a cero.");
+
+            propiedad.CuotaMantenimiento = montoBase;
 
             CargoFacturableDTO cargo =
                 GestionFinancieraFactory.CrearCuotaMantenimiento(propiedad.IdPropiedad, montoBase);
@@ -186,6 +194,9 @@ namespace BLL
 
             if (propiedad.TarifaMetro <= 0)
                 throw new Exception("La propiedad no tiene tarifa configurada.");
+
+            if (propiedad.CargoFijo < 0)
+                throw new Exception("La propiedad tiene un cargo fijo inválido.");
 
             if (propiedad.IdPropiedad <= 0)
                 throw new Exception("La propiedad no tiene un Id válido.");

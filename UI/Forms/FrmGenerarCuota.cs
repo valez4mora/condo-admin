@@ -46,6 +46,15 @@ namespace UI.Forms
             cmbPropiedades.ValueMember = "IdPropiedad";
         }
 
+        private void cmbPropiedades_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cargoGenerado = null;
+            btnGenerarFactura.Enabled = false;
+            btbGenerarCuota.Enabled = cmbPropiedades.SelectedItem != null;
+            dvgResultado.DataSource = null;
+            dvgFactura.DataSource = null;
+        }
+
         private void btbGenerarCuota_Click(object sender, EventArgs e)
         {
             if (cmbPropiedades.SelectedItem == null)
@@ -55,9 +64,11 @@ namespace UI.Forms
                 return;
             }
 
-            PropiedadDTO seleccionada = (PropiedadDTO)cmbPropiedades.SelectedItem; //casteo para poder usar todas sus propiedades
             try
             {
+                int idPropiedad = Convert.ToInt32(cmbPropiedades.SelectedValue);
+                PropiedadDTO seleccionada = propiedadBLL.ObtenerPorId(idPropiedad);
+
                 // genera y guarda el cargo en BD
                 cargoGenerado = cargoBLL.GenerarCuotaOrdinaria(seleccionada);
 
@@ -66,6 +77,7 @@ namespace UI.Forms
 
                 // habilita el boton de generar factura
                 btnGenerarFactura.Enabled = true;
+                btbGenerarCuota.Enabled = false;
 
                 MessageBox.Show("Cuota generada correctamente para: " + seleccionada.Codigo,
                     "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -129,13 +141,18 @@ namespace UI.Forms
 
             try
             {
-                FacturaDTO factura = facturaBLL.GenerarFacturaCuotaOrdinaria(seleccionada);//calcula y genera la factura en BD
+                // El cargo ya fue generado por el botón anterior. Se factura ese mismo
+                // registro para no intentar crear una segunda cuota del mismo mes.
+                FacturaDTO factura = facturaBLL.GenerarFacturaManual(
+                    cargoGenerado,
+                    seleccionada.Codigo);
                 //muestra la factura en el datagrid
                 MostrarFactura(factura);
 
                 //limpiar datos 
                 cargoGenerado = null;
                 btnGenerarFactura.Enabled = false;
+                btbGenerarCuota.Enabled = false;
 
                 MessageBox.Show("Factura emitida correctamente.",
                 "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);

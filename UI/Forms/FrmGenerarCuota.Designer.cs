@@ -51,6 +51,7 @@
             this.cmbPropiedades.Name = "cmbPropiedades";
             this.cmbPropiedades.Size = new System.Drawing.Size(204, 21);
             this.cmbPropiedades.TabIndex = 1;
+            this.cmbPropiedades.SelectedIndexChanged += new System.EventHandler(this.cmbPropiedades_SelectedIndexChanged);
             // 
             // btbGenerarCuota
             // 

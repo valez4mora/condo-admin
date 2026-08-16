@@ -53,6 +53,18 @@ namespace BLL
             return dal.ObtenerPorCodigo(codigo);
         }
 
+        public PropiedadDTO ObtenerPorId(int idPropiedad)
+        {
+            if (idPropiedad <= 0)
+                throw new Exception("Debe indicar una propiedad válida.");
+
+            PropiedadDTO propiedad = dal.ObtenerPorId(idPropiedad);
+            if (propiedad == null)
+                throw new Exception("La propiedad seleccionada ya no existe.");
+
+            return propiedad;
+        }
+
         public bool Modificar(PropiedadDTO propiedad)
         {
             CalcularCuota(propiedad);
