@@ -303,5 +303,11 @@
   <ItemGroup>
     <None Include="Resources\ciudad %281%29.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flecha-de-circulo-de-disquete-a-la-derecha.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flecha-de-circulo-de-disquete-a-la-derecha %281%29.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
