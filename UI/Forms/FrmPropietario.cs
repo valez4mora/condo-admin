@@ -12,23 +12,18 @@ using System.Windows.Forms;
 
 namespace UI.Forms
 {
-    /// <summary>
-    /// Gestión de Propietarios.
-    /// CRUD completo con validación de cédula vía API Hacienda,
-    /// soporte de pasaportes, carga de provincias desde API GitHub,
-    /// fotografía, estado de morosidad y búsqueda en tiempo real.
-    /// </summary>
     public partial class FrmPropietario : Form
     {
         // ── Servicios ─────────────────────────────────────────────────
-        private readonly PropietarioBLL    _bll             = new PropietarioBLL();
-        private readonly IHaciendaService  _haciendaService = new HaciendaService();
+        private readonly PropietarioBLL _bll = new PropietarioBLL();
+        private readonly IHaciendaService _haciendaService = new HaciendaService();
         private ProvinciaService _provinciaService;
 
         // ── Estado interno ────────────────────────────────────────────
         private int _idSeleccionado = 0;
+        private bool _suprimirTextChanged = false;   // evita flash de datos viejos al limpiar
 
-        /// <summary>Lista completa cargada desde BD; se filtra localmente.</summary>
+        ///Lista completa cargada desde BD; se filtra localmente.
         private List<PropietarioDTO> _listaTodos = new List<PropietarioDTO>();
 
         // ─────────────────────────────────────────────────────────────
@@ -37,9 +32,7 @@ namespace UI.Forms
             InitializeComponent();
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CARGA INICIAL
-        // ═════════════════════════════════════════════════════════════
         private void FrmPropietario_Load(object sender, EventArgs e)
         {
             InicializarServicios();
@@ -107,30 +100,25 @@ namespace UI.Forms
                 }
             });
 
-            // Estilos
-            dgvPropietarios.ColumnHeadersDefaultCellStyle.BackColor  = Color.FromArgb(243, 244, 246);
-            dgvPropietarios.ColumnHeadersDefaultCellStyle.ForeColor  = Color.FromArgb(55, 65, 81);
-            dgvPropietarios.ColumnHeadersDefaultCellStyle.Font       = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            dgvPropietarios.EnableHeadersVisualStyles               = false;
-            dgvPropietarios.DefaultCellStyle.Font                   = new Font("Segoe UI", 9F);
-            dgvPropietarios.DefaultCellStyle.SelectionBackColor     = Color.FromArgb(219, 234, 254);
-            dgvPropietarios.DefaultCellStyle.SelectionForeColor     = Color.FromArgb(30, 64, 175);
+            dgvPropietarios.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(243, 244, 246);
+            dgvPropietarios.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(55, 65, 81);
+            dgvPropietarios.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            dgvPropietarios.EnableHeadersVisualStyles = false;
+            dgvPropietarios.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
+            dgvPropietarios.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
+            dgvPropietarios.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 64, 175);
             dgvPropietarios.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 250, 251);
-            dgvPropietarios.RowTemplate.Height                      = 28;
+            dgvPropietarios.RowTemplate.Height = 28;
         }
 
-        // ── ComboBox Sexo ─────────────────────────────────────────────
-
-        /// <summary>
-        /// Inicializa los servicios que pueden fallar (configuración faltante).
-        /// Se llama desde Load para que el designer no falle al renderizar.
-        /// </summary>
+        // ── Inicialización de servicios ───────────────────────────────
         private void InicializarServicios()
         {
             try { _provinciaService = new ProvinciaService(); }
             catch { _provinciaService = null; }
         }
 
+        // ── ComboBox Sexo ─────────────────────────────────────────────
         private void CargarSexo()
         {
             cmbSexo.Items.Clear();
@@ -143,23 +131,26 @@ namespace UI.Forms
         {
             try
             {
-                if (_provinciaService == null) { cmbProvincia.Items.Add("(Sin configurar)"); return; }
+                if (_provinciaService == null)
+                {
+                    cmbProvincia.Items.Add("(Sin configurar)");
+                    return;
+                }
+
                 List<ProvinciaDTO> provincias = _provinciaService.ObtenerProvincias();
-                cmbProvincia.DataSource    = provincias;
+                cmbProvincia.DataSource = provincias;
                 cmbProvincia.DisplayMember = "Nombre";
-                cmbProvincia.ValueMember   = "Id";
+                cmbProvincia.ValueMember = "Id";
                 cmbProvincia.SelectedIndex = -1;
             }
             catch
             {
-                // Si el servicio no está disponible, la provincia queda vacía.
-                // No es crítico para el formulario.
                 cmbProvincia.Items.Add("(Sin conexión)");
                 cmbProvincia.SelectedIndex = 0;
             }
         }
 
-        // ── Cargar grid ───────────────────────────────────────────────
+        // ── Cargar grilla ─────────────────────────────────────────────
         private void CargarTodos()
         {
             try
@@ -182,22 +173,16 @@ namespace UI.Forms
                 : "  No se encontraron resultados.";
         }
 
-        // ═════════════════════════════════════════════════════════════
         // TIPO DE IDENTIFICACIÓN
-        // ═════════════════════════════════════════════════════════════
         private void rdoTipoId_CheckedChanged(object sender, EventArgs e)
         {
             bool esCedula = rdoCedula.Checked;
-
-            // Solo las cédulas nacionales se consultan vía Hacienda
             btnBuscarHacienda.Visible = esCedula;
             txtIdentificacion.MaxLength = esCedula ? 12 : 10;
             txtIdentificacion.Clear();
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CONSULTA HACIENDA
-        // ═════════════════════════════════════════════════════════════
         private void btnBuscarHacienda_Click(object sender, EventArgs e)
         {
             string id = txtIdentificacion.Text.Trim();
@@ -213,7 +198,7 @@ namespace UI.Forms
             {
                 Cursor = Cursors.WaitCursor;
                 btnBuscarHacienda.Enabled = false;
-                btnBuscarHacienda.Text    = "Consultando…";
+                btnBuscarHacienda.Text = "Consultando…";
 
                 HaciendaResponseDTO resp = _haciendaService.ConsultarIdentificacion(id);
 
@@ -224,7 +209,7 @@ namespace UI.Forms
                 }
 
                 SepararNombre(resp.Nombre, out string nombres, out string apellidos);
-                txtNombre.Text    = nombres;
+                txtNombre.Text = nombres;
                 txtApellidos.Text = apellidos;
                 txtNombre.Focus();
             }
@@ -234,28 +219,25 @@ namespace UI.Forms
             }
             finally
             {
-                Cursor                    = Cursors.Default;
+                Cursor = Cursors.Default;
                 btnBuscarHacienda.Enabled = true;
-                btnBuscarHacienda.Text    = "↗ Consultar Hacienda";
+                btnBuscarHacienda.Text = "↗ Consultar Hacienda";
             }
         }
 
-        // ═════════════════════════════════════════════════════════════
         // FOTOGRAFÍA
-        // ═════════════════════════════════════════════════════════════
         private void btnSeleccionarFoto_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                dlg.Title  = "Seleccionar fotografía";
+                dlg.Title = "Seleccionar fotografía";
                 dlg.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp|Todos los archivos|*.*";
 
                 if (dlg.ShowDialog() != DialogResult.OK) return;
 
                 try
                 {
-                    Image img = Image.FromFile(dlg.FileName);
-                    picFoto.Image = img;
+                    picFoto.Image = Image.FromFile(dlg.FileName);
                 }
                 catch
                 {
@@ -270,18 +252,15 @@ namespace UI.Forms
             picFoto.Image = null;
         }
 
-        // ═════════════════════════════════════════════════════════════
         // BÚSQUEDA / FILTRO EN TIEMPO REAL
-        // ═════════════════════════════════════════════════════════════
-
         private const string PLACEHOLDER_BUSCAR = "Buscar por nombre, identificacion o correo...";
 
         private void txtBuscar_Enter(object sender, EventArgs e)
         {
             if (txtBuscar.Text == PLACEHOLDER_BUSCAR)
             {
-                txtBuscar.Text      = string.Empty;
-                txtBuscar.ForeColor = System.Drawing.Color.FromArgb(17, 24, 39);
+                txtBuscar.Text = string.Empty;
+                txtBuscar.ForeColor = Color.FromArgb(17, 24, 39);
             }
         }
 
@@ -289,16 +268,18 @@ namespace UI.Forms
         {
             if (string.IsNullOrWhiteSpace(txtBuscar.Text))
             {
-                txtBuscar.Text      = PLACEHOLDER_BUSCAR;
-                txtBuscar.ForeColor = System.Drawing.Color.FromArgb(107, 114, 128);
+                txtBuscar.Text = PLACEHOLDER_BUSCAR;
+                txtBuscar.ForeColor = Color.FromArgb(107, 114, 128);
             }
         }
 
         private void txtBuscar_TextChanged(object sender, EventArgs e)
         {
+            if (_suprimirTextChanged) return;
+
             string termino = txtBuscar.Text.Trim().ToLower();
 
-            if (string.IsNullOrEmpty(termino))
+            if (string.IsNullOrEmpty(termino) || termino == PLACEHOLDER_BUSCAR.ToLower())
             {
                 MostrarEnGrid(_listaTodos);
                 return;
@@ -306,9 +287,9 @@ namespace UI.Forms
 
             var filtrado = _listaTodos.Where(p =>
                 (p.Identificacion ?? "").ToLower().Contains(termino) ||
-                (p.Nombre         ?? "").ToLower().Contains(termino) ||
-                (p.Apellidos      ?? "").ToLower().Contains(termino) ||
-                (p.Email          ?? "").ToLower().Contains(termino)
+                (p.Nombre ?? "").ToLower().Contains(termino) ||
+                (p.Apellidos ?? "").ToLower().Contains(termino) ||
+                (p.Email ?? "").ToLower().Contains(termino)
             ).ToList();
 
             MostrarEnGrid(filtrado);
@@ -316,19 +297,17 @@ namespace UI.Forms
 
         private void btnFiltrar_Click(object sender, EventArgs e)
         {
-            // El filtrado ya ocurre en TextChanged; este botón también lo dispara.
             txtBuscar_TextChanged(sender, e);
         }
 
         private void btnVerTodos_Click(object sender, EventArgs e)
         {
+            _suprimirTextChanged = true;
             txtBuscar.Clear();
+            _suprimirTextChanged = false;
             CargarTodos();
         }
 
-        // ═════════════════════════════════════════════════════════════
-        // SELECCIÓN EN GRID → CARGA EN FORMULARIO
-        // ═════════════════════════════════════════════════════════════
         private void dgvPropietarios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -341,21 +320,17 @@ namespace UI.Forms
         {
             _idSeleccionado = p.IdPersona;
 
-            txtIdentificacion.Text    = p.Identificacion;
-            txtNombre.Text            = p.Nombre;
-            txtApellidos.Text         = p.Apellidos;
-            cmbSexo.SelectedItem      = p.Sexo;
-            txtTelefono.Text          = p.Telefono;
-            txtEmail.Text             = p.Email;
-            chkMoroso.Checked         = p.EstadoMorosidad;
+            txtIdentificacion.Text = p.Identificacion;
+            txtNombre.Text = p.Nombre;
+            txtApellidos.Text = p.Apellidos;
+            cmbSexo.SelectedItem = p.Sexo;
+            txtTelefono.Text = p.Telefono;
+            txtEmail.Text = p.Email;
+            chkMoroso.Checked = p.EstadoMorosidad;
 
-            // Separar provincia de dirección si fue combinada al guardar
-            SepararProvinciaYDireccion(p.Direccion,
-                out string provincia, out string direccion);
-
+            SepararProvinciaYDireccion(p.Direccion, out string provincia, out string direccion);
             txtDireccion.Text = direccion;
 
-            // Seleccionar provincia en el combo
             if (!string.IsNullOrEmpty(provincia))
             {
                 foreach (ProvinciaDTO prov in cmbProvincia.Items)
@@ -368,7 +343,6 @@ namespace UI.Forms
                 }
             }
 
-            // Foto
             picFoto.Image?.Dispose();
             picFoto.Image = null;
 
@@ -376,23 +350,19 @@ namespace UI.Forms
             {
                 try
                 {
-                    using (MemoryStream ms = new MemoryStream(p.Fotografia))
-                        picFoto.Image = Image.FromStream(ms);
+                    MemoryStream ms = new MemoryStream(p.Fotografia);
+                    picFoto.Image = Image.FromStream(ms);
                 }
                 catch { /* imagen corrupta: ignorar */ }
             }
 
-            // Tipo de ID (heurística: pasaporte empieza con letra)
-            bool esPasaporte = !string.IsNullOrEmpty(p.Identificacion) &&
-                               char.IsLetter(p.Identificacion[0]);
-
+            bool esPasaporte = !string.IsNullOrEmpty(p.Identificacion)
+                               && char.IsLetter(p.Identificacion[0]);
             rdoPasaporte.Checked = esPasaporte;
-            rdoCedula.Checked    = !esPasaporte;
+            rdoCedula.Checked = !esPasaporte;
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CRUD
-        // ═════════════════════════════════════════════════════════════
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -403,8 +373,11 @@ namespace UI.Forms
                 if (ok)
                 {
                     MostrarExito("Propietario registrado correctamente.");
-                    LimpiarFormulario();
-                    CargarTodos();
+                    LimpiarFormulario();   // ya llama CargarTodos internamente
+                }
+                else
+                {
+                    MostrarAviso("No se pudo registrar. Verifique los datos e intente de nuevo.");
                 }
             }
             catch (Exception ex)
@@ -428,8 +401,11 @@ namespace UI.Forms
                 if (ok)
                 {
                     MostrarExito("Propietario actualizado correctamente.");
-                    LimpiarFormulario();
-                    CargarTodos();
+                    LimpiarFormulario(); 
+                }
+                else
+                {
+                    MostrarAviso("No se pudo actualizar. Verifique los datos e intente de nuevo.");
                 }
             }
             catch (Exception ex)
@@ -461,8 +437,11 @@ namespace UI.Forms
                 if (ok)
                 {
                     MostrarExito("Propietario eliminado correctamente.");
-                    LimpiarFormulario();
-                    CargarTodos();
+                    LimpiarFormulario();   
+                }
+                else
+                {
+                    MostrarAviso("No se pudo eliminar. Verifique los datos e intente de nuevo.");
                 }
             }
             catch (Exception ex)
@@ -473,44 +452,36 @@ namespace UI.Forms
 
         private void btnLimpiar_Click(object sender, EventArgs e) => LimpiarFormulario();
 
-        // ═════════════════════════════════════════════════════════════
         // HELPERS PRIVADOS
-        // ═════════════════════════════════════════════════════════════
-
-        /// <summary>Construye el DTO con los datos actuales del formulario.</summary>
+        /// Construye el DTO con los datos actuales del formulario.
         private PropietarioDTO ConstruirDTO()
         {
-            // Validar tipo de identificación
             string id = txtIdentificacion.Text.Trim();
             ValidarIdentificacion(id);
 
-            // Combinar provincia + dirección en el campo Direccion del DTO
-            // (el DTO/entidad no tiene campo Provincia separado)
             string provincia = (cmbProvincia.SelectedItem as ProvinciaDTO)?.Nombre ?? "";
-            string dir       = txtDireccion.Text.Trim();
-            string dirFinal  = string.IsNullOrEmpty(provincia)
+            string dir = txtDireccion.Text.Trim();
+            string dirFinal = string.IsNullOrEmpty(provincia)
                                ? dir
                                : $"{provincia}|{dir}";
 
             return new PropietarioDTO
             {
-                Identificacion  = id,
-                Nombre          = txtNombre.Text.Trim(),
-                Apellidos       = txtApellidos.Text.Trim(),
-                Sexo            = cmbSexo.SelectedItem?.ToString(),
-                Telefono        = txtTelefono.Text.Trim(),
-                Email           = txtEmail.Text.Trim(),
-                Direccion       = dirFinal,
+                Identificacion = id,
+                Nombre = txtNombre.Text.Trim(),
+                Apellidos = txtApellidos.Text.Trim(),
+                Sexo = cmbSexo.SelectedItem?.ToString(),
+                Telefono = txtTelefono.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                Direccion = dirFinal,
                 EstadoMorosidad = chkMoroso.Checked,
-                Fotografia      = ImagenABytes()
+                Fotografia = ImagenABytes()
             };
         }
 
-        /// <summary>
         /// Valida el formato de identificación:
-        /// Cédula  → solo dígitos, hasta 12 chars
-        /// Pasaporte → letra inicial + exactamente 6 dígitos
-        /// </summary>
+        /// Cédula - solo dígitos, hasta 12 chars.
+        /// Pasaporte - letra inicial + dígitos.
         private void ValidarIdentificacion(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -529,7 +500,7 @@ namespace UI.Forms
             }
         }
 
-        /// <summary>Convierte la imagen del PictureBox a byte[].</summary>
+        ///Convierte la imagen del PictureBox a byte[].
         private byte[] ImagenABytes()
         {
             if (picFoto.Image == null) return null;
@@ -545,10 +516,8 @@ namespace UI.Forms
             catch { return null; }
         }
 
-        /// <summary>
         /// Separa el nombre completo devuelto por Hacienda en Nombre y Apellidos.
-        /// La convención en CR: últimas dos palabras = dos apellidos.
-        /// </summary>
+        /// Convención CR: últimas dos palabras = dos apellidos.
         private void SepararNombre(string completo, out string nombres, out string apellidos)
         {
             nombres = apellidos = string.Empty;
@@ -563,17 +532,17 @@ namespace UI.Forms
                     nombres = partes[0];
                     break;
                 case 2:
-                    nombres   = partes[0];
+                    nombres = partes[0];
                     apellidos = partes[1];
                     break;
                 default:
                     apellidos = $"{partes[partes.Length - 2]} {partes[partes.Length - 1]}";
-                    nombres   = string.Join(" ", partes, 0, partes.Length - 2);
+                    nombres = string.Join(" ", partes, 0, partes.Length - 2);
                     break;
             }
         }
 
-        /// <summary>Separa provincia y dirección almacenadas con separador '|'.</summary>
+        ///Separa provincia y dirección almacenadas con separador '|'.
         private void SepararProvinciaYDireccion(
             string campo, out string provincia, out string direccion)
         {
@@ -589,10 +558,11 @@ namespace UI.Forms
             direccion = campo.Substring(sep + 1).Trim();
         }
 
-        /// <summary>Restablece el formulario a su estado inicial.</summary>
+        ///Restablece el formulario a su estado inicial.
         private void LimpiarFormulario()
         {
             _idSeleccionado = 0;
+            _suprimirTextChanged = true;
 
             txtIdentificacion.Clear();
             txtNombre.Clear();
@@ -602,10 +572,12 @@ namespace UI.Forms
             txtDireccion.Clear();
             txtBuscar.Clear();
 
-            cmbSexo.SelectedIndex      = -1;
+            _suprimirTextChanged = false;
+
+            cmbSexo.SelectedIndex = -1;
             cmbProvincia.SelectedIndex = -1;
-            chkMoroso.Checked          = false;
-            rdoCedula.Checked          = true;
+            chkMoroso.Checked = false;
+            rdoCedula.Checked = true;
 
             picFoto.Image?.Dispose();
             picFoto.Image = null;
@@ -613,7 +585,7 @@ namespace UI.Forms
             dgvPropietarios.ClearSelection();
             txtIdentificacion.Focus();
 
-            CargarTodos();
+            CargarTodos();   // refresca la grilla con datos actualizados de la BD
         }
 
         // ── Mensajes ──────────────────────────────────────────────────

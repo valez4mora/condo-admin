@@ -2,151 +2,98 @@
 using DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL
 {
     public class PropietarioBLL
     {
-        private PersonaDAO personaDAL = new PersonaDAO();
-        private PropietarioDAO propietarioDAL = new PropietarioDAO();
+        private readonly PersonaDAO _personaDAL = new PersonaDAO();
+        private readonly PropietarioDAO _propietarioDAL = new PropietarioDAO();
 
         public bool Registrar(PropietarioDTO propietario)
         {
             Validar(propietario);
 
-            if (personaDAL.ExisteIdentificacion(
-                propietario.Identificacion))
-            {
-                throw new Exception(
-                    "Ya existe una persona con esa identificación.");
-            }
+            if (_personaDAL.ExisteIdentificacion(propietario.Identificacion))
+                throw new Exception("Ya existe una persona con esa identificación.");
 
-            PersonaDTO persona = new PersonaDTO
-            {
-                Identificacion = propietario.Identificacion,
-                Nombre = propietario.Nombre,
-                Apellidos = propietario.Apellidos,
-                Sexo = propietario.Sexo,
-                Telefono = propietario.Telefono,
-                Email = propietario.Email,
-                Direccion = propietario.Direccion,
-                Fotografia = propietario.Fotografia
-            };
-
-            bool personaGuardada = personaDAL.Registrar(persona);
-
-            if (!personaGuardada)
-                return false;
+            PersonaDTO persona = MapearPersona(propietario);
+            bool personaGuardada = _personaDAL.Registrar(persona);
+            if (!personaGuardada) return false;
 
             propietario.IdPersona =
-                personaDAL.ObtenerIdPorIdentificacion(
-                    propietario.Identificacion);
+                _personaDAL.ObtenerIdPorIdentificacion(propietario.Identificacion);
 
-            return propietarioDAL.Registrar(propietario);
+            return _propietarioDAL.Registrar(propietario);
         }
 
         public List<PropietarioDTO> ObtenerTodos()
         {
-            return propietarioDAL.ObtenerTodos();
+            return _propietarioDAL.ObtenerTodos();
         }
 
         public bool Modificar(PropietarioDTO propietario)
         {
             if (propietario.IdPersona <= 0)
-                throw new Exception(
-                    "Debe seleccionar un propietario.");
+                throw new Exception("Debe seleccionar un propietario.");
 
             Validar(propietario);
 
-            PersonaDTO persona = new PersonaDTO
-            {
-                IdPersona = propietario.IdPersona,
-                Identificacion = propietario.Identificacion,
-                Nombre = propietario.Nombre,
-                Apellidos = propietario.Apellidos,
-                Sexo = propietario.Sexo,
-                Telefono = propietario.Telefono,
-                Email = propietario.Email,
-                Direccion = propietario.Direccion,
-                Fotografia = propietario.Fotografia
-            };
-
-            bool personaActualizada =
-                personaDAL.Modificar(persona);
-
-            if (!personaActualizada)
-                return false;
-
-            return propietarioDAL.Modificar(propietario);
+            return _propietarioDAL.Modificar(propietario);
         }
 
         public bool Eliminar(int idPersona)
         {
             if (idPersona <= 0)
-                throw new Exception(
-                    "Debe seleccionar un propietario.");
+                throw new Exception("Debe seleccionar un propietario.");
 
-            bool propietarioEliminado =
-                propietarioDAL.Eliminar(idPersona);
+            bool propietarioEliminado = _propietarioDAL.Eliminar(idPersona);
+            if (!propietarioEliminado) return false;
 
-            if (!propietarioEliminado)
-                return false;
+            return _personaDAL.Eliminar(idPersona);
+        }
 
-            return personaDAL.Eliminar(idPersona);
+        // ── Helpers ──────────────────────────────────────────────────────────
+
+        private PersonaDTO MapearPersona(PropietarioDTO p) => new PersonaDTO
+        {
+            IdPersona = p.IdPersona,
+            Identificacion = p.Identificacion,
+            Nombre = p.Nombre,
+            Apellidos = p.Apellidos,
+            Sexo = p.Sexo,
+            Telefono = p.Telefono,
+            Email = p.Email,
+            Direccion = p.Direccion,
+            Fotografia = p.Fotografia
+        };
+
+        private void Validar(PropietarioDTO p)
+        {
+            if (string.IsNullOrWhiteSpace(p.Identificacion))
+                throw new Exception("La identificación es obligatoria.");
+            if (string.IsNullOrWhiteSpace(p.Nombre))
+                throw new Exception("El nombre es obligatorio.");
+            if (string.IsNullOrWhiteSpace(p.Apellidos))
+                throw new Exception("Los apellidos son obligatorios.");
+            if (string.IsNullOrWhiteSpace(p.Sexo))
+                throw new Exception("Debe seleccionar el sexo.");
+            if (string.IsNullOrWhiteSpace(p.Telefono))
+                throw new Exception("El teléfono es obligatorio.");
+            if (string.IsNullOrWhiteSpace(p.Email) || !p.Email.Contains("@"))
+                throw new Exception("El correo electrónico no es válido.");
+            if (string.IsNullOrWhiteSpace(p.Direccion))
+                throw new Exception("La dirección es obligatoria.");
         }
 
         private bool EmailValido(string email)
         {
             try
             {
-                var direccion =
-                    new System.Net.Mail.MailAddress(email);
-
-                return direccion.Address == email;
+                var dir = new System.Net.Mail.MailAddress(email);
+                return dir.Address == email;
             }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private void Validar(PropietarioDTO propietario)
-        {
-            if (string.IsNullOrWhiteSpace(
-                propietario.Identificacion))
-                throw new Exception(
-                    "La identificación es obligatoria.");
-
-            if (string.IsNullOrWhiteSpace(propietario.Nombre))
-                throw new Exception(
-                    "El nombre es obligatorio.");
-
-            if (string.IsNullOrWhiteSpace(propietario.Apellidos))
-                throw new Exception(
-                    "Los apellidos son obligatorios.");
-
-            if (string.IsNullOrWhiteSpace(propietario.Sexo))
-                throw new Exception(
-                    "Debe seleccionar el sexo.");
-
-            if (string.IsNullOrWhiteSpace(propietario.Telefono))
-                throw new Exception(
-                    "El teléfono es obligatorio.");
-
-            if (string.IsNullOrWhiteSpace(propietario.Email))
-                throw new Exception(
-                    "El correo electrónico es obligatorio.");
-
-            if (!propietario.Email.Contains("@"))
-                throw new Exception(
-                    "El correo electrónico no es válido.");
-
-            if (string.IsNullOrWhiteSpace(propietario.Direccion))
-                throw new Exception(
-                    "La dirección es obligatoria.");
+            catch { return false; }
         }
     }
 }

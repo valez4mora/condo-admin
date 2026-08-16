@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DAL.Singleton;
 
 namespace DAL.DAO
@@ -19,15 +16,9 @@ namespace DAL.DAO
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-
-                // La fila en Persona ya fue insertada por PersonaDAO.Registrar en la BLL.
-                // Aquí solo se crea la fila en Propietario vinculada al IdPersona recién obtenido.
-                string sql = @"INSERT INTO Propietario (IdPersona)
-                               VALUES (@IdPersona)";
-
+                string sql = @"INSERT INTO Propietario (IdPersona) VALUES (@IdPersona)";
                 SqlCommand cmd = new SqlCommand(sql, cn);
                 cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
-
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
@@ -53,7 +44,10 @@ namespace DAL.DAO
                         Telefono = dr["Telefono"].ToString(),
                         Email = dr["Email"].ToString(),
                         Direccion = dr["Direccion"].ToString(),
-                        EstadoMorosidad = Convert.ToBoolean(dr["EstadoMorosidad"])
+                        EstadoMorosidad = Convert.ToBoolean(dr["EstadoMorosidad"]),
+                        Fotografia = dr["Fotografia"] != DBNull.Value
+                                     ? (byte[])dr["Fotografia"]
+                                     : null
                     });
                 }
             }
@@ -68,32 +62,35 @@ namespace DAL.DAO
 
                 SqlCommand cmd = new SqlCommand("sp_ModificarPropietario", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
-
                 cmd.Parameters.AddWithValue("@IdPersona", propietario.IdPersona);
                 cmd.Parameters.AddWithValue("@Identificacion", propietario.Identificacion);
                 cmd.Parameters.AddWithValue("@Nombre", propietario.Nombre);
                 cmd.Parameters.AddWithValue("@Apellidos", propietario.Apellidos);
+
                 cmd.Parameters.AddWithValue("@Sexo",
                     string.IsNullOrWhiteSpace(propietario.Sexo)
-                        ? (object)DBNull.Value
-                        : propietario.Sexo);
+                        ? (object)DBNull.Value : propietario.Sexo);
 
                 cmd.Parameters.AddWithValue("@Telefono",
                     string.IsNullOrWhiteSpace(propietario.Telefono)
-                        ? (object)DBNull.Value
-                        : propietario.Telefono);
+                        ? (object)DBNull.Value : propietario.Telefono);
 
                 cmd.Parameters.AddWithValue("@Email",
                     string.IsNullOrWhiteSpace(propietario.Email)
-                        ? (object)DBNull.Value
-                        : propietario.Email);
+                        ? (object)DBNull.Value : propietario.Email);
 
                 cmd.Parameters.AddWithValue("@Direccion",
                     string.IsNullOrWhiteSpace(propietario.Direccion)
-                        ? (object)DBNull.Value
-                        : propietario.Direccion);
+                        ? (object)DBNull.Value : propietario.Direccion);
 
-                return cmd.ExecuteNonQuery() > 0;
+                SqlParameter paramFoto =
+                    cmd.Parameters.Add("@Fotografia", SqlDbType.VarBinary, -1);
+                paramFoto.Value = propietario.Fotografia != null
+                                  ? (object)propietario.Fotografia
+                                  : DBNull.Value;
+
+                cmd.ExecuteNonQuery();
+                return true;
             }
         }
 
@@ -102,11 +99,7 @@ namespace DAL.DAO
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-
-                // Solo borra la fila de Propietario.
-                // La BLL se encarga de borrar la fila de Persona en el paso siguiente.
                 string sql = "DELETE FROM Propietario WHERE IdPersona = @IdPersona";
-
                 SqlCommand cmd = new SqlCommand(sql, cn);
                 cmd.Parameters.AddWithValue("@IdPersona", idPersona);
                 return cmd.ExecuteNonQuery() > 0;
@@ -118,18 +111,9 @@ namespace DAL.DAO
             using (SqlConnection cn = conexion.ObtenerConexion())
             {
                 cn.Open();
-
-                string sql = @"SELECT COUNT(*)
-                       FROM Propietario
-                       WHERE IdPersona = @IdPersona";
-
+                string sql = @"SELECT COUNT(*) FROM Propietario WHERE IdPersona = @IdPersona";
                 SqlCommand cmd = new SqlCommand(sql, cn);
-
-                cmd.Parameters.AddWithValue(
-                    "@IdPersona",
-                    idPersona
-                );
-
+                cmd.Parameters.AddWithValue("@IdPersona", idPersona);
                 return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
         }
