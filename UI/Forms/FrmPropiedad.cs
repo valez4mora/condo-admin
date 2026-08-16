@@ -5,26 +5,24 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Util.Enumeraciones;
 
 namespace UI.Forms
 {
-    /// <summary>
     /// Formulario de Gestión de Propiedades.
     /// Permite registrar, buscar, actualizar y eliminar propiedades del condominio.
     /// Calcula automáticamente cuota de mantenimiento, fondo de reserva y
     /// convierte el monto a dólares mediante el servicio BCCR.
-    /// </summary>
     public partial class FrmPropiedad : Form
     {
         // ── Servicios BLL / Integración ──────────────────────────────
-        private readonly PropiedadBLL  _propiedadBLL  = new PropiedadBLL();
+        private readonly PropiedadBLL _propiedadBLL = new PropiedadBLL();
         private readonly PropietarioBLL _propietarioBLL = new PropietarioBLL();
-        private readonly BCCRService   _bccrService   = new BCCRService();
+        private readonly BCCRService _bccrService = new BCCRService();
 
         // ── Estado interno ────────────────────────────────────────────
-        /// <summary>Id de la propiedad cargada en el formulario (0 = ninguna).</summary>
         private int _idPropiedadSeleccionada = 0;
 
         // ── Parámetros de configuración (App.config) ──────────────────
@@ -39,7 +37,6 @@ namespace UI.Forms
         {
             InitializeComponent();
 
-            // Leer configuración una sola vez
             decimal.TryParse(
                 ConfigurationManager.AppSettings["TarifaPorM2"],
                 out _tarifaPorM2);
@@ -49,9 +46,7 @@ namespace UI.Forms
                 out _cargoFijo);
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CARGA DEL FORMULARIO
-        // ═════════════════════════════════════════════════════════════
         private void FrmPropiedad_Load(object sender, EventArgs e)
         {
             ConfigurarGrid();
@@ -59,8 +54,7 @@ namespace UI.Forms
             CargarPropietarios();
             CargarTodas();
 
-            // Mostrar valores de configuración (solo lectura, informativos)
-            txtTarifaM2.Text  = $"₡ {_tarifaPorM2:N2} / m²";
+            txtTarifaM2.Text = $"₡ {_tarifaPorM2:N2} / m²";
             txtCargoFijo.Text = $"₡ {_cargoFijo:N2}";
         }
 
@@ -117,36 +111,41 @@ namespace UI.Forms
                 }
             });
 
-            // Estilos de cabecera
-            dgvPropiedades.ColumnHeadersDefaultCellStyle.BackColor  = Color.FromArgb(26, 58, 92);
-            dgvPropiedades.ColumnHeadersDefaultCellStyle.ForeColor  = Color.White;
-            dgvPropiedades.ColumnHeadersDefaultCellStyle.Font       = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dgvPropiedades.EnableHeadersVisualStyles               = false;
-
-            // Filas alternas
+            dgvPropiedades.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(26, 58, 92);
+            dgvPropiedades.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvPropiedades.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dgvPropiedades.EnableHeadersVisualStyles = false;
             dgvPropiedades.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(235, 243, 252);
-            dgvPropiedades.DefaultCellStyle.Font                    = new Font("Segoe UI", 9F);
-            dgvPropiedades.DefaultCellStyle.SelectionBackColor      = Color.FromArgb(41, 128, 185);
-            dgvPropiedades.DefaultCellStyle.SelectionForeColor      = Color.White;
-            dgvPropiedades.RowTemplate.Height                       = 28;
+            dgvPropiedades.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
+            dgvPropiedades.DefaultCellStyle.SelectionBackColor = Color.FromArgb(41, 128, 185);
+            dgvPropiedades.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvPropiedades.RowTemplate.Height = 28;
         }
 
-        // ── Llenar ComboBox de tipos ──────────────────────────────────
+        // ── ComboBox tipos de propiedad ───────────────────────────────
         private void CargarTiposPropiedad()
         {
-            cmbTipo.DataSource   = Enum.GetValues(typeof(TipoPropiedad));
+            cmbTipo.DataSource = Enum.GetValues(typeof(TipoPropiedad));
             cmbTipo.SelectedIndex = -1;
         }
 
-        // ── Llenar ComboBox de propietarios ──────────────────────────
+        // ── ComboBox propietarios ─────────────────────────────────────
         private void CargarPropietarios()
         {
             try
             {
                 var lista = _propietarioBLL.ObtenerTodos();
-                cmbPropietario.DataSource    = lista;
-                cmbPropietario.DisplayMember = "Nombre";
-                cmbPropietario.ValueMember   = "IdPersona";
+                var fuente = lista
+                    .Select(p => new
+                    {
+                        IdPersona = p.IdPersona,
+                        NombreCompleto = $"{p.Nombre} {p.Apellidos}".Trim()
+                    })
+                    .ToList();
+
+                cmbPropietario.DataSource = fuente;
+                cmbPropietario.DisplayMember = "NombreCompleto";
+                cmbPropietario.ValueMember = "IdPersona";
                 cmbPropietario.SelectedIndex = -1;
             }
             catch (Exception ex)
@@ -155,7 +154,7 @@ namespace UI.Forms
             }
         }
 
-        // ── Cargar todas las propiedades en el grid ───────────────────
+        // ── Cargar todas las propiedades ──────────────────────────────
         private void CargarTodas()
         {
             try
@@ -177,28 +176,17 @@ namespace UI.Forms
                 : "  No se encontraron propiedades registradas.";
         }
 
-        // ═════════════════════════════════════════════════════════════
         // CÁLCULOS FINANCIEROS AUTOMÁTICOS
-        // ═════════════════════════════════════════════════════════════
-
-        /// <summary>
-        /// Recalcula cuota y fondo de reserva cada vez que cambia el área.
-        /// Fórmula: Cuota = (Área × TarifaM2) + CargoFijo
-        /// Fondo  = Cuota × 10 %
-        /// </summary>
         private void nudArea_ValueChanged(object sender, EventArgs e)
         {
             decimal cuota = (nudArea.Value * _tarifaPorM2) + _cargoFijo;
             decimal fondo = cuota * PORCENTAJE_FONDO_RESERVA;
 
-            txtCuotaColones.Text  = $"₡ {cuota:N2}";
-            txtFondoReserva.Text  = $"₡ {fondo:N2}";
-            txtCuotaDolares.Text  = "$ —";   // Requiere conversión explícita
+            txtCuotaColones.Text = $"₡ {cuota:N2}";
+            txtFondoReserva.Text = $"₡ {fondo:N2}";
+            txtCuotaDolares.Text = "$ —";
         }
 
-        /// <summary>
-        /// Convierte la cuota actual a dólares usando el tipo de cambio BCCR (venta).
-        /// </summary>
         private void btnConvertirDolar_Click(object sender, EventArgs e)
         {
             try
@@ -212,7 +200,7 @@ namespace UI.Forms
                 }
 
                 btnConvertirDolar.Enabled = false;
-                btnConvertirDolar.Text    = "...";
+                btnConvertirDolar.Text = "...";
 
                 decimal dolares = _bccrService.ConvertirColonesADolares(cuotaColones);
                 txtCuotaDolares.Text = $"$ {dolares:N2}";
@@ -225,21 +213,17 @@ namespace UI.Forms
             finally
             {
                 btnConvertirDolar.Enabled = true;
-                btnConvertirDolar.Text    = "⟳ Convertir";
+                btnConvertirDolar.Text = "⟳ Convertir";
             }
         }
 
-        /// <summary>Extrae el valor numérico de txtCuotaColones.</summary>
         private decimal ObtenerCuotaActual()
         {
             string raw = txtCuotaColones.Text.Replace("₡", "").Replace(",", "").Trim();
             return decimal.TryParse(raw, out decimal valor) ? valor : 0m;
         }
 
-        // ═════════════════════════════════════════════════════════════
         // BÚSQUEDA
-        // ═════════════════════════════════════════════════════════════
-
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             string codigo = txtBuscar.Text.Trim();
@@ -256,13 +240,11 @@ namespace UI.Forms
 
                 if (propiedad == null)
                 {
-                    MostrarAviso("No se encontró ninguna propiedad con el código \"" + codigo + "\".");
+                    MostrarAviso($"No se encontró ninguna propiedad con el código \"{codigo}\".");
                     return;
                 }
 
                 CargarEnFormulario(propiedad);
-
-                // Filtrar grid para mostrar solo el resultado
                 dgvPropiedades.DataSource = new List<PropiedadDTO> { propiedad };
                 ActualizarInfo(1);
             }
@@ -272,7 +254,6 @@ namespace UI.Forms
             }
         }
 
-        /// <summary>Permite buscar presionando Enter en el campo de búsqueda.</summary>
         private void txtBuscar_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -288,72 +269,53 @@ namespace UI.Forms
             CargarTodas();
         }
 
-        // ── Clic en fila del grid → carga el formulario ───────────────
+        // ── Clic en fila - cargar formulario ──────────────────────────
         private void dgvPropiedades_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            try
-            {
-                string codigo = dgvPropiedades.Rows[e.RowIndex]
-                                              .Cells["Codigo"].Value?.ToString();
 
-                if (string.IsNullOrEmpty(codigo)) return;
-
-                PropiedadDTO propiedad = _propiedadBLL.ObtenerPorCodigo(codigo);
-
-                if (propiedad != null)
-                    CargarEnFormulario(propiedad);
-            }
-            catch (Exception ex)
-            {
-                MostrarError(ex.Message);
-            }
+            if (dgvPropiedades.Rows[e.RowIndex].DataBoundItem is PropiedadDTO propiedad)
+                CargarEnFormulario(propiedad);
         }
 
-        // ── Poblar formulario con datos de una propiedad ──────────────
+        // ── Poblar formulario ─────────────────────────────────────────
         private void CargarEnFormulario(PropiedadDTO p)
         {
             _idPropiedadSeleccionada = p.IdPropiedad;
 
-            txtCodigo.Text              = p.Codigo;
-            txtDireccion.Text           = p.Direccion;
-            nudResidentes.Value         = p.CantidadResidentes;
-            nudArea.Value               = p.Area;          // dispara nudArea_ValueChanged
+            txtCodigo.Text = p.Codigo;
+            txtDireccion.Text = p.Direccion;
+            nudResidentes.Value = p.CantidadResidentes;
+            nudArea.Value = p.Area;   // dispara nudArea_ValueChanged
 
-            cmbTipo.SelectedItem        = null;
+            cmbTipo.SelectedItem = null;
             if (Enum.TryParse(p.Tipo, out TipoPropiedad tipo))
                 cmbTipo.SelectedItem = tipo;
 
             cmbPropietario.SelectedValue = p.IdPropietario;
 
-            // Estado: se determina desde el módulo de Morosidad;
-            // aquí solo mostramos un indicador visual básico.
-            MostrarEstado(p.CuotaMantenimiento > 0);
+            MostrarEstado(p.EstadoMorosidad);
         }
 
-        /// <summary>Muestra el badge de estado morosa / al día.</summary>
-        private void MostrarEstado(bool tieneRegistro)
+        // ── Badge de estado morosidad ─────────────────────────────────
+        private void MostrarEstado(bool esMorosa)
         {
-            // La lógica real de morosidad vive en IndicadorMorosidadBLL.
-            // Aquí solo mostramos si la propiedad tiene cuota asignada.
-            if (!tieneRegistro)
+
+            if (esMorosa)
             {
-                lblEstadoValor.BackColor = Color.FromArgb(100, 120, 140);
-                lblEstadoValor.Text      = "Sin datos";
+                lblEstadoValor.BackColor = Color.FromArgb(220, 38, 38);   // rojo
+                lblEstadoValor.Text = "✘ Morosa";
             }
             else
             {
-                // Para el estado real de morosidad conectar con IndicadorMorosidadBLL
-                lblEstadoValor.BackColor = Color.FromArgb(39, 174, 96);
-                lblEstadoValor.Text      = "✔ Al día";
+                lblEstadoValor.BackColor = Color.FromArgb(39, 174, 96);   // verde
+                lblEstadoValor.Text = "✔ Al día";
             }
         }
 
-        // ═════════════════════════════════════════════════════════════
-        // CRUD
-        // ═════════════════════════════════════════════════════════════
 
+        // CRUD
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
             try
@@ -368,6 +330,10 @@ namespace UI.Forms
                     MostrarExito("La propiedad fue registrada correctamente.");
                     LimpiarFormulario();
                     CargarTodas();
+                }
+                else
+                {
+                    MostrarAviso("No se pudo registrar la propiedad. Verifique los datos.");
                 }
             }
             catch (Exception ex)
@@ -386,7 +352,7 @@ namespace UI.Forms
                 ValidarCamposObligatorios();
 
                 PropiedadDTO propiedad = ConstruirDTO();
-                propiedad.IdPropiedad  = _idPropiedadSeleccionada;
+                propiedad.IdPropiedad = _idPropiedadSeleccionada;
 
                 bool ok = _propiedadBLL.Modificar(propiedad);
 
@@ -395,6 +361,10 @@ namespace UI.Forms
                     MostrarExito("La propiedad fue actualizada correctamente.");
                     LimpiarFormulario();
                     CargarTodas();
+                }
+                else
+                {
+                    MostrarAviso("No se pudo actualizar la propiedad. Verifique los datos.");
                 }
             }
             catch (Exception ex)
@@ -427,6 +397,10 @@ namespace UI.Forms
                     LimpiarFormulario();
                     CargarTodas();
                 }
+                else
+                {
+                    MostrarAviso("No se pudo eliminar la propiedad.");
+                }
             }
             catch (Exception ex)
             {
@@ -434,10 +408,7 @@ namespace UI.Forms
             }
         }
 
-        private void btnLimpiar_Click(object sender, EventArgs e)
-        {
-            LimpiarFormulario();
-        }
+        private void btnLimpiar_Click(object sender, EventArgs e) => LimpiarFormulario();
 
         private void btnReporte_Click(object sender, EventArgs e)
         {
@@ -448,28 +419,23 @@ namespace UI.Forms
                 MessageBoxIcon.Information);
         }
 
-        // ═════════════════════════════════════════════════════════════
         // HELPERS PRIVADOS
-        // ═════════════════════════════════════════════════════════════
-
-        /// <summary>Construye un PropiedadDTO con los datos actuales del formulario.</summary>
         private PropiedadDTO ConstruirDTO()
         {
             return new PropiedadDTO
             {
-                Codigo              = txtCodigo.Text.Trim(),
-                Tipo                = cmbTipo.SelectedItem?.ToString(),
-                Direccion           = txtDireccion.Text.Trim(),
-                Area                = nudArea.Value,
-                CantidadResidentes  = (int)nudResidentes.Value,
-                TarifaMetro         = _tarifaPorM2,
-                CargoFijo           = _cargoFijo,
-                CuotaMantenimiento  = ObtenerCuotaActual(),
-                IdPropietario       = Convert.ToInt32(cmbPropietario.SelectedValue)
+                Codigo = txtCodigo.Text.Trim(),
+                Tipo = cmbTipo.SelectedItem?.ToString(),
+                Direccion = txtDireccion.Text.Trim(),
+                Area = nudArea.Value,
+                CantidadResidentes = (int)nudResidentes.Value,
+                TarifaMetro = _tarifaPorM2,
+                CargoFijo = _cargoFijo,
+                CuotaMantenimiento = ObtenerCuotaActual(),
+                IdPropietario = Convert.ToInt32(cmbPropietario.SelectedValue)
             };
         }
 
-        /// <summary>Lanza excepción si falta algún campo obligatorio.</summary>
         private void ValidarCamposObligatorios()
         {
             if (string.IsNullOrWhiteSpace(txtCodigo.Text))
@@ -488,7 +454,6 @@ namespace UI.Forms
                 throw new Exception("Debe seleccionar un propietario.");
         }
 
-        /// <summary>Restablece el formulario a su estado inicial.</summary>
         private void LimpiarFormulario()
         {
             _idPropiedadSeleccionada = 0;
@@ -497,24 +462,25 @@ namespace UI.Forms
             txtDireccion.Clear();
             txtBuscar.Clear();
 
-            nudArea.Value       = 0;
+            nudArea.Value = 0;
             nudResidentes.Value = 0;
 
             txtCuotaColones.Text = "₡ 0.00";
             txtCuotaDolares.Text = "$ —";
             txtFondoReserva.Text = "₡ 0.00";
 
-            cmbTipo.SelectedIndex       = -1;
+            cmbTipo.SelectedIndex = -1;
             cmbPropietario.SelectedIndex = -1;
 
+            // Estado neutro al limpiar
             lblEstadoValor.BackColor = Color.FromArgb(100, 120, 140);
-            lblEstadoValor.Text      = "Sin datos";
+            lblEstadoValor.Text = "Sin datos";
 
             dgvPropiedades.ClearSelection();
             txtCodigo.Focus();
         }
 
-        // ── Mensajes estandarizados ───────────────────────────────────
+        // ── Mensajes ──────────────────────────────────────────────────
         private void MostrarExito(string mensaje) =>
             MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
