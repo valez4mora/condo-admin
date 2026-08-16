@@ -222,6 +222,9 @@
     <EmbeddedResource Include="Forms\FrmReporteFacturacionPropiedad.resx">
       <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmReservas.resx">
+      <DependentUpon>FrmReservas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -308,6 +311,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\flecha-de-circulo-de-disquete-a-la-derecha %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\flecha-de-circulo-de-disquete-a-la-derecha %281%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ciudad %281%291.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ciudad %281%292.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ciudad %281%293.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

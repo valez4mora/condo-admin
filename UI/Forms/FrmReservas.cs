@@ -16,5 +16,20 @@ namespace UI.Forms
         {
             InitializeComponent();
         }
+
+        private void FrmReservas_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
