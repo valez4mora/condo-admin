@@ -10,8 +10,6 @@ namespace Util.Enumeraciones
     {
         Casa,
         Apartamento,
-        Local,
-        Oficina,
-        Otro
+        Local
     }
 }

@@ -2,63 +2,84 @@
 using DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Net.Mail;
 
 namespace BLL
 {
     public class ResidenteBLL
     {
-        PersonaDAO personaDAL = new PersonaDAO();
-        ResidenteDAO residenteDAL = new ResidenteDAO();
+        private readonly PersonaDAO personaDAO = new PersonaDAO();
+        private readonly ResidenteDAO residenteDAO = new ResidenteDAO();
 
         public bool Registrar(ResidenteDTO residente)
         {
-            // Crear objeto Persona
-            PersonaDTO persona = new PersonaDTO();
+            Validar(residente);
+            if (personaDAO.ExisteIdentificacion(residente.Identificacion))
+                throw new Exception("Ya existe una persona con esa identificación.");
 
-            persona.Identificacion = residente.Identificacion;
-            persona.Nombre = residente.Nombre;
-            persona.Apellidos = residente.Apellidos;
-            persona.Sexo = residente.Sexo;
-            persona.Telefono = residente.Telefono;
-            persona.Email = residente.Email;
-            persona.Direccion = residente.Direccion;
+            if (!personaDAO.Registrar(MapearPersona(residente))) return false;
 
-            // Guardar Persona primero
-            bool guardado = personaDAL.Registrar(persona);
+            residente.IdPersona = personaDAO.ObtenerIdPorIdentificacion(residente.Identificacion);
+            if (residente.IdPersona <= 0)
+                throw new Exception("No fue posible recuperar la persona registrada.");
 
-            if (guardado)
-            {
-                // Obtener IdPersona generado
-                int idPersona = personaDAL.ObtenerIdPorIdentificacion(
-                    residente.Identificacion);
-
-                // Asignarlo al residente
-                residente.IdPersona = idPersona;
-
-                // Guardar residente
-                return residenteDAL.Registrar(residente);
-            }
-
-            return false;
+            return residenteDAO.Registrar(residente);
         }
 
         public bool Modificar(ResidenteDTO residente)
         {
-            return residenteDAL.Modificar(residente);
+            if (residente.IdPersona <= 0)
+                throw new Exception("Debe seleccionar un residente.");
+            Validar(residente);
+            return residenteDAO.Modificar(residente);
         }
 
-        public bool Eliminar(int id)
+        public bool Eliminar(int idPersona)
         {
-            return residenteDAL.Eliminar(id);
-        }
-        public List<ResidenteDTO> ObtenerTodos()
-        {
-            return residenteDAL.ObtenerTodos();
+            if (idPersona <= 0)
+                throw new Exception("Debe seleccionar un residente.");
+            return residenteDAO.Eliminar(idPersona);
         }
 
+        public List<ResidenteDTO> ObtenerTodos() { return residenteDAO.ObtenerTodos(); }
+
+        private static PersonaDTO MapearPersona(ResidenteDTO r)
+        {
+            return new PersonaDTO
+            {
+                IdPersona = r.IdPersona,
+                Identificacion = r.Identificacion,
+                Nombre = r.Nombre,
+                Apellidos = r.Apellidos,
+                Sexo = r.Sexo,
+                Telefono = r.Telefono,
+                Email = r.Email,
+                Direccion = r.Direccion,
+                Fotografia = r.Fotografia
+            };
+        }
+
+        private static void Validar(ResidenteDTO r)
+        {
+            if (r == null) throw new ArgumentNullException("residente");
+            if (string.IsNullOrWhiteSpace(r.Identificacion)) throw new Exception("La identificación es obligatoria.");
+            if (string.IsNullOrWhiteSpace(r.Nombre)) throw new Exception("El nombre es obligatorio.");
+            if (string.IsNullOrWhiteSpace(r.Apellidos)) throw new Exception("Los apellidos son obligatorios.");
+            if (r.Sexo != "M" && r.Sexo != "F") throw new Exception("Debe seleccionar el sexo.");
+            if (string.IsNullOrWhiteSpace(r.Telefono)) throw new Exception("El teléfono es obligatorio.");
+            if (!EmailValido(r.Email)) throw new Exception("El correo electrónico no es válido.");
+            if (string.IsNullOrWhiteSpace(r.Direccion)) throw new Exception("La provincia y la dirección exacta son obligatorias.");
+            if (r.IdPropiedad <= 0) throw new Exception("Debe seleccionar la propiedad asignada.");
+        }
+
+        private static bool EmailValido(string email)
+        {
+            try
+            {
+                MailAddress direccion = new MailAddress(email ?? string.Empty);
+                return direccion.Address == email;
+            }
+            catch { return false; }
+        }
     }
 }

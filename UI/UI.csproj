@@ -199,6 +199,12 @@
     <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
       <DependentUpon>FrmAreasComunes.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmControlAcceso.resx">
+      <DependentUpon>FrmControlAcceso.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmFacturas.resx">
+      <DependentUpon>FrmFacturas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMorosidad.resx">
       <DependentUpon>FrmMorosidad.cs</DependentUpon>
     </EmbeddedResource>
@@ -216,6 +222,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmReservas.resx">
       <DependentUpon>FrmReservas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmResidente.resx">
+      <DependentUpon>FrmResidente.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
