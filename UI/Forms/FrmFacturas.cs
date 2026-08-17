@@ -84,6 +84,17 @@ namespace UI.Forms
             CargarFacturas();
         }
 
+        private void btnEmitirPendientes_Click(object sender, EventArgs e)
+        {
+            FrmCargosFacturables formulario = new FrmCargosFacturables();
+
+            if (MdiParent != null)
+                formulario.MdiParent = MdiParent;
+
+            formulario.FormClosed += (s, args) => CargarFacturas();
+            formulario.Show();
+        }
+
         // ── SELECCIÓN EN GRID ─────────────────────────────────────────
 
         private void dgvFacturas_SelectionChanged(object sender, EventArgs e)

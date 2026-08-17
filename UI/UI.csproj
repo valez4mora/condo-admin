@@ -203,9 +203,6 @@
     <EmbeddedResource Include="Forms\FrmBitacora.resx">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
-      <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </EmbeddedResource>
@@ -264,10 +261,6 @@
     <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{dec6d2f7-4daa-4982-a4fc-249116544ca2}</Project>
       <Name>BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DAL\DAL.csproj">
-      <Project>{470f508e-0919-4fe5-9b0a-ace69209fe75}</Project>
-      <Name>DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\DTO\DTO.csproj">
       <Project>{e8557c6d-3868-4db0-968e-5f3e61657cad}</Project>

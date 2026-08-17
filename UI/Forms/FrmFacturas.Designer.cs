@@ -1,3 +1,5 @@
+using System;
+
 namespace UI.Forms
 {
     partial class FrmFacturas
