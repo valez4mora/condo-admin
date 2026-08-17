@@ -60,5 +60,8 @@
     <Compile Include="Usuario.cs" />
     <Compile Include="Visita.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
