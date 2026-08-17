@@ -40,7 +40,7 @@ namespace Util.Factura
 
             // SQL Server recibe una cadena Unicode. No se incluye una declaración
             // encoding="UTF-8" porque solo corresponde cuando se escriben bytes.
-            return doc.ToString(SaveOptions.DisableFormatting);
+            return doc.ToString();
         }
 
         /// Guarda el XML en un archivo físico (para descarga / impresión).
