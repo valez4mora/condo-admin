@@ -63,6 +63,46 @@ namespace UI.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _069c168477871ddaf88252c114b5cfe9 {
+            get {
+                object obj = ResourceManager.GetObject("069c168477871ddaf88252c114b5cfe9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _40fc852206302df373e9747586d84e9b {
+            get {
+                object obj = ResourceManager.GetObject("40fc852206302df373e9747586d84e9b", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _59ffcdc4_2120_4886_bed5_72f23c9396ce {
+            get {
+                object obj = ResourceManager.GetObject("59ffcdc4-2120-4886-bed5-72f23c9396ce", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap a899a7489d4cf51f5db54738d802bf31 {
+            get {
+                object obj = ResourceManager.GetObject("a899a7489d4cf51f5db54738d802bf31", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap budget {
             get {
                 object obj = ResourceManager.GetObject("budget", resourceCulture);
@@ -123,6 +163,26 @@ namespace UI.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap clave_de_usuario {
+            get {
+                object obj = ResourceManager.GetObject("clave-de-usuario", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap clave_de_usuario__1_ {
+            get {
+                object obj = ResourceManager.GetObject("clave-de-usuario (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cyber_security {
             get {
                 object obj = ResourceManager.GetObject("cyber-security", resourceCulture);
@@ -156,6 +216,26 @@ namespace UI.Properties {
         internal static System.Drawing.Bitmap flecha_de_circulo_de_disquete_a_la_derecha__1_1 {
             get {
                 object obj = ResourceManager.GetObject("flecha-de-circulo-de-disquete-a-la-derecha (1)1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ingresar__1_ {
+            get {
+                object obj = ResourceManager.GetObject("ingresar (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap lapiz_de_usuario {
+            get {
+                object obj = ResourceManager.GetObject("lapiz-de-usuario", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
