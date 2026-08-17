@@ -199,7 +199,17 @@
     <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
       <DependentUpon>FrmAreasComunes.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
        <EmbeddedResource Include="Forms\FrmMorosidad.resx">
+=======
+    <EmbeddedResource Include="Forms\FrmBitacora.resx">
+      <DependentUpon>FrmBitacora.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
+      <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmMorosidad.resx">
+>>>>>>> f3287ab0924efcc14d02bcca9b0017ff6450211e
       <DependentUpon>FrmMorosidad.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmPenalizacion.resx">
