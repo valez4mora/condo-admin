@@ -34,12 +34,13 @@ namespace DAL.DAO
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         // Encabezado
-                        cmd.Parameters.AddWithValue("@Fecha", factura.Fecha);
-                        cmd.Parameters.AddWithValue("@TotalColones", factura.TotalColones);
-                        cmd.Parameters.AddWithValue("@TotalDolares", factura.TotalDolares);
-                        cmd.Parameters.AddWithValue("@TipoCambio", factura.TipoCambio);
-                        cmd.Parameters.AddWithValue("@IdPropiedad", factura.IdPropiedad);
-                        cmd.Parameters.AddWithValue("@Estado", factura.Estado);
+                        cmd.Parameters.Add("@Fecha", SqlDbType.Date).Value = factura.Fecha.Date;
+                        AgregarDecimal(cmd, "@TotalColones", factura.TotalColones);
+                        AgregarDecimal(cmd, "@TotalDolares", factura.TotalDolares);
+                        AgregarDecimal(cmd, "@TipoCambio", factura.TipoCambio);
+                        cmd.Parameters.Add("@IdPropiedad", SqlDbType.Int).Value = factura.IdPropiedad;
+                        cmd.Parameters.Add("@Estado", SqlDbType.VarChar, 20).Value =
+                            string.IsNullOrWhiteSpace(factura.Estado) ? "Emitida" : factura.Estado.Trim();
 
                         // Parámetro de salida
                         SqlParameter paramId = new SqlParameter("@IdFactura", SqlDbType.Int);
@@ -54,11 +55,11 @@ namespace DAL.DAO
                             using (SqlCommand detalleCmd = new SqlCommand("sp_RegistrarDetalleFactura", cn, tx))
                             {
                                 detalleCmd.CommandType = CommandType.StoredProcedure;
-                                detalleCmd.Parameters.AddWithValue("@IdFactura", idGenerado);
-                                detalleCmd.Parameters.AddWithValue("@IdCargo", detalle.IdCargo);
-                                detalleCmd.Parameters.AddWithValue("@Cantidad", detalle.Cantidad);
-                                detalleCmd.Parameters.AddWithValue("@Precio", detalle.Precio);
-                                detalleCmd.Parameters.AddWithValue("@Subtotal", detalle.SubTotal);
+                                detalleCmd.Parameters.Add("@IdFactura", SqlDbType.Int).Value = idGenerado;
+                                detalleCmd.Parameters.Add("@IdCargo", SqlDbType.Int).Value = detalle.IdCargo;
+                                detalleCmd.Parameters.Add("@Cantidad", SqlDbType.Int).Value = detalle.Cantidad;
+                                AgregarDecimal(detalleCmd, "@Precio", detalle.Precio);
+                                AgregarDecimal(detalleCmd, "@Subtotal", detalle.SubTotal);
                                 detalleCmd.ExecuteNonQuery();
                             }
                         }
@@ -102,8 +103,11 @@ namespace DAL.DAO
 
                 SqlCommand cmd = new SqlCommand("sp_GuardarXmlFactura", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IdFactura", idFactura);
-                cmd.Parameters.AddWithValue("@XmlFactura", xmlContent);
+                cmd.Parameters.Add("@IdFactura", SqlDbType.Int).Value = idFactura;
+                // sp_GuardarXmlFactura recibe NVARCHAR(MAX) y realiza el CAST a XML.
+                // El texto ya se genera sin declaración de encoding incompatible.
+                cmd.Parameters.Add("@XmlFactura", SqlDbType.NVarChar, -1).Value =
+                    string.IsNullOrWhiteSpace(xmlContent) ? (object)DBNull.Value : xmlContent;
 
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -204,6 +208,14 @@ namespace DAL.DAO
         }
 
         // ── MAPEO PRIVADO ─────────────────────────────────────────────
+
+        private static void AgregarDecimal(SqlCommand cmd, string nombre, decimal valor)
+        {
+            SqlParameter parametro = cmd.Parameters.Add(nombre, SqlDbType.Decimal);
+            parametro.Precision = 10;
+            parametro.Scale = 2;
+            parametro.Value = decimal.Round(valor, 2, MidpointRounding.AwayFromZero);
+        }
 
         private static FacturaDTO MapearEncabezado(SqlDataReader dr)
         {

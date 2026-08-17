@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,7 +75,22 @@ namespace DAL.DAO
             {
                 cn.Open();
 
-                const string sql = "DELETE FROM CargoFacturable WHERE IdCargo = @IdCargo";
+                // Si el cargo ya aparece en una factura no se puede borrar físicamente
+                // por la llave foránea. En ese caso se anula para conservar el historial.
+                const string sql = @"
+                    IF EXISTS (SELECT 1 FROM DetalleFactura WHERE IdCargo = @IdCargo)
+                    BEGIN
+                        UPDATE CargoFacturable
+                        SET Estado = 'Anulado'
+                        WHERE IdCargo = @IdCargo
+                          AND Estado <> 'Pagado';
+                    END
+                    ELSE
+                    BEGIN
+                        DELETE FROM CargoFacturable
+                        WHERE IdCargo = @IdCargo
+                          AND Estado <> 'Pagado';
+                    END";
 
                 using (SqlCommand cmd = new SqlCommand(sql, cn))
                 {
@@ -94,7 +110,7 @@ namespace DAL.DAO
                 const string sql = @"
                     UPDATE CargoFacturable
                     SET Estado = 'Pagado'
-                    WHERE IdCargo = @IdCargo AND Estado = 'Pendiente'";
+                    WHERE IdCargo = @IdCargo AND Estado IN ('Pendiente', 'Vencido')";
 
                 using (SqlCommand cmd = new SqlCommand(sql, cn))
                 {
@@ -183,15 +199,28 @@ namespace DAL.DAO
         ///Asigna los parámetros comunes para INSERT y UPDATE.
         private static void AsignarParametros(SqlCommand cmd, CargoFacturableDTO c)
         {
-            cmd.Parameters.AddWithValue("@Descripcion", c.Descripcion);
-            cmd.Parameters.AddWithValue("@Tipo", c.Tipo);
-            cmd.Parameters.AddWithValue("@MontoBase", c.MontoBase);
-            cmd.Parameters.AddWithValue("@IVA", c.IVA);
-            cmd.Parameters.AddWithValue("@Total", c.Total);
-            cmd.Parameters.AddWithValue("@FechaEmision", c.FechaEmision);
-            cmd.Parameters.AddWithValue("@FechaVencimiento", c.FechaVencimiento);
-            cmd.Parameters.AddWithValue("@Estado", c.Estado);
-            cmd.Parameters.AddWithValue("@IdPropiedad", c.IdPropiedad);
+            cmd.Parameters.Add("@Descripcion", SqlDbType.VarChar, 200).Value =
+                string.IsNullOrWhiteSpace(c.Descripcion) ? (object)DBNull.Value : c.Descripcion.Trim();
+            cmd.Parameters.Add("@Tipo", SqlDbType.VarChar, 50).Value =
+                string.IsNullOrWhiteSpace(c.Tipo) ? (object)DBNull.Value : c.Tipo.Trim();
+
+            AgregarDecimal(cmd, "@MontoBase", c.MontoBase);
+            AgregarDecimal(cmd, "@IVA", c.IVA);
+            AgregarDecimal(cmd, "@Total", c.Total);
+
+            cmd.Parameters.Add("@FechaEmision", SqlDbType.Date).Value = c.FechaEmision.Date;
+            cmd.Parameters.Add("@FechaVencimiento", SqlDbType.Date).Value = c.FechaVencimiento.Date;
+            cmd.Parameters.Add("@Estado", SqlDbType.VarChar, 20).Value =
+                string.IsNullOrWhiteSpace(c.Estado) ? "Pendiente" : c.Estado.Trim();
+            cmd.Parameters.Add("@IdPropiedad", SqlDbType.Int).Value = c.IdPropiedad;
+        }
+
+        private static void AgregarDecimal(SqlCommand cmd, string nombre, decimal valor)
+        {
+            SqlParameter parametro = cmd.Parameters.Add(nombre, SqlDbType.Decimal);
+            parametro.Precision = 10;
+            parametro.Scale = 2;
+            parametro.Value = decimal.Round(valor, 2, MidpointRounding.AwayFromZero);
         }
 
         ///Mapea una fila del DataReader a un CargoFacturableDTO.
