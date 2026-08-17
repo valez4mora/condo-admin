@@ -2,26 +2,17 @@
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Configuration;
 
 namespace Util.Factura
 {
-    /// <summary>
-    /// Utilidad para envío de correos electrónicos.
-    /// Envía la factura en formato PDF (adjunto) y XML (adjunto) al destinatario.
-    /// Configurar credenciales SMTP en App.config o pasar por parámetros.
-    /// </summary>
     public static class EmailUtil
     {
         // ── Configuración SMTP (modificar según el servidor real) ──────
         private const string SMTP_HOST = "smtp.gmail.com";
         private const int SMTP_PUERTO = 587;
-        private const string SMTP_USUARIO = "condoadmin@gmail.com";   // cambiar
-        private const string SMTP_PASSWORD = "password_app";            // cambiar
-        private const string REMITENTE = "Administración Condominio <condoadmin@gmail.com>";
 
-        /// <summary>
         /// Envía la factura por correo con los archivos PDF y XML adjuntos.
-        /// </summary>
         /// <param name="destinatario">Email del residente / propietario.</param>
         /// <param name="asunto">Asunto del mensaje.</param>
         /// <param name="cuerpo">Cuerpo HTML del mensaje.</param>
@@ -39,9 +30,21 @@ namespace Util.Factura
             if (string.IsNullOrWhiteSpace(destinatario))
                 throw new ArgumentException("El destinatario no puede estar vacío.");
 
+            new MailAddress(destinatario);
+            bool simular = !string.Equals(ConfigurationManager.AppSettings["SimularCorreo"],
+                "false", StringComparison.OrdinalIgnoreCase);
+            if (simular) return;
+
+            string usuario = ConfigurationManager.AppSettings["SmtpUsuario"];
+            string password = ConfigurationManager.AppSettings["SmtpPassword"];
+            string remitente = ConfigurationManager.AppSettings["SmtpRemitente"];
+            if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(password))
+                throw new InvalidOperationException("Falta configurar SmtpUsuario y SmtpPassword.");
+            if (string.IsNullOrWhiteSpace(remitente)) remitente = usuario;
+
             using (MailMessage mensaje = new MailMessage())
             {
-                mensaje.From = new MailAddress(REMITENTE);
+                mensaje.From = new MailAddress(remitente);
                 mensaje.To.Add(destinatario);
                 mensaje.Subject = asunto;
                 mensaje.Body = cuerpo;
@@ -67,15 +70,13 @@ namespace Util.Factura
                 using (SmtpClient smtp = new SmtpClient(SMTP_HOST, SMTP_PUERTO))
                 {
                     smtp.EnableSsl = true;
-                    smtp.Credentials = new NetworkCredential(SMTP_USUARIO, SMTP_PASSWORD);
+                    smtp.Credentials = new NetworkCredential(usuario, password);
                     smtp.Send(mensaje);
                 }
             }
         }
 
-        /// <summary>
         /// Construye el cuerpo HTML estándar para el correo de factura.
-        /// </summary>
         public static string ConstruirCuerpoFactura(
             string codigoPropiedad,
             int idFactura,

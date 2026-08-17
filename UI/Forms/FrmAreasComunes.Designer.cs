@@ -92,7 +92,7 @@
             this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
             this.groupBox1.Location = new System.Drawing.Point(12, 100);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(343, 111);
+            this.groupBox1.Size = new System.Drawing.Size(404, 111);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Datos del Área Común";
@@ -100,9 +100,9 @@
             // 
             // txtDescripcion
             // 
-            this.txtDescripcion.Location = new System.Drawing.Point(90, 65);
+            this.txtDescripcion.Location = new System.Drawing.Point(124, 68);
             this.txtDescripcion.Name = "txtDescripcion";
-            this.txtDescripcion.Size = new System.Drawing.Size(209, 23);
+            this.txtDescripcion.Size = new System.Drawing.Size(229, 23);
             this.txtDescripcion.TabIndex = 3;
             // 
             // label4
@@ -117,7 +117,7 @@
             // 
             // txtNombre
             // 
-            this.txtNombre.Location = new System.Drawing.Point(70, 25);
+            this.txtNombre.Location = new System.Drawing.Point(124, 28);
             this.txtNombre.Name = "txtNombre";
             this.txtNombre.Size = new System.Drawing.Size(229, 23);
             this.txtNombre.TabIndex = 1;
@@ -142,14 +142,14 @@
             this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
             this.groupBox2.Location = new System.Drawing.Point(13, 218);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(342, 105);
+            this.groupBox2.Size = new System.Drawing.Size(403, 105);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Capacidad y Tarifa";
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(59, 59);
+            this.numericUpDown2.Location = new System.Drawing.Point(123, 59);
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(120, 23);
             this.numericUpDown2.TabIndex = 3;
@@ -176,7 +176,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(89, 25);
+            this.numericUpDown1.Location = new System.Drawing.Point(123, 25);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(120, 23);
             this.numericUpDown1.TabIndex = 0;
@@ -191,7 +191,7 @@
             this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
             this.groupBox3.Location = new System.Drawing.Point(13, 330);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(342, 107);
+            this.groupBox3.Size = new System.Drawing.Size(403, 107);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Horario de Uso";
@@ -199,17 +199,17 @@
             // dateTimePicker2
             // 
             this.dateTimePicker2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.dateTimePicker2.Location = new System.Drawing.Point(123, 70);
+            this.dateTimePicker2.Location = new System.Drawing.Point(133, 70);
             this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(200, 23);
+            this.dateTimePicker2.Size = new System.Drawing.Size(238, 23);
             this.dateTimePicker2.TabIndex = 5;
             // 
             // dateTimePicker1
             // 
             this.dateTimePicker1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.dateTimePicker1.Location = new System.Drawing.Point(123, 31);
+            this.dateTimePicker1.Location = new System.Drawing.Point(133, 31);
             this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 23);
+            this.dateTimePicker1.Size = new System.Drawing.Size(238, 23);
             this.dateTimePicker1.TabIndex = 4;
             // 
             // label8
@@ -238,7 +238,7 @@
             this.btnEliminar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
             this.btnEliminar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnEliminar.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnEliminar.Location = new System.Drawing.Point(136, 462);
+            this.btnEliminar.Location = new System.Drawing.Point(136, 453);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(91, 29);
             this.btnEliminar.TabIndex = 5;
@@ -251,7 +251,7 @@
             this.btnNuevo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(140)))), ((int)(((byte)(141)))));
             this.btnNuevo.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnNuevo.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnNuevo.Location = new System.Drawing.Point(250, 462);
+            this.btnNuevo.Location = new System.Drawing.Point(250, 453);
             this.btnNuevo.Name = "btnNuevo";
             this.btnNuevo.Size = new System.Drawing.Size(95, 29);
             this.btnNuevo.TabIndex = 6;
@@ -263,7 +263,7 @@
             // 
             this.dgvAreas.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgvAreas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAreas.Location = new System.Drawing.Point(379, 112);
+            this.dgvAreas.Location = new System.Drawing.Point(445, 125);
             this.dgvAreas.Name = "dgvAreas";
             this.dgvAreas.Size = new System.Drawing.Size(557, 325);
             this.dgvAreas.TabIndex = 7;
@@ -276,7 +276,7 @@
             this.btnGuardar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnGuardar.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.btnGuardar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnGuardar.Location = new System.Drawing.Point(23, 462);
+            this.btnGuardar.Location = new System.Drawing.Point(23, 453);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(92, 29);
             this.btnGuardar.TabIndex = 4;
@@ -288,7 +288,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(947, 503);
+            this.ClientSize = new System.Drawing.Size(1040, 503);
             this.Controls.Add(this.dgvAreas);
             this.Controls.Add(this.btnNuevo);
             this.Controls.Add(this.btnEliminar);

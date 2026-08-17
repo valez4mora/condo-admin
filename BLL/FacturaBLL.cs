@@ -4,6 +4,7 @@ using Integration.TipoCambio;
 using Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Util.Factura;
 
 namespace BLL
@@ -99,6 +100,43 @@ namespace BLL
                 existente);
         }
 
+        /// Emite una sola factura con todos los cargos pendientes seleccionados.
+        public FacturaDTO GenerarFacturaPorCargos(
+            IEnumerable<CargoFacturableDTO> cargos,
+            string codigoPropiedad)
+        {
+            if (cargos == null)
+                throw new ArgumentNullException("cargos");
+
+            List<CargoFacturableDTO> seleccionados = cargos
+                .Where(c => c != null)
+                .GroupBy(c => c.IdCargo)
+                .Select(g => g.First())
+                .ToList();
+
+            if (seleccionados.Count == 0)
+                throw new Exception("Debe seleccionar al menos un cargo pendiente.");
+
+            int idPropiedad = seleccionados[0].IdPropiedad;
+            if (seleccionados.Any(c => c.IdPropiedad != idPropiedad))
+                throw new Exception("Todos los cargos deben pertenecer a la misma propiedad.");
+
+            List<CargoFacturableDTO> verificados = new List<CargoFacturableDTO>();
+            foreach (CargoFacturableDTO cargo in seleccionados)
+            {
+                CargoFacturableDTO existente = _cargoBLL.ObtenerPorId(cargo.IdCargo);
+                if (existente == null)
+                    throw new Exception("No se encontró el cargo #" + cargo.IdCargo + ".");
+                if (existente.Estado != "Pendiente" && existente.Estado != "Vencido")
+                    throw new Exception("El cargo #" + cargo.IdCargo + " no está pendiente.");
+                if (_facturaDAL.ExisteFacturaParaCargo(cargo.IdCargo))
+                    throw new Exception("El cargo #" + cargo.IdCargo + " ya está facturado.");
+                verificados.Add(existente);
+            }
+
+            return ConstruirYPersistirFactura(idPropiedad, codigoPropiedad, verificados);
+        }
+
         // 3. ANULAR FACTURA
         /// Anula una factura existente.
         /// No permite anular facturas anuladas o pagadas.
@@ -141,11 +179,8 @@ namespace BLL
         }
 
         // 4. XML Y CORREO
-
-        /// <summary>
         /// Genera el XML de la factura, lo guarda en la base de datos
         /// y devuelve el contenido generado.
-        /// </summary>
         public string GenerarYGuardarXml(FacturaDTO factura)
         {
             if (factura == null)
@@ -257,6 +292,12 @@ namespace BLL
             return _facturaDAL.ObtenerTodas();
         }
 
+        public bool CargoEstaFacturado(int idCargo)
+        {
+            if (idCargo <= 0) return false;
+            return _facturaDAL.ExisteFacturaParaCargo(idCargo);
+        }
+
         // HELPER PRIVADO — construye y persiste la factura
 
         private FacturaDTO ConstruirYPersistirFactura(
@@ -264,7 +305,16 @@ namespace BLL
             string codigoPropiedad,
             CargoFacturableDTO cargo)
         {
-            if (cargo == null)
+            return ConstruirYPersistirFactura(idPropiedad, codigoPropiedad,
+                new List<CargoFacturableDTO> { cargo });
+        }
+
+        private FacturaDTO ConstruirYPersistirFactura(
+            int idPropiedad,
+            string codigoPropiedad,
+            IList<CargoFacturableDTO> cargos)
+        {
+            if (cargos == null || cargos.Count == 0)
             {
                 throw new ArgumentNullException(
                     "cargo",
@@ -283,17 +333,22 @@ namespace BLL
                     "Debe indicar el código de la propiedad.");
             }
 
-            DetalleFacturaDTO detalle =
-                new DetalleFacturaDTO
-                {
-                    IdCargo = cargo.IdCargo,
-                    DescripcionCargo = cargo.Descripcion,
-                    Cantidad = 1,
-                    Precio = cargo.Total,
-                    SubTotal = cargo.Total
-                };
+            List<DetalleFacturaDTO> detalles = cargos.Select(c => new DetalleFacturaDTO
+            {
+                IdCargo = c.IdCargo,
+                DescripcionCargo = c.Descripcion,
+                TipoCargo = c.Tipo,
+                MontoBase = c.MontoBase,
+                IVA = c.IVA,
+                FechaEmision = c.FechaEmision,
+                FechaVencimiento = c.FechaVencimiento,
+                EstadoCargo = c.Estado,
+                Cantidad = 1,
+                Precio = c.Total,
+                SubTotal = c.Total
+            }).ToList();
 
-            decimal totalColones = detalle.SubTotal;
+            decimal totalColones = detalles.Sum(d => d.SubTotal);
 
             TipoCambioResponseDTO cambio =
                 _tipoCambioService.ObtenerTipoCambio();
@@ -321,10 +376,7 @@ namespace BLL
                 IdPropiedad = idPropiedad,
                 CodigoPropiedad = codigoPropiedad.Trim(),
                 Estado = "Emitida",
-                Detalles = new List<DetalleFacturaDTO>
-                {
-                    detalle
-                }
+                Detalles = detalles
             };
 
             int idGenerado =

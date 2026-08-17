@@ -2,6 +2,7 @@ using BLL;
 using DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Util.Factura;
 
@@ -20,6 +21,48 @@ namespace UI.Forms
         public FrmFacturas()
         {
             InitializeComponent();
+        }
+
+        private void btnEmitirPendientes_Click(object sender, EventArgs e)
+        {
+            PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
+            if (propiedad == null) { MessageBox.Show("Seleccione una propiedad."); return; }
+            try
+            {
+                List<CargoFacturableDTO> cargos = new CargoFacturableBLL().ObtenerPorPropiedad(propiedad.IdPropiedad)
+                    .Where(c => (c.Estado == "Pendiente" || c.Estado == "Vencido") &&
+                                !_facturaBLL.CargoEstaFacturado(c.IdCargo)).ToList();
+                if (cargos.Count == 0) { MessageBox.Show("No hay cargos pendientes para facturar."); return; }
+                using (Form selector = new Form())
+                {
+                    selector.Text = "Cargos pendientes - " + propiedad.Codigo;
+                    selector.StartPosition = FormStartPosition.CenterParent;
+                    selector.Size = new System.Drawing.Size(740, 440);
+                    CheckedListBox lista = new CheckedListBox { CheckOnClick = true,
+                        Location = new System.Drawing.Point(15, 15), Size = new System.Drawing.Size(695, 330) };
+                    foreach (CargoFacturableDTO c in cargos) lista.Items.Add(new CargoSeleccionable(c), true);
+                    Button aceptar = new Button { Text = "Emitir factura", DialogResult = DialogResult.OK,
+                        Location = new System.Drawing.Point(485, 355), Size = new System.Drawing.Size(105, 30) };
+                    Button cancelar = new Button { Text = "Cancelar", DialogResult = DialogResult.Cancel,
+                        Location = new System.Drawing.Point(600, 355), Size = new System.Drawing.Size(105, 30) };
+                    selector.Controls.Add(lista); selector.Controls.Add(aceptar); selector.Controls.Add(cancelar);
+                    selector.AcceptButton = aceptar; selector.CancelButton = cancelar;
+                    if (selector.ShowDialog(this) != DialogResult.OK) return;
+                    List<CargoFacturableDTO> elegidos = lista.CheckedItems.Cast<CargoSeleccionable>().Select(x => x.Cargo).ToList();
+                    FacturaDTO factura = _facturaBLL.GenerarFacturaPorCargos(elegidos, propiedad.Codigo);
+                    MessageBox.Show("Factura #" + factura.IdFactura + " emitida correctamente.", "Éxito");
+                    CargarFacturas(propiedad.IdPropiedad);
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("No se pudo emitir la factura: " + ex.Message, "Error"); }
+        }
+
+        private sealed class CargoSeleccionable
+        {
+            public CargoFacturableDTO Cargo { get; private set; }
+            public CargoSeleccionable(CargoFacturableDTO cargo) { Cargo = cargo; }
+            public override string ToString() { return string.Format("#{0} | {1} | {2} | Base ₡{3:N2} | IVA ₡{4:N2} | Total ₡{5:N2}",
+                Cargo.IdCargo, Cargo.Tipo, Cargo.Descripcion, Cargo.MontoBase, Cargo.IVA, Cargo.Total); }
         }
 
         private void btnExportarPdf_Click(object sender, EventArgs e)
@@ -108,7 +151,8 @@ namespace UI.Forms
             lblPropiedad.Text    = f.CodigoPropiedad;
             lblColones.Text      = f.TotalColones.ToString("N2");
             lblDolares.Text      = f.TotalDolares.ToString("N2");
-            lblEstado.Text       = f.Estado;
+            lblEstado.Text       = f.Estado + " | TC " + f.TipoCambio.ToString("N4") +
+                " | Pagado ₡" + f.TotalPagado.ToString("N2") + " | Saldo ₡" + f.SaldoPendiente.ToString("N2");
 
             dgvDetalle.DataSource = f.Detalles;
             dgvDetalle.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -232,6 +276,9 @@ namespace UI.Forms
                 dgvFacturas.Columns["TotalDolares"].DefaultCellStyle.Format = "N2";
             }
             if (dgvFacturas.Columns["Estado"]        != null) dgvFacturas.Columns["Estado"].HeaderText = "Estado";
+            if (dgvFacturas.Columns["TipoCambio"] != null) dgvFacturas.Columns["TipoCambio"].HeaderText = "Tipo cambio";
+            if (dgvFacturas.Columns["TotalPagado"] != null) dgvFacturas.Columns["TotalPagado"].HeaderText = "Pagado (₡)";
+            if (dgvFacturas.Columns["SaldoPendiente"] != null) dgvFacturas.Columns["SaldoPendiente"].HeaderText = "Saldo (₡)";
             if (dgvFacturas.Columns["IdPropiedad"]   != null) dgvFacturas.Columns["IdPropiedad"].Visible = false;
             if (dgvFacturas.Columns["Detalles"]      != null) dgvFacturas.Columns["Detalles"].Visible = false;
         }
