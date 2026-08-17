@@ -43,9 +43,10 @@ namespace UI.Forms
             try
             {
                 List<PropiedadDTO> lista = _bllProp.ObtenerTodas();
-                cmbPropiedad.DataSource = lista;
                 cmbPropiedad.DisplayMember = "Codigo";
                 cmbPropiedad.ValueMember = "IdPropiedad";
+                cmbPropiedad.DataSource = lista;
+               
                 cmbPropiedad.SelectedIndex = -1;
             }
             catch (Exception ex)
@@ -60,9 +61,11 @@ namespace UI.Forms
             try
             {
                 List<AreaComunDTO> lista = _bllArea.ObtenerTodas();
+               cmbArea.DisplayMember = "Nombre"; 
+                 cmbArea.ValueMember = "IdArea";
                 cmbArea.DataSource = lista;
-                cmbArea.DisplayMember = "Nombre";
-                cmbArea.ValueMember = "IdArea";
+                
+               
                 cmbArea.SelectedIndex = -1;
             }
             catch (Exception ex)
@@ -152,8 +155,8 @@ namespace UI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar residentes:\n" + ex.Message,
-                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al cargar residentes:\n" + ex.ToString(),
+                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

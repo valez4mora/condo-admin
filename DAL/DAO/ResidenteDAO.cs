@@ -101,6 +101,8 @@ namespace DAL.DAO
                 {
                     while (dr.Read())
                     {
+                        if (dr["IdPropiedad"] == DBNull.Value) continue;
+
                         int idProp = Convert.ToInt32(dr["IdPropiedad"]);
                         if (idProp != idPropiedad) continue;
 
@@ -115,7 +117,7 @@ namespace DAL.DAO
                             Email = Convert.ToString(dr["Email"]),
                             Direccion = Convert.ToString(dr["Direccion"]),
                             DireccionPropiedad = Convert.ToString(dr["DireccionPropiedad"]),
-                            Fotografia = dr["Fotografia"] == DBNull.Value ? null : (byte[])dr["Fotografia"],
+                            Fotografia = dr["Fotografia"] as byte[],   
                             IdPropiedad = idProp,
                             CodigoPropiedad = Convert.ToString(dr["CodigoPropiedad"])
                         });
