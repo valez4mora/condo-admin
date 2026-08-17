@@ -87,6 +87,39 @@ namespace DAL.DAO
             }
         }
 
+        public List<ResidenteDTO> ObtenerPorPropiedad(int idPropiedad)
+        {
+            List<ResidenteDTO> lista = new List<ResidenteDTO>();
+
+            using (SqlConnection cn = conexion.ObtenerConexion())
+            {
+                cn.Open();
+                string sql = @"SELECT r.IdPropiedad, pe.*
+                       FROM Residente r
+                       INNER JOIN Persona pe ON pe.IdPersona = r.IdPersona
+                       WHERE r.IdPropiedad = @IdPropiedad";
+
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ResidenteDTO
+                            {
+                                IdPersona = Convert.ToInt32(dr["IdPersona"]),
+                                Nombre = dr["Nombre"].ToString(),
+                                Apellidos = dr["Apellidos"].ToString(),
+                                IdPropiedad = Convert.ToInt32(dr["IdPropiedad"])
+                            });
+                        }
+                    }
+                }
+            }
+            return lista;
+        }
         private static void AgregarNullable(SqlCommand cmd, string nombre, SqlDbType tipo, int longitud, string valor)
         {
             SqlParameter p = cmd.Parameters.Add(nombre, tipo, longitud);
