@@ -1,3 +1,5 @@
+using System;
+
 namespace UI.Forms
 {
     partial class FrmFacturas
@@ -342,6 +344,11 @@ namespace UI.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dgvDetalle)).EndInit();
             this.ResumeLayout(false);
 
+        }
+
+        private void btnEmitirPendientes_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
