@@ -12,9 +12,9 @@ namespace UI.Forms
 {
     public partial class FrmCargosFacturables : Form
     {
-        private readonly CargoFacturableBLL _cargoBLL     = new CargoFacturableBLL();
-        private readonly PropiedadBLL       _propiedadBLL = new PropiedadBLL();
-        private readonly FacturaBLL         _facturaBLL   = new FacturaBLL();
+        private readonly CargoFacturableBLL _cargoBLL = new CargoFacturableBLL();
+        private readonly PropiedadBLL _propiedadBLL = new PropiedadBLL();
+        private readonly FacturaBLL _facturaBLL = new FacturaBLL();
 
         private CargoFacturableDTO _cargoSeleccionado = null;
         private bool _modoEdicion = false;
@@ -50,9 +50,9 @@ namespace UI.Forms
         private void CargarPropiedades()
         {
             List<PropiedadDTO> lista = _propiedadBLL.ObtenerTodas();
-            cmbPropiedad.DataSource    = lista;
+            cmbPropiedad.DataSource = lista;
             cmbPropiedad.DisplayMember = "Codigo";
-            cmbPropiedad.ValueMember   = "IdPropiedad";
+            cmbPropiedad.ValueMember = "IdPropiedad";
         }
 
         private void CargarCargos()
@@ -248,30 +248,6 @@ namespace UI.Forms
             }
         }
 
-        // ── MARCAR COMO PAGADO ────────────────────────────────────────
-
-        private void btnMarcarPagado_Click(object sender, EventArgs e)
-        {
-            if (!ValidarSeleccion("marcar como pagado")) return;
-
-            if (MessageBox.Show("¿Confirma el pago del cargo #" + _cargoSeleccionado.IdCargo +
-                " por " + _cargoSeleccionado.Total.ToString("C2", CultureInfo.GetCultureInfo("es-CR")) + "?",
-                "Confirmar pago", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-            try
-            {
-                _cargoBLL.MarcarComoPagado(_cargoSeleccionado.IdCargo);
-                MessageBox.Show("Cargo marcado como pagado.", "Éxito",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CargarCargos();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void btnActualizarLista_Click(object sender, EventArgs e)
         {
             try
@@ -311,7 +287,7 @@ namespace UI.Forms
             }
             if (nuevoEstado == "Pagado")
             {
-                btnMarcarPagado_Click(sender, e);
+                MarcarCargoSeleccionadoComoPagado();
                 return;
             }
 
@@ -344,6 +320,43 @@ namespace UI.Forms
             {
                 MessageBox.Show("No se pudo cambiar el estado: " + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void MarcarCargoSeleccionadoComoPagado()
+        {
+            if (!ValidarSeleccion("marcar como pagado")) return;
+
+            if (MessageBox.Show(
+                "¿Confirma que el cargo #" + _cargoSeleccionado.IdCargo + " fue pagado?",
+                "Confirmar pago",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!_cargoBLL.MarcarComoPagado(_cargoSeleccionado.IdCargo))
+                    throw new Exception("No se modificó ningún registro.");
+
+                MessageBox.Show(
+                    "Cargo marcado como pagado correctamente.",
+                    "Éxito",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                LimpiarFormulario();
+                CargarCargos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudo marcar el cargo como pagado: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -407,12 +420,12 @@ namespace UI.Forms
 
             return new CargoFacturableDTO
             {
-                Descripcion      = txtDescripcion.Text.Trim(),
-                Tipo             = cmbTipo.SelectedItem.ToString(),
-                MontoBase        = decimal.Parse(txtMontoBase.Text.Trim()),
-                FechaEmision     = dtpEmision.Value,
+                Descripcion = txtDescripcion.Text.Trim(),
+                Tipo = cmbTipo.SelectedItem.ToString(),
+                MontoBase = decimal.Parse(txtMontoBase.Text.Trim()),
+                FechaEmision = dtpEmision.Value,
                 FechaVencimiento = dtpVencimiento.Value,
-                IdPropiedad      = prop.IdPropiedad,
+                IdPropiedad = prop.IdPropiedad,
                 // En edición se conserva el estado actual. En un registro nuevo
                 // la BLL lo inicializa como Pendiente.
                 Estado = _modoEdicion && _cargoSeleccionado != null
@@ -423,11 +436,11 @@ namespace UI.Forms
 
         private void CargarDatosEnFormulario(CargoFacturableDTO c)
         {
-            txtDescripcion.Text      = c.Descripcion;
-            cmbTipo.SelectedItem     = c.Tipo;
-            txtMontoBase.Text        = c.MontoBase.ToString("F2");
-            dtpEmision.Value         = c.FechaEmision;
-            dtpVencimiento.Value     = c.FechaVencimiento;
+            txtDescripcion.Text = c.Descripcion;
+            cmbTipo.SelectedItem = c.Tipo;
+            txtMontoBase.Text = c.MontoBase.ToString("F2");
+            dtpEmision.Value = c.FechaEmision;
+            dtpVencimiento.Value = c.FechaVencimiento;
 
             // Seleccionar propiedad en combo
             foreach (PropiedadDTO p in (List<PropiedadDTO>)cmbPropiedad.DataSource)
@@ -442,14 +455,15 @@ namespace UI.Forms
 
         private void LimpiarFormulario()
         {
-            txtDescripcion.Text   = "";
-            txtMontoBase.Text     = "";
+            txtDescripcion.Text = "";
+            txtMontoBase.Text = "";
             cmbTipo.SelectedIndex = 0;
-            dtpEmision.Value      = DateTime.Now;
-            dtpVencimiento.Value  = DateTime.Now.AddDays(30);
-            _cargoSeleccionado    = null;
-            _modoEdicion          = false;
-            btnEditar.Enabled = btnEliminar.Enabled = btnMarcarPagado.Enabled = false;
+            dtpEmision.Value = DateTime.Now;
+            dtpVencimiento.Value = DateTime.Now.AddDays(30);
+            _cargoSeleccionado = null;
+            _modoEdicion = false;
+            btnEditar.Enabled = false;
+            btnEliminar.Enabled = false;
             btnCambiarEstado.Enabled = false;
             cmbNuevoEstado.Enabled = false;
             cmbNuevoEstado.SelectedIndex = 0;
@@ -466,7 +480,6 @@ namespace UI.Forms
                 _cargoSeleccionado.Estado != "Pagado" && _cargoSeleccionado.Estado != "Anulado";
             btnEditar.Enabled = editable;
             btnEliminar.Enabled = editable;
-            btnMarcarPagado.Enabled = editable;
             btnCambiarEstado.Enabled = editable;
             cmbNuevoEstado.Enabled = editable;
 
@@ -517,19 +530,19 @@ namespace UI.Forms
             if (dgvCargos.Columns.Count == 0) return;
 
             dgvCargos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvCargos.SelectionMode       = DataGridViewSelectionMode.FullRowSelect;
-            dgvCargos.ReadOnly            = true;
-            dgvCargos.MultiSelect         = false;
+            dgvCargos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCargos.ReadOnly = true;
+            dgvCargos.MultiSelect = false;
 
-            if (dgvCargos.Columns["IdCargo"]          != null) dgvCargos.Columns["IdCargo"].HeaderText = "ID";
-            if (dgvCargos.Columns["Descripcion"]      != null) dgvCargos.Columns["Descripcion"].HeaderText = "Descripción";
-            if (dgvCargos.Columns["Tipo"]             != null) dgvCargos.Columns["Tipo"].HeaderText = "Tipo";
-            if (dgvCargos.Columns["MontoBase"]        != null) { dgvCargos.Columns["MontoBase"].HeaderText = "Monto base"; dgvCargos.Columns["MontoBase"].DefaultCellStyle.Format = "N2"; }
-            if (dgvCargos.Columns["IVA"]              != null) { dgvCargos.Columns["IVA"].HeaderText = "IVA"; dgvCargos.Columns["IVA"].DefaultCellStyle.Format = "N2"; }
-            if (dgvCargos.Columns["Total"]            != null) { dgvCargos.Columns["Total"].HeaderText = "Total"; dgvCargos.Columns["Total"].DefaultCellStyle.Format = "N2"; }
-            if (dgvCargos.Columns["FechaEmision"]     != null) { dgvCargos.Columns["FechaEmision"].HeaderText = "Emisión"; dgvCargos.Columns["FechaEmision"].DefaultCellStyle.Format = "dd/MM/yyyy"; }
+            if (dgvCargos.Columns["IdCargo"] != null) dgvCargos.Columns["IdCargo"].HeaderText = "ID";
+            if (dgvCargos.Columns["Descripcion"] != null) dgvCargos.Columns["Descripcion"].HeaderText = "Descripción";
+            if (dgvCargos.Columns["Tipo"] != null) dgvCargos.Columns["Tipo"].HeaderText = "Tipo";
+            if (dgvCargos.Columns["MontoBase"] != null) { dgvCargos.Columns["MontoBase"].HeaderText = "Monto base"; dgvCargos.Columns["MontoBase"].DefaultCellStyle.Format = "N2"; }
+            if (dgvCargos.Columns["IVA"] != null) { dgvCargos.Columns["IVA"].HeaderText = "IVA"; dgvCargos.Columns["IVA"].DefaultCellStyle.Format = "N2"; }
+            if (dgvCargos.Columns["Total"] != null) { dgvCargos.Columns["Total"].HeaderText = "Total"; dgvCargos.Columns["Total"].DefaultCellStyle.Format = "N2"; }
+            if (dgvCargos.Columns["FechaEmision"] != null) { dgvCargos.Columns["FechaEmision"].HeaderText = "Emisión"; dgvCargos.Columns["FechaEmision"].DefaultCellStyle.Format = "dd/MM/yyyy"; }
             if (dgvCargos.Columns["FechaVencimiento"] != null) { dgvCargos.Columns["FechaVencimiento"].HeaderText = "Vencimiento"; dgvCargos.Columns["FechaVencimiento"].DefaultCellStyle.Format = "dd/MM/yyyy"; }
-            if (dgvCargos.Columns["Estado"]           != null) dgvCargos.Columns["Estado"].HeaderText = "Estado";
+            if (dgvCargos.Columns["Estado"] != null) dgvCargos.Columns["Estado"].HeaderText = "Estado";
             if (dgvCargos.Columns["Cargo"] != null) dgvCargos.Columns["Cargo"].Visible = false;
         }
 

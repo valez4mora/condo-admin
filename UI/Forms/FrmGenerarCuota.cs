@@ -1,187 +1,180 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using BLL;
 using DTO;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace UI.Forms
 {
     public partial class FrmGenerarCuota : Form
     {
-        //Intancias
-        PropiedadBLL propiedadBLL = new PropiedadBLL();
-        CargoFacturableBLL cargoBLL = new CargoFacturableBLL();
-        FacturaBLL facturaBLL = new FacturaBLL();
+        private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
+        private readonly CargoFacturableBLL cargoBLL = new CargoFacturableBLL();
+        private readonly FacturaBLL facturaBLL = new FacturaBLL();
+        private CargoFacturableDTO cargoGenerado;
+        private bool cargando;
 
-            private CargoFacturableDTO cargoGenerado=null;
-        public FrmGenerarCuota()
+        public FrmGenerarCuota() { InitializeComponent(); }
+
+        private void FrmGenerarCuota_Load(object sender, EventArgs e)
         {
-            InitializeComponent();
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FrmFacturacion_Load(object sender, EventArgs e)
-        {
+            ConfigurarGrid(dgvCuota);
+            ConfigurarGrid(dgvFactura);
             CargarPropiedades();
-            btnGenerarFactura.Enabled = false;//desactivado hasta que se genere el cargoFacturable
         }
 
-        //metodo para llenar el combobox con las propiedades
-        public void CargarPropiedades()
+        private static void ConfigurarGrid(DataGridView grid)
         {
-            //se le pide al BLL la lista completa de propiedad que vienen del DAL
-            List<PropiedadDTO> propiedades = propiedadBLL.ObtenerTodas();
-            cmbPropiedades.DataSource = propiedades;// se llena con esos datos 
-            cmbPropiedades.DisplayMember = "Codigo";//se va a ver el codigo de la propiedad
-            cmbPropiedades.ValueMember = "IdPropiedad";
+            grid.AutoGenerateColumns = false;
+            grid.ReadOnly = true;
+            grid.AllowUserToAddRows = false;
+            grid.AllowUserToDeleteRows = false;
+            grid.AllowUserToResizeRows = false;
+            grid.MultiSelect = false;
+            grid.RowHeadersVisible = false;
+            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        private void CargarPropiedades()
+        {
+            try
+            {
+                cargando = true;
+                List<PropiedadDTO> propiedades = propiedadBLL.ObtenerTodas()
+                    .OrderBy(p => p.Codigo).ToList();
+                cmbPropiedades.DataSource = null;
+                cmbPropiedades.DisplayMember = "Codigo";
+                cmbPropiedades.ValueMember = "IdPropiedad";
+                cmbPropiedades.DataSource = propiedades;
+                cmbPropiedades.SelectedIndex = propiedades.Count > 0 ? 0 : -1;
+                lblSinDatos.Visible = propiedades.Count == 0;
+                cmbPropiedades.Enabled = propiedades.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                cmbPropiedades.DataSource = null;
+                cmbPropiedades.Enabled = false;
+                lblSinDatos.Text = "No fue posible cargar las propiedades.";
+                lblSinDatos.Visible = true;
+                MessageBox.Show("No se pudieron cargar las propiedades.\n\n" + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                cargando = false;
+                ReiniciarProceso();
+                MostrarVistaPrevia();
+            }
         }
 
         private void cmbPropiedades_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cargoGenerado = null;
-            btnGenerarFactura.Enabled = false;
-            btbGenerarCuota.Enabled = cmbPropiedades.SelectedItem != null;
-            dvgResultado.DataSource = null;
-            dvgFactura.DataSource = null;
+            if (cargando) return;
+            ReiniciarProceso();
+            MostrarVistaPrevia();
         }
 
-        private void btbGenerarCuota_Click(object sender, EventArgs e)
+        private void MostrarVistaPrevia()
         {
-            if (cmbPropiedades.SelectedItem == null)
+            PropiedadDTO p = cmbPropiedades.SelectedItem as PropiedadDTO;
+            btnGenerarCuota.Enabled = p != null;
+            if (p == null)
             {
-                MessageBox.Show("Debe seleccionar una propiedad.",
-                    "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblDatosPropiedad.Text = "Seleccione una propiedad para consultar sus datos.";
+                lblCalculo.Text = "Cuota base: ₡0,00\nIVA (13 %): ₡0,00\nTotal: ₡0,00\nFondo de reserva (10 %): ₡0,00";
                 return;
             }
 
+            decimal baseCuota = decimal.Round((p.Area * p.TarifaMetro) + p.CargoFijo, 2,
+                MidpointRounding.AwayFromZero);
+            decimal iva = decimal.Round(baseCuota * 0.13m, 2, MidpointRounding.AwayFromZero);
+            decimal fondo = decimal.Round(baseCuota * 0.10m, 2, MidpointRounding.AwayFromZero);
+
+            lblDatosPropiedad.Text = "Código: " + p.Codigo + "\nTipo: " + p.Tipo +
+                "\nÁrea: " + p.Area.ToString("N2") + " m²\nTarifa por m²: ₡" +
+                p.TarifaMetro.ToString("N2") + "\nCargo fijo: ₡" + p.CargoFijo.ToString("N2");
+            lblFormula.Text = "Fórmula: (" + p.Area.ToString("N2") + " m² × ₡" +
+                p.TarifaMetro.ToString("N2") + ") + ₡" + p.CargoFijo.ToString("N2");
+            lblCalculo.Text = "Cuota base: ₡" + baseCuota.ToString("N2") +
+                "\nIVA (13 %): ₡" + iva.ToString("N2") +
+                "\nTotal: ₡" + (baseCuota + iva).ToString("N2") +
+                "\nFondo de reserva (10 %): ₡" + fondo.ToString("N2") +
+                "\nVencimiento estimado: " + DateTime.Today.AddDays(30).ToString("dd/MM/yyyy");
+            lblEstado.Text = "Lista para generar";
+            lblEstado.ForeColor = Color.FromArgb(39, 108, 174);
+        }
+
+        private void btnGenerarCuota_Click(object sender, EventArgs e)
+        {
+            PropiedadDTO propiedad = cmbPropiedades.SelectedItem as PropiedadDTO;
+            if (propiedad == null) { Aviso("Debe seleccionar una propiedad."); return; }
             try
             {
-                int idPropiedad = Convert.ToInt32(cmbPropiedades.SelectedValue);
-                PropiedadDTO seleccionada = propiedadBLL.ObtenerPorId(idPropiedad);
-
-                // genera y guarda el cargo en BD
-                cargoGenerado = cargoBLL.GenerarCuotaOrdinaria(seleccionada);
-
-                // muestra el cargo en el grid superior
-                MostrarResultado(cargoGenerado);
-
-                // habilita el boton de generar factura
+                Cursor = Cursors.WaitCursor;
+                btnGenerarCuota.Enabled = false;
+                cargoGenerado = cargoBLL.GenerarCuotaOrdinaria(propiedad);
+                dgvCuota.DataSource = new List<CargoFacturableDTO> { cargoGenerado };
                 btnGenerarFactura.Enabled = true;
-                btbGenerarCuota.Enabled = false;
-
-                MessageBox.Show("Cuota generada correctamente para: " + seleccionada.Codigo,
-                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
-            }
-            catch(Exception ex)
-            {
-                //si el bll lanzo una excepcion , se muestra un mensaje en pantalla
-                MessageBox.Show("Error: " + ex.Message,
-                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
-        }
-
-        private void MostrarResultado(CargoFacturableDTO cargo)
-        {
-            dvgResultado.DataSource = null;//se limpia
-            List<CargoFacturableDTO> lista = new List<CargoFacturableDTO> { cargo };
-
-            dvgResultado.DataSource = lista;
-
-            // Formato de fecha corta
-            dvgResultado.Columns["FechaEmision"].DefaultCellStyle.Format = "dd/MM/yyyy";
-            dvgResultado.Columns["FechaVencimiento"].DefaultCellStyle.Format = "dd/MM/yyyy";
-
-            // Que las columnas llenen todo el ancho disponible
-            dvgResultado.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            // Nombres de columnas 
-            dvgResultado.Columns["Descripcion"].HeaderText = "Descripción";
-            dvgResultado.Columns["MontoBase"].HeaderText = "Monto base";
-            dvgResultado.Columns["FechaEmision"].HeaderText = "Fecha emisión";
-            dvgResultado.Columns["FechaVencimiento"].HeaderText = "Fecha vencimiento";
-            dvgResultado.Columns["Estado"].HeaderText = "Estado";
-            dvgResultado.Columns["Estado"].Visible = false;
-            dvgResultado.Columns["Tipo"].Visible = false;
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dvgResultado_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (cargoGenerado == null)
-            {
-                MessageBox.Show("Primero debe generar una cuota ordinaria.",
-                   "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            PropiedadDTO seleccionada = (PropiedadDTO)cmbPropiedades.SelectedItem;
-
-            try
-            {
-                // El cargo ya fue generado por el botón anterior. Se factura ese mismo
-                // registro para no intentar crear una segunda cuota del mismo mes.
-                FacturaDTO factura = facturaBLL.GenerarFacturaManual(
-                    cargoGenerado,
-                    seleccionada.Codigo);
-                //muestra la factura en el datagrid
-                MostrarFactura(factura);
-
-                //limpiar datos 
-                cargoGenerado = null;
-                btnGenerarFactura.Enabled = false;
-                btbGenerarCuota.Enabled = false;
-
-                MessageBox.Show("Factura emitida correctamente.",
-                "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                lblEstado.Text = "Cuota guardada; pendiente de facturar";
+                lblEstado.ForeColor = Color.FromArgb(214, 137, 16);
+                MessageBox.Show("Cuota generada correctamente. Ahora puede emitir la factura.",
+                    "Cuota generada", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message,
-                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+                btnGenerarCuota.Enabled = true;
+                MessageBox.Show(ex.Message, "No se pudo generar la cuota",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally { Cursor = Cursors.Default; }
         }
 
-        private void MostrarFactura(FacturaDTO factura)
+        private void btnGenerarFactura_Click(object sender, EventArgs e)
         {
-            dvgFactura.DataSource = null;
-            dvgFactura.DataSource = new List<FacturaDTO> { factura };
+            PropiedadDTO propiedad = cmbPropiedades.SelectedItem as PropiedadDTO;
+            if (cargoGenerado == null || propiedad == null)
+            { Aviso("Primero debe generar la cuota de la propiedad seleccionada."); return; }
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                btnGenerarFactura.Enabled = false;
+                FacturaDTO factura = facturaBLL.GenerarFacturaManual(cargoGenerado, propiedad.Codigo);
+                dgvFactura.DataSource = new List<FacturaDTO> { factura };
+                cargoGenerado = null;
+                lblEstado.Text = "Factura emitida correctamente";
+                lblEstado.ForeColor = Color.FromArgb(39, 174, 96);
+                MessageBox.Show("Factura N.° " + factura.IdFactura + " emitida correctamente.",
+                    "Proceso completado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                btnGenerarFactura.Enabled = true;
+                MessageBox.Show(ex.Message, "No se pudo emitir la factura",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally { Cursor = Cursors.Default; }
+        }
 
-            dvgFactura.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dvgFactura.Columns["IdFactura"].HeaderText = "N.° Factura";
-            dvgFactura.Columns["Fecha"].HeaderText = "Fecha";
-            dvgFactura.Columns["CodigoPropiedad"].HeaderText = "Propiedad";
-            dvgFactura.Columns["TotalColones"].HeaderText = "Total (₡)";
-            dvgFactura.Columns["TotalDolares"].HeaderText = "Total ($)";
-            dvgFactura.Columns["Estado"].HeaderText = "Estado";
-            dvgFactura.Columns["Fecha"].DefaultCellStyle.Format = "dd/MM/yyyy";
-            dvgFactura.Columns["TotalColones"].DefaultCellStyle.Format = "N2";
-            dvgFactura.Columns["TotalDolares"].DefaultCellStyle.Format = "N2";
-            dvgFactura.Columns["IdPropiedad"].Visible = false;
+        private void btnActualizar_Click(object sender, EventArgs e) { CargarPropiedades(); }
+        private void btnLimpiar_Click(object sender, EventArgs e) { ReiniciarProceso(); MostrarVistaPrevia(); }
 
+        private void ReiniciarProceso()
+        {
+            cargoGenerado = null;
+            dgvCuota.DataSource = null;
+            dgvFactura.DataSource = null;
+            btnGenerarFactura.Enabled = false;
+            btnGenerarCuota.Enabled = cmbPropiedades.SelectedItem != null;
+            lblEstado.Text = cmbPropiedades.SelectedItem == null ? "Seleccione una propiedad" : "Lista para generar";
+            lblEstado.ForeColor = Color.FromArgb(90, 100, 110);
+        }
+
+        private static void Aviso(string texto)
+        {
+            MessageBox.Show(texto, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 }

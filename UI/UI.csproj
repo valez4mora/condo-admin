@@ -206,9 +206,6 @@
     <EmbeddedResource Include="Forms\FrmCargosFacturables.resx">
       <DependentUpon>FrmCargosFacturables.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
-      <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </EmbeddedResource>
