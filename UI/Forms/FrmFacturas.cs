@@ -201,15 +201,134 @@ namespace UI.Forms
         private void btnExportarXml_Click(object sender, EventArgs e)
         {
             if (!HaySeleccion()) return;
-            try { string ruta = XmlFacturaUtil.GuardarEnArchivo(facturaSeleccionada); MessageBox.Show("XML descargado en:\n" + ruta, "XML de factura", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-            catch (Exception ex) { MostrarError("No se pudo descargar el XML.", ex); }
+
+            using (SaveFileDialog dialogo = new SaveFileDialog())
+            {
+                dialogo.Title = "Guardar factura en XML";
+                dialogo.Filter = "Archivo XML (*.xml)|*.xml";
+                dialogo.DefaultExt = "xml";
+                dialogo.AddExtension = true;
+
+                dialogo.FileName =
+                    "Factura_" +
+                    facturaSeleccionada.IdFactura +
+                    "_" +
+                    facturaSeleccionada.Fecha.ToString("yyyyMMdd") +
+                    ".xml";
+
+                dialogo.InitialDirectory =
+                    Environment.GetFolderPath(
+                        Environment.SpecialFolder.DesktopDirectory);
+
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    string carpetaSeleccionada =
+                        System.IO.Path.GetDirectoryName(dialogo.FileName);
+
+                    string rutaGenerada =
+                        XmlFacturaUtil.GuardarEnArchivo(
+                            facturaSeleccionada,
+                            carpetaSeleccionada);
+
+                    // Permite que también se cambie el nombre del XML.
+                    if (!string.Equals(
+                            rutaGenerada,
+                            dialogo.FileName,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (System.IO.File.Exists(dialogo.FileName))
+                        {
+                            System.IO.File.Delete(dialogo.FileName);
+                        }
+
+                        System.IO.File.Move(
+                            rutaGenerada,
+                            dialogo.FileName);
+                    }
+
+                    MessageBox.Show(
+                        "XML guardado correctamente en:\n" +
+                        dialogo.FileName,
+                        "XML de factura",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MostrarError(
+                        "No se pudo guardar el XML.",
+                        ex);
+                }
+            }
         }
 
         private void btnExportarPdf_Click(object sender, EventArgs e)
         {
             if (!HaySeleccion()) return;
-            try { string ruta = PdfFacturaUtil.GuardarEnArchivo(facturaSeleccionada); MessageBox.Show("PDF descargado en:\n" + ruta, "PDF de factura", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-            catch (Exception ex) { MostrarError("No se pudo descargar el PDF.", ex); }
+
+            using (SaveFileDialog dialogo = new SaveFileDialog())
+            {
+                dialogo.Title = "Guardar factura en PDF";
+                dialogo.Filter = "Archivo PDF (*.pdf)|*.pdf";
+                dialogo.DefaultExt = "pdf";
+                dialogo.AddExtension = true;
+
+                dialogo.FileName =
+                    "Factura_" +
+                    facturaSeleccionada.IdFactura +
+                    "_" +
+                    facturaSeleccionada.Fecha.ToString("yyyyMMdd") +
+                    ".pdf";
+
+                dialogo.InitialDirectory =
+                    Environment.GetFolderPath(
+                        Environment.SpecialFolder.DesktopDirectory);
+
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    string carpetaSeleccionada =
+                        System.IO.Path.GetDirectoryName(dialogo.FileName);
+
+                    string rutaGenerada =
+                        PdfFacturaUtil.GuardarEnArchivo(
+                            facturaSeleccionada,
+                            carpetaSeleccionada);
+
+                    // Por si la persona cambia también el nombre del archivo.
+                    if (!string.Equals(
+                            rutaGenerada,
+                            dialogo.FileName,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (System.IO.File.Exists(dialogo.FileName))
+                        {
+                            System.IO.File.Delete(dialogo.FileName);
+                        }
+
+                        System.IO.File.Move(rutaGenerada, dialogo.FileName);
+                    }
+
+                    MessageBox.Show(
+                        "PDF guardado correctamente en:\n" + dialogo.FileName,
+                        "PDF de factura",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MostrarError("No se pudo guardar el PDF.", ex);
+                }
+            }
         }
 
         private void btnEnviarCorreo_Click(object sender, EventArgs e)
