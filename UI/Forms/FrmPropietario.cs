@@ -597,5 +597,10 @@ namespace UI.Forms
 
         private void MostrarError(string msg) =>
             MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        private void chkMoroso_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
