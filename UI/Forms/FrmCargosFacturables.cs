@@ -315,5 +315,10 @@ namespace UI.Forms
             if (dgvCargos.Columns["IdPropiedad"]      != null) dgvCargos.Columns["IdPropiedad"].Visible = false;
             if (dgvCargos.Columns["Penalizado"]       != null) dgvCargos.Columns["Penalizado"].Visible = false;
         }
+
+        private void grpFormulario_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
