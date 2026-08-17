@@ -2,112 +2,75 @@
 using DTO;
 using Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BLL
 {
- 
     public class IndicadorMorosidadBLL
     {
         private readonly IndicadorMorosidadDAO dal = new IndicadorMorosidadDAO();
 
-       
-        //calcula el índice de riesgo de morosidad para una propiedad
+        public List<IndicadorMorosidadDTO> RecalcularTodos(decimal tasaMensual)
+        {
+            if (tasaMensual < 0 || tasaMensual > 100)
+                throw new ArgumentException("La tasa mensual debe estar entre 0 y 100.");
+
+            return dal.RecalcularTodos(tasaMensual).Select(Convertir).ToList();
+        }
+
+        public List<IndicadorMorosidadDTO> ObtenerTodos()
+        {
+            return dal.ObtenerTodos().Select(Convertir).ToList();
+        }
+
+        public int AplicarPenalizaciones()
+        {
+            return dal.AplicarPenalizaciones();
+        }
+
         public IndicadorMorosidadDTO CalcularIndicador(IndicadorMorosidadDTO indicador)
         {
-            if (indicador == null)
-                throw new ArgumentNullException( "Los datos del indicador no pueden ser nulos.");
-
-            if (indicador.IdPropiedad <= 0)
+            if (indicador == null || indicador.IdPropiedad <= 0)
                 throw new ArgumentException("Debe indicar una propiedad válida.");
 
-            // aplicar fórmula
-            decimal indice = (indicador.MesesMora * 0.5m)
-                           + (indicador.FacturasPendientes * 0.3m)
-                           + (indicador.MontoAdeudado / 100000m * 0.2m);
+            IndicadorMorosidadDTO resultado = RecalcularTodos(2.00m)
+                .FirstOrDefault(x => x.IdPropiedad == indicador.IdPropiedad);
 
-            indicador.IndiceRiesgo = Math.Round(indice, 2);
-            indicador.FechaCalculo = DateTime.Now;
+            if (resultado == null)
+                throw new Exception("La propiedad no tiene cargos vencidos con saldo pendiente.");
 
-     
-            if (indice <= 2.9m)
-                indicador.Clasificacion = "Bajo";
-            else if (indice <= 5.9m)
-                indicador.Clasificacion = "Medio";
-            else if (indice <= 8.9m)
-                indicador.Clasificacion = "Alto";
-            else
-                indicador.Clasificacion = "Critico";
-
-            
-            IndicadorMorosidad entidad = new IndicadorMorosidad
-            {
-                IdPropiedad = indicador.IdPropiedad,
-                MesesMora = indicador.MesesMora,
-                FacturasPendientes = indicador.FacturasPendientes,
-                MontoAdeudado = indicador.MontoAdeudado,
-                IndiceRiesgo = indicador.IndiceRiesgo,
-                Clasificacion = indicador.Clasificacion,
-                FechaCalculo = indicador.FechaCalculo
-            };
-
-            dal.Insertar(entidad);
-
-            return indicador;
+            return resultado;
         }
 
-        public void EliminarPorPropiedad(int idPropiedad)
+        public IndicadorMorosidadDTO ObtenerPorPropiedad(int idPropiedad)
         {
-            if (idPropiedad <= 0)
-                throw new ArgumentException("Debe indicar una propiedad válida.");
-
-            bool eliminado = dal.Eliminar(idPropiedad);
-
-            if (!eliminado)
-                throw new Exception("No se encontró un indicador de morosidad para la propiedad seleccionada.");
+            if (idPropiedad <= 0) throw new ArgumentException("Propiedad no válida.");
+            IndicadorMorosidad entidad = dal.ObtenerPorPropiedad(idPropiedad);
+            return entidad == null ? null : Convertir(entidad);
         }
 
-        public IndicadorMorosidadDTO ActualizarIndicador(IndicadorMorosidadDTO indicador)
+        private static IndicadorMorosidadDTO Convertir(IndicadorMorosidad x)
         {
-            if (indicador == null)
-                throw new ArgumentNullException("Los datos del indicador no pueden ser nulos.");
-
-            if (indicador.IdPropiedad <= 0)
-                throw new ArgumentException("Debe indicar una propiedad válida.");
-
-            // Reutiliza la misma fórmula de CalcularIndicador
-            decimal indice = (indicador.MesesMora * 0.5m)
-                           + (indicador.FacturasPendientes * 0.3m)
-                           + (indicador.MontoAdeudado / 100000m * 0.2m);
-
-            indicador.IndiceRiesgo = Math.Round(indice, 2);
-            indicador.FechaCalculo = DateTime.Now;
-
-            if (indice <= 2.9m)
-                indicador.Clasificacion = "Bajo";
-            else if (indice <= 5.9m)
-                indicador.Clasificacion = "Medio";
-            else if (indice <= 8.9m)
-                indicador.Clasificacion = "Alto";
-            else
-                indicador.Clasificacion = "Critico";
-
-            IndicadorMorosidad entidad = new IndicadorMorosidad
+            return new IndicadorMorosidadDTO
             {
-                IdPropiedad = indicador.IdPropiedad,
-                MesesMora = indicador.MesesMora,
-                FacturasPendientes = indicador.FacturasPendientes,
-                MontoAdeudado = indicador.MontoAdeudado,
-                IndiceRiesgo = indicador.IndiceRiesgo,
-                Clasificacion = indicador.Clasificacion,
-                FechaCalculo = indicador.FechaCalculo
+                IdIndicador = x.IdIndicador,
+                IdPropiedad = x.IdPropiedad,
+                CodigoPropiedad = x.CodigoPropiedad,
+                NombrePropietario = x.NombrePropietario,
+                DiasMora = x.DiasMora,
+                MesesMora = x.MesesMora,
+                FacturasPendientes = x.FacturasPendientes,
+                MontoAdeudado = x.MontoAdeudado,
+                TasaInteres = x.TasaInteres,
+                InteresCalculado = x.InteresCalculado,
+                IndiceRiesgo = x.IndiceRiesgo,
+                Clasificacion = x.Clasificacion,
+                PorcentajePenalizacion = x.PorcentajePenalizacion,
+                ReservasSuspendidas = x.ReservasSuspendidas,
+                FechaVencimientoMasAntigua = x.FechaVencimientoMasAntigua,
+                FechaCalculo = x.FechaCalculo
             };
-
-            bool actualizado = dal.Actualizar(entidad);
-
-            if (!actualizado)
-                throw new Exception("No se encontró un indicador existente para actualizar. Use Calcular/Registrar primero.");
-
-            return indicador;
         }
     }
 }

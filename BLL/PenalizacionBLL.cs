@@ -1,75 +1,52 @@
 ﻿using DAL.DAO;
 using DTO;
-using Entities;
+using Factory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Factory;
 
 namespace BLL
 {
     public class PenalizacionBLL
     {
-        private readonly CargoFacturableDAO _cargoDAL;
+        private readonly CargoFacturableDAO cargoDAL = new CargoFacturableDAO();
 
-        public PenalizacionBLL()
+        public CargoFacturableDTO AplicarPenalizacion(PropiedadDTO propiedad)
         {
-            _cargoDAL = new CargoFacturableDAO();
-        }
+            if (propiedad == null || propiedad.IdPropiedad <= 0)
+                throw new ArgumentException("Debe indicar una propiedad válida.");
 
-        public CargoFacturableDTO AplicarPenalizacion(PropiedadDTO idPropiedad)
-        {
-            // Se traen los cargos de esa propiedad
-            List<CargoFacturableDTO> cargos = _cargoDAL.ObtenerPorPropiedad(idPropiedad.IdPropiedad);
-
-            // Se busca el cargo de cuota vencido
-            CargoFacturableDTO vencido = cargos.FirstOrDefault(c =>
-                c.Tipo == "Cuota de Mantenimiento" &&
-                c.Estado == "Pendiente" &&
-                c.FechaVencimiento < DateTime.Now);
+            List<CargoFacturableDTO> cargos = cargoDAL.ObtenerPorPropiedad(propiedad.IdPropiedad);
+            CargoFacturableDTO vencido = cargos
+                .Where(c => c.Tipo == "CuotaMantenimiento" &&
+                    (c.Estado == "Pendiente" || c.Estado == "Vencido") &&
+                    c.FechaVencimiento.Date < DateTime.Today)
+                .OrderBy(c => c.FechaVencimiento)
+                .FirstOrDefault();
 
             if (vencido == null)
-                throw new Exception("Esta propiedad no tiene cargos vencidos para penalizar.");
+                throw new Exception("Esta propiedad no tiene cuotas vencidas para penalizar.");
 
-            // Evitar duplicaciones en el mismo mes
-            bool yaTienePenalizacion = cargos.Any(c =>
-                c.Tipo == "Penalizacion" &&
-                c.FechaEmision.Month == DateTime.Now.Month &&
-                c.FechaEmision.Year == DateTime.Now.Year);
-
-            if (yaTienePenalizacion)
-                throw new Exception("Ya se aplicó una penalización este mes para esta propiedad.");
-
-            // Calcular los días de retraso
-            int diasAtraso = (DateTime.Now - vencido.FechaVencimiento).Days;
-
-            decimal porcentaje = CalcularPorcentajePenalizacion(diasAtraso);
-
+            int diasAtraso = (DateTime.Today - vencido.FechaVencimiento.Date).Days;
+            decimal porcentaje = diasAtraso > 60 ? 0.10m : diasAtraso > 30 ? 0.05m : 0m;
             if (porcentaje == 0)
-                throw new Exception("La propiedad no tiene suficientes días de atraso para penalizar.");
+                throw new Exception("La deuda todavía no supera los 30 días de atraso.");
 
-            // Calcular el monto 
-            decimal monto = vencido.Total * porcentaje;
-            string descripcion = $"Penalización por mora ({diasAtraso} días de atraso)";
+            bool yaAplicada = cargos.Any(c => c.Tipo == "Penalizacion" &&
+                c.FechaEmision.Month == DateTime.Today.Month &&
+                c.FechaEmision.Year == DateTime.Today.Year);
+            if (yaAplicada)
+                throw new Exception("Ya existe una penalización para esta propiedad en el mes actual.");
 
-            // Factory arma el objeto 
+            decimal monto = Math.Round(vencido.Total * porcentaje, 2);
             CargoFacturableDTO penalizacion = GestionFinancieraFactory.CrearPenalizacion(
-                idPropiedad.IdPropiedad, monto, descripcion);
+                propiedad.IdPropiedad, monto,
+                "Penalización por mora (" + diasAtraso + " días, " +
+                (porcentaje * 100).ToString("N0") + "%)");
 
-            // Se guarda con el DAO instanciado
-            bool guardado = _cargoDAL.Registrar(penalizacion);
-
-            if (!guardado)
-                throw new Exception("No se pudo guardar la penalización en la base de datos.");
-
+            if (!cargoDAL.Registrar(penalizacion))
+                throw new Exception("No se pudo registrar la penalización.");
             return penalizacion;
-        }
-
-        private decimal CalcularPorcentajePenalizacion(int diasAtraso)
-        {
-            if (diasAtraso >= 60) return 0.10m;
-            if (diasAtraso >= 30) return 0.05m;
-            return 0m;
         }
     }
 }
