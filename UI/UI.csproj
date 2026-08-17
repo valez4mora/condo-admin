@@ -282,6 +282,10 @@
       <Project>{b7f9d3cb-5c9c-4f12-ae01-77b2401f5316}</Project>
       <Name>Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Facade\Facade.csproj">
+      <Project>{7139dccb-12ff-48c7-8d49-e0892aa9e5e7}</Project>
+      <Name>Facade</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Integration\Integration.csproj">
       <Project>{385606f4-84cf-4915-bf7c-a412222a562c}</Project>
       <Name>Integration</Name>
