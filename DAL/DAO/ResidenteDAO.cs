@@ -45,6 +45,7 @@ namespace DAL.DAO
                             Telefono = Convert.ToString(dr["Telefono"]),
                             Email = Convert.ToString(dr["Email"]),
                             Direccion = Convert.ToString(dr["Direccion"]),
+                            DireccionPropiedad = Convert.ToString(dr["DireccionPropiedad"]),
                             Fotografia = dr["Fotografia"] == DBNull.Value ? null : (byte[])dr["Fotografia"],
                             IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]),
                             CodigoPropiedad = Convert.ToString(dr["CodigoPropiedad"])
@@ -92,29 +93,32 @@ namespace DAL.DAO
             List<ResidenteDTO> lista = new List<ResidenteDTO>();
 
             using (SqlConnection cn = conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_ObtenerResidentes", cn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
                 cn.Open();
-                string sql = @"SELECT r.IdPropiedad, pe.*
-                       FROM Residente r
-                       INNER JOIN Persona pe ON pe.IdPersona = r.IdPersona
-                       WHERE r.IdPropiedad = @IdPropiedad";
-
-                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    while (dr.Read())
                     {
-                        while (dr.Read())
+                        int idProp = Convert.ToInt32(dr["IdPropiedad"]);
+                        if (idProp != idPropiedad) continue;
+
+                        lista.Add(new ResidenteDTO
                         {
-                            lista.Add(new ResidenteDTO
-                            {
-                                IdPersona = Convert.ToInt32(dr["IdPersona"]),
-                                Nombre = dr["Nombre"].ToString(),
-                                Apellidos = dr["Apellidos"].ToString(),
-                                IdPropiedad = Convert.ToInt32(dr["IdPropiedad"])
-                            });
-                        }
+                            IdPersona = Convert.ToInt32(dr["IdPersona"]),
+                            Identificacion = Convert.ToString(dr["Identificacion"]),
+                            Nombre = Convert.ToString(dr["Nombre"]),
+                            Apellidos = Convert.ToString(dr["Apellidos"]),
+                            Sexo = Convert.ToString(dr["Sexo"]),
+                            Telefono = Convert.ToString(dr["Telefono"]),
+                            Email = Convert.ToString(dr["Email"]),
+                            Direccion = Convert.ToString(dr["Direccion"]),
+                            DireccionPropiedad = Convert.ToString(dr["DireccionPropiedad"]),
+                            Fotografia = dr["Fotografia"] == DBNull.Value ? null : (byte[])dr["Fotografia"],
+                            IdPropiedad = idProp,
+                            CodigoPropiedad = Convert.ToString(dr["CodigoPropiedad"])
+                        });
                     }
                 }
             }
