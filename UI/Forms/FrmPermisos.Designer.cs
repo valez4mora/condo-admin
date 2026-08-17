@@ -32,12 +32,18 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmbRoles = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnGuardar = new System.Windows.Forms.Button();
+            this.chePropiedad = new System.Windows.Forms.CheckBox();
+            this.cheResidente = new System.Windows.Forms.CheckBox();
+            this.cheFacturacion = new System.Windows.Forms.CheckBox();
+            this.cheReserva = new System.Windows.Forms.CheckBox();
+            this.cheAcceso = new System.Windows.Forms.CheckBox();
+            this.cheReporte = new System.Windows.Forms.CheckBox();
+            this.cheSeguridad = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -79,7 +85,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.cmbRoles);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
@@ -89,6 +95,15 @@
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Roles";
+            // 
+            // cmbRoles
+            // 
+            this.cmbRoles.FormattingEnabled = true;
+            this.cmbRoles.Location = new System.Drawing.Point(40, 27);
+            this.cmbRoles.Name = "cmbRoles";
+            this.cmbRoles.Size = new System.Drawing.Size(167, 23);
+            this.cmbRoles.TabIndex = 1;
+            this.cmbRoles.SelectedIndexChanged += new System.EventHandler(this.cmbRoles_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -100,17 +115,15 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Rol";
             // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(40, 27);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(167, 23);
-            this.comboBox1.TabIndex = 1;
-            // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.checkedListBox1);
+            this.groupBox2.Controls.Add(this.cheSeguridad);
+            this.groupBox2.Controls.Add(this.cheReporte);
+            this.groupBox2.Controls.Add(this.cheAcceso);
+            this.groupBox2.Controls.Add(this.cheReserva);
+            this.groupBox2.Controls.Add(this.cheFacturacion);
+            this.groupBox2.Controls.Add(this.cheResidente);
+            this.groupBox2.Controls.Add(this.chePropiedad);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(58)))), ((int)(((byte)(92)))));
@@ -131,47 +144,101 @@
             this.label4.TabIndex = 0;
             this.label4.Text = "Módulo :";
             // 
-            // checkedListBox1
+            // btnGuardar
             // 
-            this.checkedListBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Items.AddRange(new object[] {
-            "Propiedad ",
-            "Residentes",
-            "Facturación ",
-            "Reservas",
-            "Acceso",
-            "Reportes",
-            "Seguridad"});
-            this.checkedListBox1.Location = new System.Drawing.Point(62, 54);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(123, 112);
-            this.checkedListBox1.TabIndex = 1;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
+            this.btnGuardar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(174)))), ((int)(((byte)(96)))));
+            this.btnGuardar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnGuardar.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnGuardar.Location = new System.Drawing.Point(166, 400);
+            this.btnGuardar.Name = "btnGuardar";
+            this.btnGuardar.Size = new System.Drawing.Size(90, 28);
+            this.btnGuardar.TabIndex = 7;
+            this.btnGuardar.Text = "+ Guardar";
+            this.btnGuardar.UseVisualStyleBackColor = false;
+            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
             // 
-            // button1
+            // chePropiedad
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(174)))), ((int)(((byte)(96)))));
-            this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.button1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button1.Location = new System.Drawing.Point(166, 400);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(90, 28);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "+ Guardar";
-            this.button1.UseVisualStyleBackColor = false;
+            this.chePropiedad.AutoSize = true;
+            this.chePropiedad.Location = new System.Drawing.Point(14, 49);
+            this.chePropiedad.Name = "chePropiedad";
+            this.chePropiedad.Size = new System.Drawing.Size(82, 19);
+            this.chePropiedad.TabIndex = 1;
+            this.chePropiedad.Text = "Propiedad";
+            this.chePropiedad.UseVisualStyleBackColor = true;
+            // 
+            // cheResidente
+            // 
+            this.cheResidente.AutoSize = true;
+            this.cheResidente.Location = new System.Drawing.Point(14, 74);
+            this.cheResidente.Name = "cheResidente";
+            this.cheResidente.Size = new System.Drawing.Size(82, 19);
+            this.cheResidente.TabIndex = 2;
+            this.cheResidente.Text = "Residente";
+            this.cheResidente.UseVisualStyleBackColor = true;
+            // 
+            // cheFacturacion
+            // 
+            this.cheFacturacion.AutoSize = true;
+            this.cheFacturacion.Location = new System.Drawing.Point(14, 99);
+            this.cheFacturacion.Name = "cheFacturacion";
+            this.cheFacturacion.Size = new System.Drawing.Size(90, 19);
+            this.cheFacturacion.TabIndex = 3;
+            this.cheFacturacion.Text = "Facturación";
+            this.cheFacturacion.UseVisualStyleBackColor = true;
+            // 
+            // cheReserva
+            // 
+            this.cheReserva.AutoSize = true;
+            this.cheReserva.Location = new System.Drawing.Point(14, 124);
+            this.cheReserva.Name = "cheReserva";
+            this.cheReserva.Size = new System.Drawing.Size(71, 19);
+            this.cheReserva.TabIndex = 4;
+            this.cheReserva.Text = "Reserva";
+            this.cheReserva.UseVisualStyleBackColor = true;
+            // 
+            // cheAcceso
+            // 
+            this.cheAcceso.AutoSize = true;
+            this.cheAcceso.Location = new System.Drawing.Point(14, 149);
+            this.cheAcceso.Name = "cheAcceso";
+            this.cheAcceso.Size = new System.Drawing.Size(65, 19);
+            this.cheAcceso.TabIndex = 5;
+            this.cheAcceso.Text = "Acceso";
+            this.cheAcceso.UseVisualStyleBackColor = true;
+            // 
+            // cheReporte
+            // 
+            this.cheReporte.AutoSize = true;
+            this.cheReporte.Location = new System.Drawing.Point(128, 49);
+            this.cheReporte.Name = "cheReporte";
+            this.cheReporte.Size = new System.Drawing.Size(72, 19);
+            this.cheReporte.TabIndex = 6;
+            this.cheReporte.Text = "Reporte";
+            this.cheReporte.UseVisualStyleBackColor = true;
+            // 
+            // cheSeguridad
+            // 
+            this.cheSeguridad.AutoSize = true;
+            this.cheSeguridad.Location = new System.Drawing.Point(128, 74);
+            this.cheSeguridad.Name = "cheSeguridad";
+            this.cheSeguridad.Size = new System.Drawing.Size(82, 19);
+            this.cheSeguridad.TabIndex = 7;
+            this.cheSeguridad.Text = "Seguridad";
+            this.cheSeguridad.UseVisualStyleBackColor = true;
             // 
             // FrmPermisos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(437, 450);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
             this.Name = "FrmPermisos";
             this.Text = "FrmPermisos";
+            this.Load += new System.EventHandler(this.FrmPermisos_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -188,11 +255,17 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmbRoles;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnGuardar;
+        private System.Windows.Forms.CheckBox cheSeguridad;
+        private System.Windows.Forms.CheckBox cheReporte;
+        private System.Windows.Forms.CheckBox cheAcceso;
+        private System.Windows.Forms.CheckBox cheReserva;
+        private System.Windows.Forms.CheckBox cheFacturacion;
+        private System.Windows.Forms.CheckBox cheResidente;
+        private System.Windows.Forms.CheckBox chePropiedad;
     }
 }

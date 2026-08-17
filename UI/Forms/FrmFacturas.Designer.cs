@@ -346,6 +346,11 @@ namespace UI.Forms
 
         }
 
+        private void btnEmitirPendientes_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         private System.Windows.Forms.GroupBox grpFiltro;
