@@ -9,11 +9,9 @@ namespace Interfaces
 {
     public interface IIndicadorMorosidadDAL
     {
-        void Insertar(IndicadorMorosidad indicador);
-
+        List<IndicadorMorosidad> RecalcularTodos(decimal tasaMensual);
+        int AplicarPenalizaciones();
         List<IndicadorMorosidad> ObtenerTodos();
-
         IndicadorMorosidad ObtenerPorPropiedad(int idPropiedad);
-        
     }
 }

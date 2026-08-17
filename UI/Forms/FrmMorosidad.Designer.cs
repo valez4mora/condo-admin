@@ -3,361 +3,514 @@ namespace UI.Forms
     partial class FrmMorosidad
     {
         private System.ComponentModel.IContainer components = null;
-
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && components != null) components.Dispose();
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
         private void InitializeComponent()
         {
-            this.pnlHeader = new System.Windows.Forms.Panel();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.pnlCabecera = new System.Windows.Forms.Panel();
+            this.lblActualizado = new System.Windows.Forms.Label();
             this.lblSubtitulo = new System.Windows.Forms.Label();
             this.lblTitulo = new System.Windows.Forms.Label();
-            this.grpDatos = new System.Windows.Forms.GroupBox();
-            this.lblPropietarioValor = new System.Windows.Forms.Label();
-            this.lblPropietario = new System.Windows.Forms.Label();
-            this.nudMontoAdeudado = new System.Windows.Forms.NumericUpDown();
-            this.lblMontoAdeudado = new System.Windows.Forms.Label();
-            this.nudFacturasPendientes = new System.Windows.Forms.NumericUpDown();
-            this.lblFacturasPendientes = new System.Windows.Forms.Label();
-            this.nudMesesMora = new System.Windows.Forms.NumericUpDown();
-            this.lblMesesMora = new System.Windows.Forms.Label();
-            this.cmbPropiedad = new System.Windows.Forms.ComboBox();
-            this.lblPropiedad = new System.Windows.Forms.Label();
-            this.grpResultado = new System.Windows.Forms.GroupBox();
-            this.txtFechaCalculo = new System.Windows.Forms.TextBox();
-            this.lblFechaCalculo = new System.Windows.Forms.Label();
-            this.txtClasificacion = new System.Windows.Forms.TextBox();
-            this.lblClasificacion = new System.Windows.Forms.Label();
-            this.txtIndiceRiesgo = new System.Windows.Forms.TextBox();
-            this.lblIndiceRiesgo = new System.Windows.Forms.Label();
-            this.btnCalcularRegistrar = new System.Windows.Forms.Button();
+            this.grpFiltros = new System.Windows.Forms.GroupBox();
             this.btnLimpiar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            this.btnActualizar = new System.Windows.Forms.Button();
-            this.pnlHeader.SuspendLayout();
-            this.grpDatos.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMontoAdeudado)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudFacturasPendientes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMesesMora)).BeginInit();
-            this.grpResultado.SuspendLayout();
+            this.nudTasa = new System.Windows.Forms.NumericUpDown();
+            this.lblTasa = new System.Windows.Forms.Label();
+            this.chkSuspendidas = new System.Windows.Forms.CheckBox();
+            this.cmbRiesgo = new System.Windows.Forms.ComboBox();
+            this.lblRiesgo = new System.Windows.Forms.Label();
+            this.txtBuscar = new System.Windows.Forms.TextBox();
+            this.lblBuscar = new System.Windows.Forms.Label();
+            this.btnRecalcular = new System.Windows.Forms.Button();
+            this.btnPenalizaciones = new System.Windows.Forms.Button();
+            this.tlpResumen = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlPropiedades = new System.Windows.Forms.Panel();
+            this.lblPropiedadesValor = new System.Windows.Forms.Label();
+            this.lblPropiedadesTitulo = new System.Windows.Forms.Label();
+            this.pnlDeuda = new System.Windows.Forms.Panel();
+            this.lblDeudaValor = new System.Windows.Forms.Label();
+            this.lblDeudaTitulo = new System.Windows.Forms.Label();
+            this.pnlInteres = new System.Windows.Forms.Panel();
+            this.lblInteresValor = new System.Windows.Forms.Label();
+            this.lblInteresTitulo = new System.Windows.Forms.Label();
+            this.pnlCriticas = new System.Windows.Forms.Panel();
+            this.lblCriticasValor = new System.Windows.Forms.Label();
+            this.lblCriticasTitulo = new System.Windows.Forms.Label();
+            this.pnlContenido = new System.Windows.Forms.Panel();
+            this.pnlSinDatos = new System.Windows.Forms.Panel();
+            this.lblSinDatos = new System.Windows.Forms.Label();
+            this.dgvMorosidad = new System.Windows.Forms.DataGridView();
+            this.pnlPie = new System.Windows.Forms.Panel();
+            this.lblResultado = new System.Windows.Forms.Label();
+            this.btnCerrar = new System.Windows.Forms.Button();
+            this.pnlCabecera.SuspendLayout();
+            this.grpFiltros.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTasa)).BeginInit();
+            this.tlpResumen.SuspendLayout();
+            this.pnlPropiedades.SuspendLayout();
+            this.pnlDeuda.SuspendLayout();
+            this.pnlInteres.SuspendLayout();
+            this.pnlCriticas.SuspendLayout();
+            this.pnlContenido.SuspendLayout();
+            this.pnlSinDatos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMorosidad)).BeginInit();
+            this.pnlPie.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlHeader
+            // pnlCabecera
             // 
-            this.pnlHeader.BackColor = System.Drawing.Color.SteelBlue;
-            this.pnlHeader.Controls.Add(this.lblSubtitulo);
-            this.pnlHeader.Controls.Add(this.lblTitulo);
-            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(0, 0);
-            this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(850, 100);
-            this.pnlHeader.TabIndex = 0;
+            this.pnlCabecera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(42)))), ((int)(((byte)(55)))));
+            this.pnlCabecera.Controls.Add(this.lblActualizado);
+            this.pnlCabecera.Controls.Add(this.lblSubtitulo);
+            this.pnlCabecera.Controls.Add(this.lblTitulo);
+            this.pnlCabecera.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlCabecera.Location = new System.Drawing.Point(0, 0);
+            this.pnlCabecera.Name = "pnlCabecera";
+            this.pnlCabecera.Size = new System.Drawing.Size(1204, 96);
+            this.pnlCabecera.TabIndex = 6;
+            // 
+            // lblActualizado
+            // 
+            this.lblActualizado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblActualizado.ForeColor = System.Drawing.Color.MistyRose;
+            this.lblActualizado.Location = new System.Drawing.Point(1914, 40);
+            this.lblActualizado.Name = "lblActualizado";
+            this.lblActualizado.Size = new System.Drawing.Size(260, 23);
+            this.lblActualizado.TabIndex = 0;
+            this.lblActualizado.Text = "Actualizado: --";
+            this.lblActualizado.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblSubtitulo
             // 
             this.lblSubtitulo.AutoSize = true;
-            this.lblSubtitulo.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.lblSubtitulo.Location = new System.Drawing.Point(31, 61);
+            this.lblSubtitulo.ForeColor = System.Drawing.Color.MistyRose;
+            this.lblSubtitulo.Location = new System.Drawing.Point(29, 60);
             this.lblSubtitulo.Name = "lblSubtitulo";
-            this.lblSubtitulo.Size = new System.Drawing.Size(318, 13);
+            this.lblSubtitulo.Size = new System.Drawing.Size(461, 17);
             this.lblSubtitulo.TabIndex = 1;
-            this.lblSubtitulo.Text = "Cálculo y registro del índice de riesgo financiero de una propiedad";
+            this.lblSubtitulo.Text = "Saldos vencidos, intereses, riesgo y restricciones calculados automáticamente";
             // 
             // lblTitulo
             // 
             this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI Semibold", 20F, System.Drawing.FontStyle.Bold);
             this.lblTitulo.ForeColor = System.Drawing.Color.White;
-            this.lblTitulo.Location = new System.Drawing.Point(29, 24);
+            this.lblTitulo.Location = new System.Drawing.Point(25, 17);
             this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(266, 29);
-            this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "Control de Morosidad";
+            this.lblTitulo.Size = new System.Drawing.Size(284, 37);
+            this.lblTitulo.TabIndex = 2;
+            this.lblTitulo.Text = "Control de morosidad";
             // 
-            // grpDatos
+            // grpFiltros
             // 
-            this.grpDatos.Controls.Add(this.lblPropietarioValor);
-            this.grpDatos.Controls.Add(this.lblPropietario);
-            this.grpDatos.Controls.Add(this.nudMontoAdeudado);
-            this.grpDatos.Controls.Add(this.lblMontoAdeudado);
-            this.grpDatos.Controls.Add(this.nudFacturasPendientes);
-            this.grpDatos.Controls.Add(this.lblFacturasPendientes);
-            this.grpDatos.Controls.Add(this.nudMesesMora);
-            this.grpDatos.Controls.Add(this.lblMesesMora);
-            this.grpDatos.Controls.Add(this.cmbPropiedad);
-            this.grpDatos.Controls.Add(this.lblPropiedad);
-            this.grpDatos.Location = new System.Drawing.Point(34, 128);
-            this.grpDatos.Name = "grpDatos";
-            this.grpDatos.Size = new System.Drawing.Size(782, 225);
-            this.grpDatos.TabIndex = 1;
-            this.grpDatos.TabStop = false;
-            this.grpDatos.Text = "Datos de la propiedad";
-            // 
-            // lblPropietarioValor
-            // 
-            this.lblPropietarioValor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblPropietarioValor.Location = new System.Drawing.Point(175, 73);
-            this.lblPropietarioValor.Name = "lblPropietarioValor";
-            this.lblPropietarioValor.Size = new System.Drawing.Size(533, 23);
-            this.lblPropietarioValor.TabIndex = 9;
-            this.lblPropietarioValor.Text = "-";
-            this.lblPropietarioValor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblPropietario
-            // 
-            this.lblPropietario.AutoSize = true;
-            this.lblPropietario.Location = new System.Drawing.Point(38, 78);
-            this.lblPropietario.Name = "lblPropietario";
-            this.lblPropietario.Size = new System.Drawing.Size(60, 13);
-            this.lblPropietario.TabIndex = 8;
-            this.lblPropietario.Text = "Propietario:";
-            // 
-            // nudMontoAdeudado
-            // 
-            this.nudMontoAdeudado.DecimalPlaces = 2;
-            this.nudMontoAdeudado.Location = new System.Drawing.Point(522, 158);
-            this.nudMontoAdeudado.Name = "nudMontoAdeudado";
-            this.nudMontoAdeudado.Size = new System.Drawing.Size(186, 20);
-            this.nudMontoAdeudado.TabIndex = 4;
-            this.nudMontoAdeudado.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.nudMontoAdeudado.ThousandsSeparator = true;
-            // 
-            // lblMontoAdeudado
-            // 
-            this.lblMontoAdeudado.AutoSize = true;
-            this.lblMontoAdeudado.Location = new System.Drawing.Point(399, 160);
-            this.lblMontoAdeudado.Name = "lblMontoAdeudado";
-            this.lblMontoAdeudado.Size = new System.Drawing.Size(91, 13);
-            this.lblMontoAdeudado.TabIndex = 6;
-            this.lblMontoAdeudado.Text = "Monto adeudado:";
-            // 
-            // nudFacturasPendientes
-            // 
-            this.nudFacturasPendientes.Location = new System.Drawing.Point(175, 158);
-            this.nudFacturasPendientes.Name = "nudFacturasPendientes";
-            this.nudFacturasPendientes.Size = new System.Drawing.Size(170, 20);
-            this.nudFacturasPendientes.TabIndex = 3;
-            this.nudFacturasPendientes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lblFacturasPendientes
-            // 
-            this.lblFacturasPendientes.AutoSize = true;
-            this.lblFacturasPendientes.Location = new System.Drawing.Point(38, 160);
-            this.lblFacturasPendientes.Name = "lblFacturasPendientes";
-            this.lblFacturasPendientes.Size = new System.Drawing.Size(106, 13);
-            this.lblFacturasPendientes.TabIndex = 4;
-            this.lblFacturasPendientes.Text = "Facturas pendientes:";
-            // 
-            // nudMesesMora
-            // 
-            this.nudMesesMora.Location = new System.Drawing.Point(175, 118);
-            this.nudMesesMora.Name = "nudMesesMora";
-            this.nudMesesMora.Size = new System.Drawing.Size(170, 20);
-            this.nudMesesMora.TabIndex = 2;
-            this.nudMesesMora.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lblMesesMora
-            // 
-            this.lblMesesMora.AutoSize = true;
-            this.lblMesesMora.Location = new System.Drawing.Point(38, 120);
-            this.lblMesesMora.Name = "lblMesesMora";
-            this.lblMesesMora.Size = new System.Drawing.Size(82, 13);
-            this.lblMesesMora.TabIndex = 2;
-            this.lblMesesMora.Text = "Meses de mora:";
-            // 
-            // cmbPropiedad
-            // 
-            this.cmbPropiedad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPropiedad.FormattingEnabled = true;
-            this.cmbPropiedad.Location = new System.Drawing.Point(175, 34);
-            this.cmbPropiedad.Name = "cmbPropiedad";
-            this.cmbPropiedad.Size = new System.Drawing.Size(250, 21);
-            this.cmbPropiedad.TabIndex = 1;
-            this.cmbPropiedad.SelectedIndexChanged += new System.EventHandler(this.cmbPropiedad_SelectedIndexChanged);
-            // 
-            // lblPropiedad
-            // 
-            this.lblPropiedad.AutoSize = true;
-            this.lblPropiedad.Location = new System.Drawing.Point(38, 37);
-            this.lblPropiedad.Name = "lblPropiedad";
-            this.lblPropiedad.Size = new System.Drawing.Size(58, 13);
-            this.lblPropiedad.TabIndex = 0;
-            this.lblPropiedad.Text = "Propiedad:";
-            // 
-            // grpResultado
-            // 
-            this.grpResultado.Controls.Add(this.txtFechaCalculo);
-            this.grpResultado.Controls.Add(this.lblFechaCalculo);
-            this.grpResultado.Controls.Add(this.txtClasificacion);
-            this.grpResultado.Controls.Add(this.lblClasificacion);
-            this.grpResultado.Controls.Add(this.txtIndiceRiesgo);
-            this.grpResultado.Controls.Add(this.lblIndiceRiesgo);
-            this.grpResultado.Location = new System.Drawing.Point(34, 377);
-            this.grpResultado.Name = "grpResultado";
-            this.grpResultado.Size = new System.Drawing.Size(782, 137);
-            this.grpResultado.TabIndex = 2;
-            this.grpResultado.TabStop = false;
-            this.grpResultado.Text = "Resultado";
-            // 
-            // txtFechaCalculo
-            // 
-            this.txtFechaCalculo.Location = new System.Drawing.Point(522, 81);
-            this.txtFechaCalculo.Name = "txtFechaCalculo";
-            this.txtFechaCalculo.ReadOnly = true;
-            this.txtFechaCalculo.Size = new System.Drawing.Size(186, 20);
-            this.txtFechaCalculo.TabIndex = 7;
-            // 
-            // lblFechaCalculo
-            // 
-            this.lblFechaCalculo.AutoSize = true;
-            this.lblFechaCalculo.Location = new System.Drawing.Point(399, 84);
-            this.lblFechaCalculo.Name = "lblFechaCalculo";
-            this.lblFechaCalculo.Size = new System.Drawing.Size(92, 13);
-            this.lblFechaCalculo.TabIndex = 4;
-            this.lblFechaCalculo.Text = "Fecha de cálculo:";
-            // 
-            // txtClasificacion
-            // 
-            this.txtClasificacion.Location = new System.Drawing.Point(175, 81);
-            this.txtClasificacion.Name = "txtClasificacion";
-            this.txtClasificacion.ReadOnly = true;
-            this.txtClasificacion.Size = new System.Drawing.Size(170, 20);
-            this.txtClasificacion.TabIndex = 6;
-            // 
-            // lblClasificacion
-            // 
-            this.lblClasificacion.AutoSize = true;
-            this.lblClasificacion.Location = new System.Drawing.Point(38, 84);
-            this.lblClasificacion.Name = "lblClasificacion";
-            this.lblClasificacion.Size = new System.Drawing.Size(69, 13);
-            this.lblClasificacion.TabIndex = 2;
-            this.lblClasificacion.Text = "Clasificación:";
-            // 
-            // txtIndiceRiesgo
-            // 
-            this.txtIndiceRiesgo.Location = new System.Drawing.Point(175, 40);
-            this.txtIndiceRiesgo.Name = "txtIndiceRiesgo";
-            this.txtIndiceRiesgo.ReadOnly = true;
-            this.txtIndiceRiesgo.Size = new System.Drawing.Size(170, 20);
-            this.txtIndiceRiesgo.TabIndex = 5;
-            // 
-            // lblIndiceRiesgo
-            // 
-            this.lblIndiceRiesgo.AutoSize = true;
-            this.lblIndiceRiesgo.Location = new System.Drawing.Point(38, 43);
-            this.lblIndiceRiesgo.Name = "lblIndiceRiesgo";
-            this.lblIndiceRiesgo.Size = new System.Drawing.Size(85, 13);
-            this.lblIndiceRiesgo.TabIndex = 0;
-            this.lblIndiceRiesgo.Text = "Índice de riesgo:";
-            // 
-            // btnCalcularRegistrar
-            // 
-            this.btnCalcularRegistrar.BackColor = System.Drawing.Color.OliveDrab;
-            this.btnCalcularRegistrar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCalcularRegistrar.ForeColor = System.Drawing.Color.White;
-            this.btnCalcularRegistrar.Location = new System.Drawing.Point(460, 545);
-            this.btnCalcularRegistrar.Name = "btnCalcularRegistrar";
-            this.btnCalcularRegistrar.Size = new System.Drawing.Size(205, 40);
-            this.btnCalcularRegistrar.TabIndex = 8;
-            this.btnCalcularRegistrar.Text = "Calcular y registrar";
-            this.btnCalcularRegistrar.UseVisualStyleBackColor = false;
-            this.btnCalcularRegistrar.Click += new System.EventHandler(this.btnCalcularRegistrar_Click);
+            this.grpFiltros.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpFiltros.Controls.Add(this.btnLimpiar);
+            this.grpFiltros.Controls.Add(this.nudTasa);
+            this.grpFiltros.Controls.Add(this.lblTasa);
+            this.grpFiltros.Controls.Add(this.chkSuspendidas);
+            this.grpFiltros.Controls.Add(this.cmbRiesgo);
+            this.grpFiltros.Controls.Add(this.lblRiesgo);
+            this.grpFiltros.Controls.Add(this.txtBuscar);
+            this.grpFiltros.Controls.Add(this.lblBuscar);
+            this.grpFiltros.Location = new System.Drawing.Point(22, 108);
+            this.grpFiltros.Name = "grpFiltros";
+            this.grpFiltros.Size = new System.Drawing.Size(1160, 94);
+            this.grpFiltros.TabIndex = 5;
+            this.grpFiltros.TabStop = false;
+            this.grpFiltros.Text = "Consulta y cálculo";
             // 
             // btnLimpiar
             // 
-            this.btnLimpiar.Location = new System.Drawing.Point(671, 545);
+            this.btnLimpiar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLimpiar.Location = new System.Drawing.Point(1026, 43);
             this.btnLimpiar.Name = "btnLimpiar";
-            this.btnLimpiar.Size = new System.Drawing.Size(145, 40);
-            this.btnLimpiar.TabIndex = 9;
-            this.btnLimpiar.Text = "Limpiar";
-            this.btnLimpiar.UseVisualStyleBackColor = true;
+            this.btnLimpiar.Size = new System.Drawing.Size(110, 34);
+            this.btnLimpiar.TabIndex = 0;
+            this.btnLimpiar.Text = "Limpiar filtros";
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // btnEliminar
+            // nudTasa
             // 
-            this.btnEliminar.Location = new System.Drawing.Point(337, 554);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(75, 23);
-            this.btnEliminar.TabIndex = 10;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.UseVisualStyleBackColor = true;
-            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
+            this.nudTasa.DecimalPlaces = 2;
+            this.nudTasa.Increment = new decimal(new int[] {
+            25,
+            0,
+            0,
+            131072});
+            this.nudTasa.Location = new System.Drawing.Point(695, 49);
+            this.nudTasa.Name = "nudTasa";
+            this.nudTasa.Size = new System.Drawing.Size(110, 24);
+            this.nudTasa.TabIndex = 1;
             // 
-            // btnActualizar
+            // lblTasa
             // 
-            this.btnActualizar.Location = new System.Drawing.Point(220, 554);
-            this.btnActualizar.Name = "btnActualizar";
-            this.btnActualizar.Size = new System.Drawing.Size(75, 23);
-            this.btnActualizar.TabIndex = 11;
-            this.btnActualizar.Text = "Actualizar";
-            this.btnActualizar.UseVisualStyleBackColor = true;
-            this.btnActualizar.Click += new System.EventHandler(this.btnActualizar_Click);
+            this.lblTasa.Location = new System.Drawing.Point(692, 26);
+            this.lblTasa.Name = "lblTasa";
+            this.lblTasa.Size = new System.Drawing.Size(150, 18);
+            this.lblTasa.TabIndex = 2;
+            this.lblTasa.Text = "Tasa mensual (%)";
+            // 
+            // chkSuspendidas
+            // 
+            this.chkSuspendidas.Location = new System.Drawing.Point(497, 51);
+            this.chkSuspendidas.Name = "chkSuspendidas";
+            this.chkSuspendidas.Size = new System.Drawing.Size(175, 22);
+            this.chkSuspendidas.TabIndex = 3;
+            this.chkSuspendidas.Text = "Reservas suspendidas";
+            this.chkSuspendidas.CheckedChanged += new System.EventHandler(this.filtro_Cambio);
+            // 
+            // cmbRiesgo
+            // 
+            this.cmbRiesgo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbRiesgo.Location = new System.Drawing.Point(322, 49);
+            this.cmbRiesgo.Name = "cmbRiesgo";
+            this.cmbRiesgo.Size = new System.Drawing.Size(150, 25);
+            this.cmbRiesgo.TabIndex = 4;
+            this.cmbRiesgo.SelectedIndexChanged += new System.EventHandler(this.filtro_Cambio);
+            // 
+            // lblRiesgo
+            // 
+            this.lblRiesgo.Location = new System.Drawing.Point(319, 26);
+            this.lblRiesgo.Name = "lblRiesgo";
+            this.lblRiesgo.Size = new System.Drawing.Size(100, 18);
+            this.lblRiesgo.TabIndex = 5;
+            this.lblRiesgo.Text = "Clasificación";
+            // 
+            // txtBuscar
+            // 
+            this.txtBuscar.Location = new System.Drawing.Point(19, 49);
+            this.txtBuscar.Name = "txtBuscar";
+            this.txtBuscar.Size = new System.Drawing.Size(280, 24);
+            this.txtBuscar.TabIndex = 6;
+            this.txtBuscar.TextChanged += new System.EventHandler(this.filtro_Cambio);
+            // 
+            // lblBuscar
+            // 
+            this.lblBuscar.Location = new System.Drawing.Point(16, 26);
+            this.lblBuscar.Name = "lblBuscar";
+            this.lblBuscar.Size = new System.Drawing.Size(170, 18);
+            this.lblBuscar.TabIndex = 7;
+            this.lblBuscar.Text = "Propiedad o propietario";
+            // 
+            // btnRecalcular
+            // 
+            this.btnRecalcular.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRecalcular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(42)))), ((int)(((byte)(55)))));
+            this.btnRecalcular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRecalcular.ForeColor = System.Drawing.Color.White;
+            this.btnRecalcular.Location = new System.Drawing.Point(1000, 214);
+            this.btnRecalcular.Name = "btnRecalcular";
+            this.btnRecalcular.Size = new System.Drawing.Size(182, 37);
+            this.btnRecalcular.TabIndex = 1;
+            this.btnRecalcular.Text = "Recalcular morosidad";
+            this.btnRecalcular.UseVisualStyleBackColor = false;
+            this.btnRecalcular.Click += new System.EventHandler(this.btnRecalcular_Click);
+            // 
+            // btnPenalizaciones
+            // 
+            this.btnPenalizaciones.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPenalizaciones.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(104)))), ((int)(((byte)(31)))));
+            this.btnPenalizaciones.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPenalizaciones.ForeColor = System.Drawing.Color.White;
+            this.btnPenalizaciones.Location = new System.Drawing.Point(790, 214);
+            this.btnPenalizaciones.Name = "btnPenalizaciones";
+            this.btnPenalizaciones.Size = new System.Drawing.Size(198, 37);
+            this.btnPenalizaciones.TabIndex = 0;
+            this.btnPenalizaciones.Text = "Aplicar penalizaciones";
+            this.btnPenalizaciones.UseVisualStyleBackColor = false;
+            this.btnPenalizaciones.Click += new System.EventHandler(this.btnPenalizaciones_Click);
+            // 
+            // tlpResumen
+            // 
+            this.tlpResumen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpResumen.ColumnCount = 4;
+            this.tlpResumen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumen.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumen.Controls.Add(this.pnlPropiedades, 0, 0);
+            this.tlpResumen.Controls.Add(this.pnlDeuda, 1, 0);
+            this.tlpResumen.Controls.Add(this.pnlInteres, 2, 0);
+            this.tlpResumen.Controls.Add(this.pnlCriticas, 3, 0);
+            this.tlpResumen.Location = new System.Drawing.Point(22, 263);
+            this.tlpResumen.Name = "tlpResumen";
+            this.tlpResumen.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpResumen.Size = new System.Drawing.Size(1160, 86);
+            this.tlpResumen.TabIndex = 4;
+            // 
+            // pnlPropiedades
+            // 
+            this.pnlPropiedades.BackColor = System.Drawing.Color.White;
+            this.pnlPropiedades.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlPropiedades.Controls.Add(this.lblPropiedadesValor);
+            this.pnlPropiedades.Controls.Add(this.lblPropiedadesTitulo);
+            this.pnlPropiedades.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlPropiedades.Location = new System.Drawing.Point(5, 5);
+            this.pnlPropiedades.Margin = new System.Windows.Forms.Padding(5);
+            this.pnlPropiedades.Name = "pnlPropiedades";
+            this.pnlPropiedades.Size = new System.Drawing.Size(280, 76);
+            this.pnlPropiedades.TabIndex = 0;
+            // 
+            // lblPropiedadesValor
+            // 
+            this.lblPropiedadesValor.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold);
+            this.lblPropiedadesValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(42)))), ((int)(((byte)(55)))));
+            this.lblPropiedadesValor.Location = new System.Drawing.Point(14, 36);
+            this.lblPropiedadesValor.Name = "lblPropiedadesValor";
+            this.lblPropiedadesValor.Size = new System.Drawing.Size(250, 38);
+            this.lblPropiedadesValor.TabIndex = 0;
+            this.lblPropiedadesValor.Text = "0";
+            // 
+            // lblPropiedadesTitulo
+            // 
+            this.lblPropiedadesTitulo.ForeColor = System.Drawing.Color.DimGray;
+            this.lblPropiedadesTitulo.Location = new System.Drawing.Point(15, 12);
+            this.lblPropiedadesTitulo.Name = "lblPropiedadesTitulo";
+            this.lblPropiedadesTitulo.Size = new System.Drawing.Size(240, 20);
+            this.lblPropiedadesTitulo.TabIndex = 1;
+            this.lblPropiedadesTitulo.Text = "Propiedades morosas";
+            // 
+            // pnlDeuda
+            // 
+            this.pnlDeuda.BackColor = System.Drawing.Color.White;
+            this.pnlDeuda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlDeuda.Controls.Add(this.lblDeudaValor);
+            this.pnlDeuda.Controls.Add(this.lblDeudaTitulo);
+            this.pnlDeuda.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDeuda.Location = new System.Drawing.Point(295, 5);
+            this.pnlDeuda.Margin = new System.Windows.Forms.Padding(5);
+            this.pnlDeuda.Name = "pnlDeuda";
+            this.pnlDeuda.Size = new System.Drawing.Size(280, 76);
+            this.pnlDeuda.TabIndex = 1;
+            // 
+            // lblDeudaValor
+            // 
+            this.lblDeudaValor.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold);
+            this.lblDeudaValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(42)))), ((int)(((byte)(55)))));
+            this.lblDeudaValor.Location = new System.Drawing.Point(14, 36);
+            this.lblDeudaValor.Name = "lblDeudaValor";
+            this.lblDeudaValor.Size = new System.Drawing.Size(250, 38);
+            this.lblDeudaValor.TabIndex = 0;
+            this.lblDeudaValor.Text = "0";
+            // 
+            // lblDeudaTitulo
+            // 
+            this.lblDeudaTitulo.ForeColor = System.Drawing.Color.DimGray;
+            this.lblDeudaTitulo.Location = new System.Drawing.Point(15, 12);
+            this.lblDeudaTitulo.Name = "lblDeudaTitulo";
+            this.lblDeudaTitulo.Size = new System.Drawing.Size(240, 20);
+            this.lblDeudaTitulo.TabIndex = 1;
+            this.lblDeudaTitulo.Text = "Saldo vencido";
+            // 
+            // pnlInteres
+            // 
+            this.pnlInteres.BackColor = System.Drawing.Color.White;
+            this.pnlInteres.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlInteres.Controls.Add(this.lblInteresValor);
+            this.pnlInteres.Controls.Add(this.lblInteresTitulo);
+            this.pnlInteres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlInteres.Location = new System.Drawing.Point(585, 5);
+            this.pnlInteres.Margin = new System.Windows.Forms.Padding(5);
+            this.pnlInteres.Name = "pnlInteres";
+            this.pnlInteres.Size = new System.Drawing.Size(280, 76);
+            this.pnlInteres.TabIndex = 2;
+            // 
+            // lblInteresValor
+            // 
+            this.lblInteresValor.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold);
+            this.lblInteresValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(42)))), ((int)(((byte)(55)))));
+            this.lblInteresValor.Location = new System.Drawing.Point(14, 36);
+            this.lblInteresValor.Name = "lblInteresValor";
+            this.lblInteresValor.Size = new System.Drawing.Size(250, 38);
+            this.lblInteresValor.TabIndex = 0;
+            this.lblInteresValor.Text = "0";
+            // 
+            // lblInteresTitulo
+            // 
+            this.lblInteresTitulo.ForeColor = System.Drawing.Color.DimGray;
+            this.lblInteresTitulo.Location = new System.Drawing.Point(15, 12);
+            this.lblInteresTitulo.Name = "lblInteresTitulo";
+            this.lblInteresTitulo.Size = new System.Drawing.Size(240, 20);
+            this.lblInteresTitulo.TabIndex = 1;
+            this.lblInteresTitulo.Text = "Interés calculado";
+            // 
+            // pnlCriticas
+            // 
+            this.pnlCriticas.BackColor = System.Drawing.Color.White;
+            this.pnlCriticas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlCriticas.Controls.Add(this.lblCriticasValor);
+            this.pnlCriticas.Controls.Add(this.lblCriticasTitulo);
+            this.pnlCriticas.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCriticas.Location = new System.Drawing.Point(875, 5);
+            this.pnlCriticas.Margin = new System.Windows.Forms.Padding(5);
+            this.pnlCriticas.Name = "pnlCriticas";
+            this.pnlCriticas.Size = new System.Drawing.Size(280, 76);
+            this.pnlCriticas.TabIndex = 3;
+            // 
+            // lblCriticasValor
+            // 
+            this.lblCriticasValor.Font = new System.Drawing.Font("Segoe UI Semibold", 18F, System.Drawing.FontStyle.Bold);
+            this.lblCriticasValor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(42)))), ((int)(((byte)(55)))));
+            this.lblCriticasValor.Location = new System.Drawing.Point(14, 36);
+            this.lblCriticasValor.Name = "lblCriticasValor";
+            this.lblCriticasValor.Size = new System.Drawing.Size(250, 38);
+            this.lblCriticasValor.TabIndex = 0;
+            this.lblCriticasValor.Text = "0";
+            // 
+            // lblCriticasTitulo
+            // 
+            this.lblCriticasTitulo.ForeColor = System.Drawing.Color.DimGray;
+            this.lblCriticasTitulo.Location = new System.Drawing.Point(15, 12);
+            this.lblCriticasTitulo.Name = "lblCriticasTitulo";
+            this.lblCriticasTitulo.Size = new System.Drawing.Size(240, 20);
+            this.lblCriticasTitulo.TabIndex = 1;
+            this.lblCriticasTitulo.Text = "Riesgo alto o crítico";
+            // 
+            // pnlContenido
+            // 
+            this.pnlContenido.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlContenido.BackColor = System.Drawing.Color.White;
+            this.pnlContenido.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlContenido.Controls.Add(this.pnlSinDatos);
+            this.pnlContenido.Controls.Add(this.dgvMorosidad);
+            this.pnlContenido.Location = new System.Drawing.Point(22, 363);
+            this.pnlContenido.Name = "pnlContenido";
+            this.pnlContenido.Size = new System.Drawing.Size(1160, 310);
+            this.pnlContenido.TabIndex = 3;
+            // 
+            // pnlSinDatos
+            // 
+            this.pnlSinDatos.BackColor = System.Drawing.Color.White;
+            this.pnlSinDatos.Controls.Add(this.lblSinDatos);
+            this.pnlSinDatos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlSinDatos.Location = new System.Drawing.Point(0, 0);
+            this.pnlSinDatos.Name = "pnlSinDatos";
+            this.pnlSinDatos.Size = new System.Drawing.Size(1158, 308);
+            this.pnlSinDatos.TabIndex = 0;
+            // 
+            // lblSinDatos
+            // 
+            this.lblSinDatos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblSinDatos.Font = new System.Drawing.Font("Segoe UI Semibold", 13F);
+            this.lblSinDatos.ForeColor = System.Drawing.Color.DimGray;
+            this.lblSinDatos.Location = new System.Drawing.Point(0, 0);
+            this.lblSinDatos.Name = "lblSinDatos";
+            this.lblSinDatos.Size = new System.Drawing.Size(1158, 308);
+            this.lblSinDatos.TabIndex = 0;
+            this.lblSinDatos.Text = "No existen propiedades con cargos vencidos y saldo pendiente.";
+            this.lblSinDatos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // dgvMorosidad
+            // 
+            this.dgvMorosidad.AllowUserToAddRows = false;
+            this.dgvMorosidad.AllowUserToDeleteRows = false;
+            this.dgvMorosidad.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvMorosidad.BackgroundColor = System.Drawing.Color.White;
+            this.dgvMorosidad.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(232)))), ((int)(((byte)(234)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(35)))), ((int)(((byte)(42)))));
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvMorosidad.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvMorosidad.ColumnHeadersHeight = 42;
+            this.dgvMorosidad.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvMorosidad.EnableHeadersVisualStyles = false;
+            this.dgvMorosidad.Location = new System.Drawing.Point(0, 0);
+            this.dgvMorosidad.Name = "dgvMorosidad";
+            this.dgvMorosidad.ReadOnly = true;
+            this.dgvMorosidad.RowHeadersVisible = false;
+            this.dgvMorosidad.RowTemplate.Height = 32;
+            this.dgvMorosidad.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvMorosidad.Size = new System.Drawing.Size(1158, 308);
+            this.dgvMorosidad.TabIndex = 1;
+            // 
+            // pnlPie
+            // 
+            this.pnlPie.Controls.Add(this.lblResultado);
+            this.pnlPie.Controls.Add(this.btnCerrar);
+            this.pnlPie.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlPie.Location = new System.Drawing.Point(0, 684);
+            this.pnlPie.Name = "pnlPie";
+            this.pnlPie.Size = new System.Drawing.Size(1204, 57);
+            this.pnlPie.TabIndex = 2;
+            // 
+            // lblResultado
+            // 
+            this.lblResultado.Location = new System.Drawing.Point(22, 20);
+            this.lblResultado.Name = "lblResultado";
+            this.lblResultado.Size = new System.Drawing.Size(400, 20);
+            this.lblResultado.TabIndex = 0;
+            this.lblResultado.Text = "0 propiedades morosas";
+            // 
+            // btnCerrar
+            // 
+            this.btnCerrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCerrar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(80)))));
+            this.btnCerrar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCerrar.ForeColor = System.Drawing.Color.White;
+            this.btnCerrar.Location = new System.Drawing.Point(2066, 11);
+            this.btnCerrar.Name = "btnCerrar";
+            this.btnCerrar.Size = new System.Drawing.Size(120, 35);
+            this.btnCerrar.TabIndex = 1;
+            this.btnCerrar.Text = "Cerrar";
+            this.btnCerrar.UseVisualStyleBackColor = false;
+            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
             // 
             // FrmMorosidad
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(850, 620);
-            this.Controls.Add(this.btnActualizar);
-            this.Controls.Add(this.btnEliminar);
-            this.Controls.Add(this.btnLimpiar);
-            this.Controls.Add(this.btnCalcularRegistrar);
-            this.Controls.Add(this.grpResultado);
-            this.Controls.Add(this.grpDatos);
-            this.Controls.Add(this.pnlHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(247)))), ((int)(((byte)(249)))));
+            this.ClientSize = new System.Drawing.Size(1204, 741);
+            this.Controls.Add(this.btnPenalizaciones);
+            this.Controls.Add(this.btnRecalcular);
+            this.Controls.Add(this.pnlPie);
+            this.Controls.Add(this.pnlContenido);
+            this.Controls.Add(this.tlpResumen);
+            this.Controls.Add(this.grpFiltros);
+            this.Controls.Add(this.pnlCabecera);
+            this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.MinimumSize = new System.Drawing.Size(1120, 700);
             this.Name = "FrmMorosidad";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Control de Morosidad";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Control de morosidad";
             this.Load += new System.EventHandler(this.FrmMorosidad_Load);
-            this.pnlHeader.ResumeLayout(false);
-            this.pnlHeader.PerformLayout();
-            this.grpDatos.ResumeLayout(false);
-            this.grpDatos.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMontoAdeudado)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudFacturasPendientes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMesesMora)).EndInit();
-            this.grpResultado.ResumeLayout(false);
-            this.grpResultado.PerformLayout();
+            this.pnlCabecera.ResumeLayout(false);
+            this.pnlCabecera.PerformLayout();
+            this.grpFiltros.ResumeLayout(false);
+            this.grpFiltros.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTasa)).EndInit();
+            this.tlpResumen.ResumeLayout(false);
+            this.pnlPropiedades.ResumeLayout(false);
+            this.pnlDeuda.ResumeLayout(false);
+            this.pnlInteres.ResumeLayout(false);
+            this.pnlCriticas.ResumeLayout(false);
+            this.pnlContenido.ResumeLayout(false);
+            this.pnlSinDatos.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMorosidad)).EndInit();
+            this.pnlPie.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
-        #endregion
-
-        private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.Label lblTitulo;
-        private System.Windows.Forms.Label lblSubtitulo;
-        private System.Windows.Forms.GroupBox grpDatos;
-        private System.Windows.Forms.ComboBox cmbPropiedad;
-        private System.Windows.Forms.Label lblPropiedad;
-        private System.Windows.Forms.Label lblPropietario;
-        private System.Windows.Forms.Label lblPropietarioValor;
-        private System.Windows.Forms.NumericUpDown nudMesesMora;
-        private System.Windows.Forms.Label lblMesesMora;
-        private System.Windows.Forms.NumericUpDown nudFacturasPendientes;
-        private System.Windows.Forms.Label lblFacturasPendientes;
-        private System.Windows.Forms.NumericUpDown nudMontoAdeudado;
-        private System.Windows.Forms.Label lblMontoAdeudado;
-        private System.Windows.Forms.GroupBox grpResultado;
-        private System.Windows.Forms.TextBox txtIndiceRiesgo;
-        private System.Windows.Forms.Label lblIndiceRiesgo;
-        private System.Windows.Forms.TextBox txtClasificacion;
-        private System.Windows.Forms.Label lblClasificacion;
-        private System.Windows.Forms.TextBox txtFechaCalculo;
-        private System.Windows.Forms.Label lblFechaCalculo;
-        private System.Windows.Forms.Button btnCalcularRegistrar;
-        private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.Button btnEliminar;
-        private System.Windows.Forms.Button btnActualizar;
+        private System.Windows.Forms.Panel pnlCabecera, pnlPropiedades, pnlDeuda, pnlInteres, pnlCriticas, pnlContenido, pnlSinDatos, pnlPie;
+        private System.Windows.Forms.Label lblActualizado, lblSubtitulo, lblTitulo, lblBuscar, lblRiesgo, lblTasa;
+        private System.Windows.Forms.Label lblPropiedadesValor, lblPropiedadesTitulo, lblDeudaValor, lblDeudaTitulo, lblInteresValor, lblInteresTitulo, lblCriticasValor, lblCriticasTitulo, lblSinDatos, lblResultado;
+        private System.Windows.Forms.GroupBox grpFiltros;
+        private System.Windows.Forms.TextBox txtBuscar;
+        private System.Windows.Forms.ComboBox cmbRiesgo;
+        private System.Windows.Forms.CheckBox chkSuspendidas;
+        private System.Windows.Forms.NumericUpDown nudTasa;
+        private System.Windows.Forms.Button btnLimpiar, btnRecalcular, btnPenalizaciones, btnCerrar;
+        private System.Windows.Forms.TableLayoutPanel tlpResumen;
+        private System.Windows.Forms.DataGridView dgvMorosidad;
     }
 }

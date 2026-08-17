@@ -1,17 +1,17 @@
 using BLL;
 using DTO;
-using Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace UI.Forms
 {
     public partial class FrmMorosidad : Form
     {
-        private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
-        private readonly IndicadorMorosidadBLL indicadorMorosidadBLL = new IndicadorMorosidadBLL();
-
+        private readonly IndicadorMorosidadBLL morosidadBLL = new IndicadorMorosidadBLL();
+        private List<IndicadorMorosidadDTO> indicadores = new List<IndicadorMorosidadDTO>();
 
         public FrmMorosidad()
         {
@@ -20,211 +20,140 @@ namespace UI.Forms
 
         private void FrmMorosidad_Load(object sender, EventArgs e)
         {
-            ConfigurarControles();
-            CargarPropiedades();
+            cmbRiesgo.Items.AddRange(new object[]
+            {
+                "Todos", "Bajo", "Medio", "Alto", "Critico"
+            });
+            cmbRiesgo.SelectedIndex = 0;
+            nudTasa.Value = 2.00m;
+            Recalcular();
         }
 
-        private void ConfigurarControles()
-        {
-            nudMesesMora.Minimum = 0;
-            nudMesesMora.Maximum = 120;
-
-            nudFacturasPendientes.Minimum = 0;
-            nudFacturasPendientes.Maximum = 1000;
-
-            nudMontoAdeudado.Minimum = 0;
-            nudMontoAdeudado.Maximum = 1000000000;
-            nudMontoAdeudado.DecimalPlaces = 2;
-            nudMontoAdeudado.ThousandsSeparator = true;
-
-            txtIndiceRiesgo.ReadOnly = true;
-            txtClasificacion.ReadOnly = true;
-            txtFechaCalculo.ReadOnly = true;
-        }
-
-        private void CargarPropiedades()
+        private void Recalcular()
         {
             try
             {
-                List<PropiedadDTO> propiedades = propiedadBLL.ObtenerTodas();
-
-                cmbPropiedad.DataSource = null;
-                cmbPropiedad.DataSource = propiedades;
-                cmbPropiedad.DisplayMember = "Codigo";
-                cmbPropiedad.ValueMember = "IdPropiedad";
-                cmbPropiedad.SelectedIndex = -1;
-
-                lblPropietarioValor.Text = "-";
+                CambiarCarga(true);
+                indicadores = morosidadBLL.RecalcularTodos(nudTasa.Value);
+                AplicarFiltros();
+                lblActualizado.Text = "Actualizado: " + DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "No se pudieron cargar las propiedades: " + ex.Message,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo recalcular la morosidad.\n\n" + ex.Message,
+                    "Control de morosidad", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                CambiarCarga(false);
             }
         }
 
-        private void cmbPropiedad_SelectedIndexChanged(object sender, EventArgs e)
+        private void AplicarFiltros()
         {
-            PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
+            string texto = txtBuscar.Text.Trim();
+            string riesgo = cmbRiesgo.SelectedItem == null ? "Todos" : cmbRiesgo.SelectedItem.ToString();
 
-            if (propiedad == null)
+            IEnumerable<IndicadorMorosidadDTO> consulta = indicadores;
+            if (texto.Length > 0)
             {
-                lblPropietarioValor.Text = "-";
-                return;
+                consulta = consulta.Where(x =>
+                    (x.CodigoPropiedad ?? "").IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    (x.NombrePropietario ?? "").IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0);
             }
+            if (riesgo != "Todos") consulta = consulta.Where(x => x.Clasificacion == riesgo);
+            if (chkSuspendidas.Checked) consulta = consulta.Where(x => x.ReservasSuspendidas);
 
-            lblPropietarioValor.Text = string.IsNullOrWhiteSpace(propiedad.NombrePropietario)
-                ? "No disponible"
-                : propiedad.NombrePropietario;
+            List<IndicadorMorosidadDTO> resultado = consulta
+                .OrderByDescending(x => x.IndiceRiesgo).ThenByDescending(x => x.MontoAdeudado).ToList();
+
+            dgvMorosidad.DataSource = null;
+            dgvMorosidad.DataSource = resultado;
+            FormatearGrid();
+
+            CultureInfo cr = CultureInfo.GetCultureInfo("es-CR");
+            lblPropiedadesValor.Text = resultado.Count.ToString("N0");
+            lblDeudaValor.Text = resultado.Sum(x => x.MontoAdeudado).ToString("C2", cr);
+            lblInteresValor.Text = resultado.Sum(x => x.InteresCalculado).ToString("C2", cr);
+            lblCriticasValor.Text = resultado.Count(x => x.Clasificacion == "Alto" || x.Clasificacion == "Critico").ToString("N0");
+            lblResultado.Text = resultado.Count == 1 ? "1 propiedad morosa" : resultado.Count + " propiedades morosas";
+            pnlSinDatos.Visible = resultado.Count == 0;
+            if (pnlSinDatos.Visible) pnlSinDatos.BringToFront(); else dgvMorosidad.BringToFront();
         }
 
-        private void btnCalcularRegistrar_Click(object sender, EventArgs e)
+        private void FormatearGrid()
         {
-            try
-            {
-                if (cmbPropiedad.SelectedIndex == -1 || cmbPropiedad.SelectedValue == null)
-                    throw new Exception("Debe seleccionar una propiedad.");
-
-                if (nudMesesMora.Value <= 0)
-                    throw new Exception("Los meses de mora deben ser mayores a cero.");
-
-                if (nudFacturasPendientes.Value <= 0)
-                    throw new Exception("Debe existir al menos una factura pendiente.");
-
-                if (nudMontoAdeudado.Value <= 0)
-                    throw new Exception("El monto adeudado debe ser mayor a cero.");
-
-                IndicadorMorosidadDTO indicador = new IndicadorMorosidadDTO
-                {
-                    IdPropiedad = Convert.ToInt32(cmbPropiedad.SelectedValue),
-                    MesesMora = Convert.ToInt32(nudMesesMora.Value),
-                    FacturasPendientes = Convert.ToInt32(nudFacturasPendientes.Value),
-                    MontoAdeudado = nudMontoAdeudado.Value
-                };
-
-                IndicadorMorosidadDTO resultado = indicadorMorosidadBLL.CalcularIndicador(indicador);
-
-                txtIndiceRiesgo.Text = resultado.IndiceRiesgo.ToString("N2");
-                txtClasificacion.Text = resultado.Clasificacion;
-                txtFechaCalculo.Text = resultado.FechaCalculo.ToString("dd/MM/yyyy HH:mm");
-
-                MessageBox.Show(
-                    "El indicador de morosidad se calculó y registró correctamente.",
-                    "Proceso completado",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            if (dgvMorosidad.Columns.Count == 0) return;
+            Ocultar("IdIndicador"); Ocultar("IdPropiedad"); Ocultar("MesesMora"); Ocultar("TasaInteres");
+            Ocultar("FechaCalculo"); Ocultar("FechaVencimientoMasAntigua");
+            Encabezado("CodigoPropiedad", "Propiedad");
+            Encabezado("NombrePropietario", "Propietario");
+            Encabezado("DiasMora", "Días mora");
+            Encabezado("FacturasPendientes", "Pendientes");
+            Encabezado("MontoAdeudado", "Saldo pendiente");
+            Encabezado("InteresCalculado", "Interés calculado");
+            Encabezado("IndiceRiesgo", "Índice");
+            Encabezado("Clasificacion", "Riesgo");
+            Encabezado("PorcentajePenalizacion", "Recargo");
+            Encabezado("ReservasSuspendidas", "Reservas suspendidas");
+            Moneda("MontoAdeudado"); Moneda("InteresCalculado");
+            if (dgvMorosidad.Columns["PorcentajePenalizacion"] != null)
+                dgvMorosidad.Columns["PorcentajePenalizacion"].DefaultCellStyle.Format = "N2' %'";
+            dgvMorosidad.ClearSelection();
         }
+
+        private void Ocultar(string nombre)
+        {
+            if (dgvMorosidad.Columns[nombre] != null) dgvMorosidad.Columns[nombre].Visible = false;
+        }
+
+        private void Encabezado(string nombre, string texto)
+        {
+            if (dgvMorosidad.Columns[nombre] != null) dgvMorosidad.Columns[nombre].HeaderText = texto;
+        }
+
+        private void Moneda(string nombre)
+        {
+            if (dgvMorosidad.Columns[nombre] == null) return;
+            dgvMorosidad.Columns[nombre].DefaultCellStyle.Format = "C2";
+            dgvMorosidad.Columns[nombre].DefaultCellStyle.FormatProvider = CultureInfo.GetCultureInfo("es-CR");
+        }
+
+        private void btnRecalcular_Click(object sender, EventArgs e) { Recalcular(); }
+        private void filtro_Cambio(object sender, EventArgs e) { if (IsHandleCreated) AplicarFiltros(); }
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-            cmbPropiedad.SelectedIndex = -1;
-            nudMesesMora.Value = 0;
-            nudFacturasPendientes.Value = 0;
-            nudMontoAdeudado.Value = 0;
-
-            txtIndiceRiesgo.Clear();
-            txtClasificacion.Clear();
-            txtFechaCalculo.Clear();
-
-            lblPropietarioValor.Text = "-";
-            cmbPropiedad.Focus();
+            txtBuscar.Clear(); cmbRiesgo.SelectedIndex = 0; chkSuspendidas.Checked = false;
+            AplicarFiltros(); txtBuscar.Focus();
         }
 
-        private void btnEliminar_Click(object sender, EventArgs e)
+        private void btnPenalizaciones_Click(object sender, EventArgs e)
         {
             try
             {
-                if (cmbPropiedad.SelectedIndex == -1 || cmbPropiedad.SelectedValue == null)
-                    throw new Exception("Debe seleccionar una propiedad para eliminar su indicador.");
-
-                int idPropiedad = Convert.ToInt32(cmbPropiedad.SelectedValue);
-                PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
-
-                DialogResult confirmacion = MessageBox.Show(
-                    $"¿Está seguro de que desea eliminar el indicador de morosidad de la propiedad {propiedad?.Codigo}?",
-                    "Confirmar eliminación",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning);
-
-                if (confirmacion != DialogResult.Yes)
-                    return;
-
-                indicadorMorosidadBLL.EliminarPorPropiedad(idPropiedad);
-
-                MessageBox.Show(
-                    "El indicador de morosidad fue eliminado correctamente.",
-                    "Eliminación exitosa",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
-                btnLimpiar_Click(sender, e);
+                int cantidad = morosidadBLL.AplicarPenalizaciones();
+                MessageBox.Show(cantidad == 0
+                    ? "No había penalizaciones nuevas por registrar."
+                    : "Se registraron " + cantidad + " penalizaciones.",
+                    "Penalizaciones", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Recalcular();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    ex.Message,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Penalizaciones", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnActualizar_Click(object sender, EventArgs e)
+        private void btnCerrar_Click(object sender, EventArgs e) { Close(); }
+
+        private void CambiarCarga(bool cargando)
         {
-            try
-            {
-                if (cmbPropiedad.SelectedIndex == -1 || cmbPropiedad.SelectedValue == null)
-                    throw new Exception("Debe seleccionar una propiedad para actualizar.");
-
-                if (nudMesesMora.Value <= 0)
-                    throw new Exception("Los meses de mora deben ser mayores a cero.");
-
-                if (nudFacturasPendientes.Value <= 0)
-                    throw new Exception("Debe existir al menos una factura pendiente.");
-
-                if (nudMontoAdeudado.Value <= 0)
-                    throw new Exception("El monto adeudado debe ser mayor a cero.");
-
-                IndicadorMorosidadDTO indicador = new IndicadorMorosidadDTO
-                {
-                    IdPropiedad = Convert.ToInt32(cmbPropiedad.SelectedValue),
-                    MesesMora = Convert.ToInt32(nudMesesMora.Value),
-                    FacturasPendientes = Convert.ToInt32(nudFacturasPendientes.Value),
-                    MontoAdeudado = nudMontoAdeudado.Value
-                };
-
-                IndicadorMorosidadDTO resultado = indicadorMorosidadBLL.ActualizarIndicador(indicador);
-
-                txtIndiceRiesgo.Text = resultado.IndiceRiesgo.ToString("N2");
-                txtClasificacion.Text = resultado.Clasificacion;
-                txtFechaCalculo.Text = resultado.FechaCalculo.ToString("dd/MM/yyyy HH:mm");
-
-                MessageBox.Show(
-                    "El indicador de morosidad fue actualizado correctamente.",
-                    "Actualización exitosa",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            UseWaitCursor = cargando;
+            btnRecalcular.Enabled = !cargando;
+            btnPenalizaciones.Enabled = !cargando;
+            grpFiltros.Enabled = !cargando;
+            if (cargando) lblResultado.Text = "Calculando saldos e indicadores...";
         }
     }
 }

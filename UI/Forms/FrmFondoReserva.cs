@@ -11,16 +11,13 @@ namespace UI.Forms
 {
     public partial class FrmFondoReserva : Form
     {
-        private readonly FondoReservaBLL fondoBLL =
-            new FondoReservaBLL();
+        private readonly FondoReservaBLL fondoBLL = new FondoReservaBLL();
+        private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
 
-        private readonly PropiedadBLL propiedadBLL =
-            new PropiedadBLL();
+        private List<FondoReserva> movimientos = new List<FondoReserva>();
+        private readonly Dictionary<int, string> codigosPropiedad =
+            new Dictionary<int, string>();
 
-        private List<FondoReserva> movimientos =
-            new List<FondoReserva>();
-
-        // Evita consultar mientras el ComboBox est· cargando.
         private bool cargandoPropiedades;
 
         public FrmFondoReserva()
@@ -28,17 +25,11 @@ namespace UI.Forms
             InitializeComponent();
         }
 
-        private void FrmFondoReserva_Load(
-            object sender,
-            EventArgs e)
+        private void FrmFondoReserva_Load(object sender, EventArgs e)
         {
-            dtpDesde.Value =
-                new DateTime(DateTime.Today.Year, 1, 1);
-
+            dtpDesde.Value = new DateTime(DateTime.Today.Year, 1, 1);
             dtpHasta.Value = DateTime.Today;
-
-            dtpDesde.Enabled = chkUsarFechas.Checked;
-            dtpHasta.Enabled = chkUsarFechas.Checked;
+            HabilitarFiltroFechas();
 
             CargarPropiedades();
             CargarMovimientos();
@@ -50,20 +41,22 @@ namespace UI.Forms
             {
                 cargandoPropiedades = true;
 
-                List<PropiedadDTO> propiedades =
-                    propiedadBLL.ObtenerTodas()
-                        .OrderBy(x => x.Codigo)
-                        .ToList();
+                List<PropiedadDTO> propiedades = propiedadBLL.ObtenerTodas()
+                    .OrderBy(p => p.Codigo)
+                    .ToList();
 
-                propiedades.Insert(
-                    0,
-                    new PropiedadDTO
-                    {
-                        IdPropiedad = 0,
-                        Codigo = "Todas las propiedades"
-                    });
+                codigosPropiedad.Clear();
+                foreach (PropiedadDTO propiedad in propiedades)
+                {
+                    codigosPropiedad[propiedad.IdPropiedad] = propiedad.Codigo;
+                }
 
-                // Se configuran antes de asignar el DataSource.
+                propiedades.Insert(0, new PropiedadDTO
+                {
+                    IdPropiedad = 0,
+                    Codigo = "Todas las propiedades"
+                });
+
                 cmbPropiedad.DisplayMember = "Codigo";
                 cmbPropiedad.ValueMember = "IdPropiedad";
                 cmbPropiedad.DataSource = propiedades;
@@ -72,8 +65,7 @@ namespace UI.Forms
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "No se pudieron cargar las propiedades.\n\n" +
-                    ex.Message,
+                    "No se pudieron cargar las propiedades.\n\n" + ex.Message,
                     "Fondo de reserva",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -94,32 +86,24 @@ namespace UI.Forms
                 CambiarEstadoCarga(true);
 
                 int idPropiedad = ObtenerIdPropiedadSeleccionada();
+                movimientos = idPropiedad > 0
+                    ? fondoBLL.ObtenerPorPropiedad(idPropiedad)
+                    : fondoBLL.ObtenerTodos();
 
-                if (idPropiedad > 0)
-                {
-                    movimientos =
-                        fondoBLL.ObtenerPorPropiedad(idPropiedad);
-                }
-                else
-                {
-                    movimientos =
-                        fondoBLL.ObtenerTodos();
-                }
+                if (movimientos == null)
+                    movimientos = new List<FondoReserva>();
 
                 AplicarFiltros();
-
-                lblActualizado.Text =
-                    "Actualizado: " +
-                    DateTime.Now.ToString(
-                        "dd/MM/yyyy hh:mm tt");
+                lblActualizado.Text = "Actualizado: " +
+                    DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
             }
             catch (Exception ex)
             {
                 movimientos = new List<FondoReserva>();
+                MostrarResultados(new List<FondoReserva>());
 
                 MessageBox.Show(
-                    "No se pudo consultar el fondo de reserva.\n\n" +
-                    ex.Message,
+                    "No se pudo consultar el fondo de reserva.\n\n" + ex.Message,
                     "Fondo de reserva",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -132,216 +116,128 @@ namespace UI.Forms
 
         private int ObtenerIdPropiedadSeleccionada()
         {
-            PropiedadDTO propiedad =
-                cmbPropiedad.SelectedItem as PropiedadDTO;
-
-            if (propiedad == null)
-                return 0;
-
-            return propiedad.IdPropiedad;
+            PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
+            return propiedad == null ? 0 : propiedad.IdPropiedad;
         }
 
         private void AplicarFiltros()
         {
-            if (movimientos == null)
+            if (chkUsarFechas.Checked &&
+                dtpDesde.Value.Date > dtpHasta.Value.Date)
             {
-                movimientos = new List<FondoReserva>();
+                MessageBox.Show(
+                    "La fecha inicial no puede ser posterior a la fecha final.",
+                    "Rango de fechas no v√°lido",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
             }
 
             IEnumerable<FondoReserva> consulta = movimientos;
 
             if (chkUsarFechas.Checked)
             {
-                if (dtpDesde.Value.Date > dtpHasta.Value.Date)
-                {
-                    MessageBox.Show(
-                        "La fecha inicial no puede ser posterior " +
-                        "a la fecha final.",
-                        "Fechas no v·lidas",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                DateTime desde = dtpDesde.Value.Date;
+                DateTime hasta = dtpHasta.Value.Date;
 
-                    return;
-                }
-
-                consulta = consulta.Where(x =>
-                    x.Fecha.Date >= dtpDesde.Value.Date &&
-                    x.Fecha.Date <= dtpHasta.Value.Date);
+                consulta = consulta.Where(m =>
+                    m.Fecha.Date >= desde && m.Fecha.Date <= hasta);
             }
 
-            List<FondoReserva> resultado =
-                consulta
-                    .OrderByDescending(x => x.Fecha)
-                    .ToList();
-
-            dgvFondos.DataSource = null;
-            dgvFondos.DataSource = resultado;
-
-            FormatearGrid();
-
-            decimal total =
-                resultado.Sum(x => x.Monto);
-
-            decimal promedio =
-                resultado.Count > 0
-                    ? total / resultado.Count
-                    : 0m;
-
-            CultureInfo culturaCR =
-                CultureInfo.GetCultureInfo("es-CR");
-
-            lblTotalValor.Text =
-                total.ToString("C2", culturaCR);
-
-            lblAportesValor.Text =
-                resultado.Count.ToString("N0");
-
-            lblPromedioValor.Text =
-                promedio.ToString("C2", culturaCR);
-
-            lblResultado.Text =
-                resultado.Count == 1
-                    ? "1 aporte mostrado"
-                    : resultado.Count + " aportes mostrados";
-
-            pnlSinDatos.Visible =
-                resultado.Count == 0;
-
-            if (pnlSinDatos.Visible)
-            {
-                pnlSinDatos.BringToFront();
-            }
-            else
-            {
-                dgvFondos.BringToFront();
-            }
+            MostrarResultados(consulta
+                .OrderByDescending(m => m.Fecha)
+                .ThenByDescending(m => m.IdFondoReserva)
+                .ToList());
         }
 
-        private void FormatearGrid()
+        private void MostrarResultados(List<FondoReserva> resultado)
         {
-            if (dgvFondos.Columns.Count == 0)
-                return;
+            dgvFondos.Rows.Clear();
 
-            if (dgvFondos.Columns["IdFondoReserva"] != null)
+            foreach (FondoReserva movimiento in resultado)
             {
-                dgvFondos.Columns["IdFondoReserva"].Visible = false;
+                string codigo;
+                if (!codigosPropiedad.TryGetValue(movimiento.IdPropiedad, out codigo))
+                    codigo = "Propiedad " + movimiento.IdPropiedad;
+
+                dgvFondos.Rows.Add(
+                    movimiento.IdFondoReserva,
+                    codigo,
+                    movimiento.Porcentaje,
+                    movimiento.Monto,
+                    movimiento.Fecha);
             }
 
-            if (dgvFondos.Columns["IdPropiedad"] != null)
-            {
-                dgvFondos.Columns["IdPropiedad"].HeaderText =
-                    "Id propiedad";
-            }
+            decimal total = resultado.Sum(m => m.Monto);
+            decimal promedio = resultado.Count == 0
+                ? 0m
+                : total / resultado.Count;
 
-            if (dgvFondos.Columns["Porcentaje"] != null)
-            {
-                dgvFondos.Columns["Porcentaje"].HeaderText =
-                    "Porcentaje aplicado";
+            CultureInfo culturaCR = CultureInfo.GetCultureInfo("es-CR");
+            lblTotalValor.Text = total.ToString("C2", culturaCR);
+            lblAportesValor.Text = resultado.Count.ToString("N0");
+            lblPromedioValor.Text = promedio.ToString("C2", culturaCR);
 
-                dgvFondos.Columns["Porcentaje"]
-                    .DefaultCellStyle.Format = "N2' %'";
-            }
+            lblResultado.Text = resultado.Count == 1
+                ? "1 aporte mostrado"
+                : resultado.Count + " aportes mostrados";
 
-            if (dgvFondos.Columns["Monto"] != null)
-            {
-                dgvFondos.Columns["Monto"].HeaderText =
-                    "Aporte al fondo";
-
-                dgvFondos.Columns["Monto"]
-                    .DefaultCellStyle.Format = "C2";
-
-                dgvFondos.Columns["Monto"]
-                    .DefaultCellStyle.FormatProvider =
-                    CultureInfo.GetCultureInfo("es-CR");
-            }
-
-            if (dgvFondos.Columns["Fecha"] != null)
-            {
-                dgvFondos.Columns["Fecha"].HeaderText =
-                    "Fecha del aporte";
-
-                dgvFondos.Columns["Fecha"]
-                    .DefaultCellStyle.Format = "dd/MM/yyyy";
-            }
-
-            dgvFondos.AutoSizeColumnsMode =
-                DataGridViewAutoSizeColumnsMode.Fill;
-
+            pnlSinDatos.Visible = resultado.Count == 0;
+            dgvFondos.Visible = resultado.Count > 0;
             dgvFondos.ClearSelection();
         }
 
-        private void btnActualizar_Click(
-            object sender,
-            EventArgs e)
-        {
-            CargarMovimientos();
-        }
-
-        private void cmbPropiedad_SelectedIndexChanged(
-            object sender,
-            EventArgs e)
-        {
-            if (cargandoPropiedades || !IsHandleCreated)
-                return;
-
-            CargarMovimientos();
-        }
-
-        private void chkUsarFechas_CheckedChanged(
-            object sender,
-            EventArgs e)
+        private void HabilitarFiltroFechas()
         {
             dtpDesde.Enabled = chkUsarFechas.Checked;
             dtpHasta.Enabled = chkUsarFechas.Checked;
-
-            AplicarFiltros();
         }
 
-        private void dtpFecha_ValueChanged(
-            object sender,
-            EventArgs e)
+        private void cmbPropiedad_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!chkUsarFechas.Checked)
-                return;
+            if (!cargandoPropiedades && IsHandleCreated)
+                CargarMovimientos();
+        }
 
-            if (dtpDesde.Value.Date <= dtpHasta.Value.Date)
+        private void chkUsarFechas_CheckedChanged(object sender, EventArgs e)
+        {
+            HabilitarFiltroFechas();
+
+            if (IsHandleCreated)
+                AplicarFiltros();
+        }
+
+        private void dtpFecha_ValueChanged(object sender, EventArgs e)
+        {
+            if (chkUsarFechas.Checked &&
+                dtpDesde.Value.Date <= dtpHasta.Value.Date)
             {
                 AplicarFiltros();
             }
         }
 
-        private void btnLimpiar_Click(
-            object sender,
-            EventArgs e)
+        private void btnActualizar_Click(object sender, EventArgs e)
         {
-            chkUsarFechas.Checked = false;
-
-            dtpDesde.Value =
-                new DateTime(DateTime.Today.Year, 1, 1);
-
-            dtpHasta.Value = DateTime.Today;
-
-            if (cmbPropiedad.Items.Count == 0)
-            {
-                CargarMovimientos();
-                return;
-            }
-
-            // Si cambia la selecciÛn, el evento del ComboBox recarga.
-            if (cmbPropiedad.SelectedIndex != 0)
-            {
-                cmbPropiedad.SelectedIndex = 0;
-            }
-            else
-            {
-                // Si ya estaba en cero, se debe recargar manualmente.
-                CargarMovimientos();
-            }
+            CargarMovimientos();
         }
 
-        private void btnCerrar_Click(
-            object sender,
-            EventArgs e)
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            cargandoPropiedades = true;
+
+            chkUsarFechas.Checked = false;
+            dtpDesde.Value = new DateTime(DateTime.Today.Year, 1, 1);
+            dtpHasta.Value = DateTime.Today;
+
+            if (cmbPropiedad.Items.Count > 0)
+                cmbPropiedad.SelectedIndex = 0;
+
+            cargandoPropiedades = false;
+            HabilitarFiltroFechas();
+            CargarMovimientos();
+        }
+
+        private void btnCerrar_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -350,13 +246,11 @@ namespace UI.Forms
         {
             UseWaitCursor = cargando;
             btnActualizar.Enabled = !cargando;
+            btnLimpiar.Enabled = !cargando;
             grpFiltros.Enabled = !cargando;
 
             if (cargando)
-            {
-                lblResultado.Text =
-                    "Consultando movimientos...";
-            }
+                lblResultado.Text = "Consultando aportes...";
         }
     }
 }

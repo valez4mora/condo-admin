@@ -5,132 +5,86 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using DTO;
-
 
 namespace DAL.DAO
 {
- 
     public class IndicadorMorosidadDAO : IIndicadorMorosidadDAL
     {
-        Conexion conexion = Conexion.Instancia;
+        private readonly Conexion conexion = Conexion.Instancia;
 
-   
-        //Inserta un indicador de morosidad calculado en la BD.
-        //Llama al stored procedure sp_RegistrarIndicadorMorosidad.
-        public void Insertar(IndicadorMorosidad indicador)
+        public List<IndicadorMorosidad> RecalcularTodos(decimal tasaMensual)
+        {
+            return EjecutarLista("sp_RecalcularMorosidad", cmd =>
+                cmd.Parameters.Add("@TasaMensual", SqlDbType.Decimal).Value = tasaMensual);
+        }
+
+        public List<IndicadorMorosidad> ObtenerTodos()
+        {
+            return EjecutarLista("sp_ObtenerIndicadoresMorosidad", null);
+        }
+
+        public int AplicarPenalizaciones()
         {
             using (SqlConnection cn = conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_AplicarPenalizacionesMorosidad", cn))
             {
-                cn.Open();
-
-                SqlCommand cmd = new SqlCommand("sp_RegistrarIndicadorMorosidad", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@IdPropiedad", indicador.IdPropiedad);
-                cmd.Parameters.AddWithValue("@MesesMora", indicador.MesesMora);
-                cmd.Parameters.AddWithValue("@FacturasPendientes", indicador.FacturasPendientes);
-                cmd.Parameters.AddWithValue("@MontoAdeudado", indicador.MontoAdeudado);
-                cmd.Parameters.AddWithValue("@IndiceRiesgo", indicador.IndiceRiesgo);
-                cmd.Parameters.AddWithValue("@Clasificacion", indicador.Clasificacion);
-                cmd.Parameters.AddWithValue("@FechaCalculo", indicador.FechaCalculo);
-
-                cmd.ExecuteNonQuery();
+                cn.Open();
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
 
-   
-        //Obtiene todos los indicadores de morosidad del sistema
-        public List<IndicadorMorosidad> ObtenerTodos()
+        public IndicadorMorosidad ObtenerPorPropiedad(int idPropiedad)
+        {
+            List<IndicadorMorosidad> lista = EjecutarLista(
+                "sp_ObtenerIndicadorPorPropiedad",
+                cmd => cmd.Parameters.Add("@IdPropiedad", SqlDbType.Int).Value = idPropiedad);
+
+            return lista.Count == 0 ? null : lista[0];
+        }
+
+        private List<IndicadorMorosidad> EjecutarLista(
+            string procedimiento,
+            Action<SqlCommand> configurar)
         {
             List<IndicadorMorosidad> lista = new List<IndicadorMorosidad>();
 
             using (SqlConnection cn = conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand(procedimiento, cn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
+                if (configurar != null) configurar(cmd);
                 cn.Open();
 
-                SqlCommand cmd = new SqlCommand("sp_ObtenerIndicadoresMorosidad", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(Mapear(dr));
+                    while (dr.Read()) lista.Add(Mapear(dr));
                 }
             }
-
             return lista;
         }
 
-        //Obtiene el último indicador de morosidad de una propiedad
-        public IndicadorMorosidad ObtenerPorPropiedad(int idPropiedad)
-        {
-            IndicadorMorosidad indicador = null;
-
-            using (SqlConnection cn = conexion.ObtenerConexion())
-            {
-                cn.Open();
-
-                SqlCommand cmd = new SqlCommand("sp_ObtenerIndicadorPorPropiedad", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
-
-                SqlDataReader dr = cmd.ExecuteReader();
-                if (dr.Read())
-                {
-                    indicador = Mapear(dr);
-                }
-            }
-
-            return indicador;
-        }
-
-     
-        //Convierte una fila del DataReader en un IndicadorMorosidad.
-        private IndicadorMorosidad Mapear(SqlDataReader dr)
+        private static IndicadorMorosidad Mapear(SqlDataReader dr)
         {
             return new IndicadorMorosidad
             {
                 IdIndicador = Convert.ToInt32(dr["IdIndicador"]),
                 IdPropiedad = Convert.ToInt32(dr["IdPropiedad"]),
+                CodigoPropiedad = dr["CodigoPropiedad"].ToString(),
+                NombrePropietario = dr["NombrePropietario"].ToString(),
+                DiasMora = Convert.ToInt32(dr["DiasMora"]),
                 MesesMora = Convert.ToInt32(dr["MesesMora"]),
                 FacturasPendientes = Convert.ToInt32(dr["FacturasPendientes"]),
                 MontoAdeudado = Convert.ToDecimal(dr["MontoAdeudado"]),
+                TasaInteres = Convert.ToDecimal(dr["TasaInteres"]),
+                InteresCalculado = Convert.ToDecimal(dr["InteresCalculado"]),
                 IndiceRiesgo = Convert.ToDecimal(dr["IndiceRiesgo"]),
                 Clasificacion = dr["Clasificacion"].ToString(),
+                PorcentajePenalizacion = Convert.ToDecimal(dr["PorcentajePenalizacion"]),
+                ReservasSuspendidas = Convert.ToBoolean(dr["ReservasSuspendidas"]),
+                FechaVencimientoMasAntigua = Convert.ToDateTime(dr["FechaVencimientoMasAntigua"]),
                 FechaCalculo = Convert.ToDateTime(dr["FechaCalculo"])
             };
-        }
-        public bool Eliminar(int idPropiedad)
-        {
-            using (SqlConnection cn = conexion.ObtenerConexion())
-            {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand("sp_EliminarIndicadorMorosidad", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IdPropiedad", idPropiedad);
-                int filas = cmd.ExecuteNonQuery();
-                return filas > 0;
-            }
-        }
-
-        public bool Actualizar(IndicadorMorosidad indicador)
-        {
-            using (SqlConnection cn = conexion.ObtenerConexion())
-            {
-                cn.Open();
-                SqlCommand cmd = new SqlCommand("sp_ActualizarIndicadorMorosidad", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IdPropiedad", indicador.IdPropiedad);
-                cmd.Parameters.AddWithValue("@MesesMora", indicador.MesesMora);
-                cmd.Parameters.AddWithValue("@FacturasPendientes", indicador.FacturasPendientes);
-                cmd.Parameters.AddWithValue("@MontoAdeudado", indicador.MontoAdeudado);
-                cmd.Parameters.AddWithValue("@IndiceRiesgo", indicador.IndiceRiesgo);
-                cmd.Parameters.AddWithValue("@Clasificacion", indicador.Clasificacion);
-                cmd.Parameters.AddWithValue("@FechaCalculo", indicador.FechaCalculo);
-                int filas = cmd.ExecuteNonQuery();
-                return filas > 0;
-            }
         }
     }
 }
