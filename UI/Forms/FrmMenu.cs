@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Util;
 
 namespace UI.Forms
 {
@@ -13,7 +14,20 @@ namespace UI.Forms
 
         private void FrmMenu_Load(object sender, EventArgs e)
         {
+            // muestra el usuario y rol en el título
+            this.Text = "Condominio Admin — " + SesionActual.Usuario +
+                        " (" + SesionActual.NombreRol + ")";
 
+            // oculta los módulos según permisos del usuario logueado
+           
+            propiedadesToolStripMenuItem.Visible = SesionActual.TienePermiso("Propiedades", "Ver");
+            personasToolStripMenuItem.Visible = SesionActual.TienePermiso("Residentes", "Ver");
+            facturaciónToolStripMenuItem.Visible = SesionActual.TienePermiso("Facturacion", "Ver");
+            financieroToolStripMenuItem.Visible = SesionActual.TienePermiso("Facturacion", "Ver");
+            reservasToolStripMenuItem.Visible = SesionActual.TienePermiso("Reservas", "Ver");
+            accesoToolStripMenuItem.Visible = SesionActual.TienePermiso("Acceso", "Ver");
+            reportesToolStripMenuItem.Visible = SesionActual.TienePermiso("Reportes", "Ver");
+            seguridadToolStripMenuItem.Visible = SesionActual.TienePermiso("Seguridad", "Ver");
         }
 
         // ============================================================
