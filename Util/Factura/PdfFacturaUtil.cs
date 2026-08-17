@@ -85,12 +85,10 @@ namespace Util.Factura
                             ? "Cargo"
                             : detalle.DescripcionCargo;
 
-                    lineas.Add(
-                        descripcion +
-                        "   CRC " +
-                        detalle.SubTotal.ToString(
-                            "N2",
-                            CulturaCostaRica));
+                    lineas.Add(descripcion + " (" + (detalle.TipoCargo ?? "Cargo") + ")");
+                    lineas.Add("  Base CRC " + detalle.MontoBase.ToString("N2", CulturaCostaRica) +
+                        " | IVA CRC " + detalle.IVA.ToString("N2", CulturaCostaRica) +
+                        " | Total CRC " + detalle.SubTotal.ToString("N2", CulturaCostaRica));
                 }
             }
             else

@@ -20,36 +20,55 @@ namespace DAL.DAO
         public int Registrar(FacturaDTO factura)
         {
             int idGenerado = 0;
-            DetalleFacturaDTO detalle = factura.Detalles[0];
+            if (factura == null || factura.Detalles == null || factura.Detalles.Count == 0)
+                throw new ArgumentException("La factura debe contener al menos un detalle.");
 
             using (SqlConnection cn = _cn.ObtenerConexion())
             {
                 cn.Open();
 
-                SqlCommand cmd = new SqlCommand("sp_RegistrarFactura", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlTransaction tx = cn.BeginTransaction())
+                    try
+                    {
+                        SqlCommand cmd = new SqlCommand("sp_RegistrarFactura", cn, tx);
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                // Encabezado
-                cmd.Parameters.AddWithValue("@Fecha", factura.Fecha);
-                cmd.Parameters.AddWithValue("@TotalColones", factura.TotalColones);
-                cmd.Parameters.AddWithValue("@TotalDolares", factura.TotalDolares);
-                cmd.Parameters.AddWithValue("@TipoCambio", factura.TipoCambio);
-                cmd.Parameters.AddWithValue("@IdPropiedad", factura.IdPropiedad);
-                cmd.Parameters.AddWithValue("@Estado", factura.Estado);
+                        // Encabezado
+                        cmd.Parameters.AddWithValue("@Fecha", factura.Fecha);
+                        cmd.Parameters.AddWithValue("@TotalColones", factura.TotalColones);
+                        cmd.Parameters.AddWithValue("@TotalDolares", factura.TotalDolares);
+                        cmd.Parameters.AddWithValue("@TipoCambio", factura.TipoCambio);
+                        cmd.Parameters.AddWithValue("@IdPropiedad", factura.IdPropiedad);
+                        cmd.Parameters.AddWithValue("@Estado", factura.Estado);
 
-                // Detalle (un único cargo por llamada)
-                cmd.Parameters.AddWithValue("@IdCargo", detalle.IdCargo);
-                cmd.Parameters.AddWithValue("@Cantidad", detalle.Cantidad);
-                cmd.Parameters.AddWithValue("@Precio", detalle.Precio);
-                cmd.Parameters.AddWithValue("@Subtotal", detalle.SubTotal);
+                        // Parámetro de salida
+                        SqlParameter paramId = new SqlParameter("@IdFactura", SqlDbType.Int);
+                        paramId.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(paramId);
 
-                // Parámetro de salida
-                SqlParameter paramId = new SqlParameter("@IdFactura", SqlDbType.Int);
-                paramId.Direction = ParameterDirection.Output;
-                cmd.Parameters.Add(paramId);
+                        cmd.ExecuteNonQuery();
+                        idGenerado = Convert.ToInt32(paramId.Value);
 
-                cmd.ExecuteNonQuery();
-                idGenerado = Convert.ToInt32(paramId.Value);
+                        foreach (DetalleFacturaDTO detalle in factura.Detalles)
+                        {
+                            using (SqlCommand detalleCmd = new SqlCommand("sp_RegistrarDetalleFactura", cn, tx))
+                            {
+                                detalleCmd.CommandType = CommandType.StoredProcedure;
+                                detalleCmd.Parameters.AddWithValue("@IdFactura", idGenerado);
+                                detalleCmd.Parameters.AddWithValue("@IdCargo", detalle.IdCargo);
+                                detalleCmd.Parameters.AddWithValue("@Cantidad", detalle.Cantidad);
+                                detalleCmd.Parameters.AddWithValue("@Precio", detalle.Precio);
+                                detalleCmd.Parameters.AddWithValue("@Subtotal", detalle.SubTotal);
+                                detalleCmd.ExecuteNonQuery();
+                            }
+                        }
+                        tx.Commit();
+                    }
+                    catch
+                    {
+                        tx.Rollback();
+                        throw;
+                    }
             }
 
             return idGenerado;
@@ -222,6 +241,12 @@ namespace DAL.DAO
                 IdFactura = Convert.ToInt32(dr["IdFactura"]),
                 IdCargo = Convert.ToInt32(dr["IdCargo"]),
                 DescripcionCargo = dr["DescripcionCargo"].ToString(),
+                TipoCargo = ExisteColumna(dr, "Tipo") ? dr["Tipo"].ToString() : "",
+                MontoBase = ExisteColumna(dr, "MontoBase") ? Convert.ToDecimal(dr["MontoBase"]) : Convert.ToDecimal(dr["Precio"]),
+                IVA = ExisteColumna(dr, "IVA") ? Convert.ToDecimal(dr["IVA"]) : 0m,
+                FechaEmision = ExisteColumna(dr, "FechaEmision") ? Convert.ToDateTime(dr["FechaEmision"]) : DateTime.MinValue,
+                FechaVencimiento = ExisteColumna(dr, "FechaVencimiento") ? Convert.ToDateTime(dr["FechaVencimiento"]) : DateTime.MinValue,
+                EstadoCargo = ExisteColumna(dr, "EstadoCargo") ? dr["EstadoCargo"].ToString() : "",
                 Cantidad = Convert.ToInt32(dr["Cantidad"]),
                 Precio = Convert.ToDecimal(dr["Precio"]),
                 SubTotal = Convert.ToDecimal(dr["SubTotal"])

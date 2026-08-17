@@ -6,17 +6,10 @@ using DTO;
 
 namespace Util.Factura
 {
-    /// <summary>
-    /// Genera el XML de una factura en formato Encabezado-Detalle
-    /// y lo almacena como string para guardar en base de datos
-    /// o enviar por correo.
-    /// </summary>
     public static class XmlFacturaUtil
     {
-        /// <summary>
         /// Genera el XML completo de la factura (encabezado + detalle).
         /// Retorna el XML como string para almacenar en BD o enviar por correo.
-        /// </summary>
         public static string GenerarXml(FacturaDTO factura)
         {
             if (factura == null)
@@ -34,6 +27,9 @@ namespace Util.Factura
                         new XElement("IdPropiedad", factura.IdPropiedad),
                         new XElement("TotalColones", factura.TotalColones.ToString("F2")),
                         new XElement("TotalDolares", factura.TotalDolares.ToString("F2")),
+                        new XElement("TipoCambio", factura.TipoCambio.ToString("F4")),
+                        new XElement("TotalPagado", factura.TotalPagado.ToString("F2")),
+                        new XElement("SaldoPendiente", factura.SaldoPendiente.ToString("F2")),
                         new XElement("Estado", factura.Estado ?? "Emitida")
                     ),
 
@@ -50,10 +46,8 @@ namespace Util.Factura
             }
         }
 
-        /// <summary>
         /// Guarda el XML en un archivo físico (para descarga / impresión).
         /// Retorna la ruta del archivo generado.
-        /// </summary>
         public static string GuardarEnArchivo(FacturaDTO factura, string carpetaDestino = null)
         {
             string xml = GenerarXml(factura);
@@ -85,6 +79,9 @@ namespace Util.Factura
                     detalle.Add(new XElement("Linea",
                         new XElement("IdCargo", d.IdCargo),
                         new XElement("Descripcion", d.DescripcionCargo ?? ""),
+                        new XElement("Tipo", d.TipoCargo ?? ""),
+                        new XElement("MontoBase", d.MontoBase.ToString("F2")),
+                        new XElement("IVA", d.IVA.ToString("F2")),
                         new XElement("Cantidad", d.Cantidad),
                         new XElement("PrecioUnitario", d.Precio.ToString("F2")),
                         new XElement("SubTotal", d.SubTotal.ToString("F2"))
@@ -95,9 +92,7 @@ namespace Util.Factura
             return detalle;
         }
 
-        /// <summary>
         /// StringWriter que fuerza el encoding UTF-8 en la declaración XML.
-        /// </summary>
         private class StringWriterUtf8 : StringWriter
         {
             public override Encoding Encoding => Encoding.UTF8;

@@ -27,6 +27,12 @@ namespace DTO
         public int IdFactura { get; set; }
         public int IdCargo { get; set; }
         public string DescripcionCargo { get; set; }
+        public string TipoCargo { get; set; }
+        public decimal MontoBase { get; set; }
+        public decimal IVA { get; set; }
+        public DateTime FechaEmision { get; set; }
+        public DateTime FechaVencimiento { get; set; }
+        public string EstadoCargo { get; set; }
         public int Cantidad { get; set; }
         public decimal Precio { get; set; }
         public decimal SubTotal { get; set; }

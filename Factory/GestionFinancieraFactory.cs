@@ -66,7 +66,7 @@ namespace Factory
             return new CargoFacturableDTO
             {
                 Descripcion = $"Interés por mora ({meses} mes(es))",
-                Tipo = "Multa",
+                Tipo = "InteresMora",
                 MontoBase = montoBase,
                 IVA = 0,
                 Total = montoBase,
@@ -83,7 +83,7 @@ namespace Factory
             return new CargoFacturableDTO
             {
                 Descripcion = descripcion,
-                Tipo = "Multa",
+                Tipo = "Penalizacion",
                 MontoBase = monto,
                 IVA = 0,
                 Total = monto,

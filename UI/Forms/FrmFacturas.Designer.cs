@@ -15,6 +15,7 @@ namespace UI.Forms
         private void InitializeComponent()
         {
             this.grpFiltro = new System.Windows.Forms.GroupBox();
+            this.btnEmitirPendientes = new System.Windows.Forms.Button();
             this.btnLimpiarFiltro = new System.Windows.Forms.Button();
             this.btnFiltrar = new System.Windows.Forms.Button();
             this.cmbPropiedad = new System.Windows.Forms.ComboBox();
@@ -48,6 +49,7 @@ namespace UI.Forms
             // 
             // grpFiltro
             // 
+            this.grpFiltro.Controls.Add(this.btnEmitirPendientes);
             this.grpFiltro.Controls.Add(this.btnLimpiarFiltro);
             this.grpFiltro.Controls.Add(this.btnFiltrar);
             this.grpFiltro.Controls.Add(this.cmbPropiedad);
@@ -58,6 +60,20 @@ namespace UI.Forms
             this.grpFiltro.TabIndex = 0;
             this.grpFiltro.TabStop = false;
             this.grpFiltro.Text = "Filtrar por propiedad";
+            // 
+            // btnEmitirPendientes
+            // 
+            this.btnEmitirPendientes.BackColor = System.Drawing.Color.SeaGreen;
+            this.btnEmitirPendientes.FlatAppearance.BorderSize = 0;
+            this.btnEmitirPendientes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEmitirPendientes.ForeColor = System.Drawing.Color.White;
+            this.btnEmitirPendientes.Location = new System.Drawing.Point(510, 19);
+            this.btnEmitirPendientes.Name = "btnEmitirPendientes";
+            this.btnEmitirPendientes.Size = new System.Drawing.Size(185, 28);
+            this.btnEmitirPendientes.TabIndex = 4;
+            this.btnEmitirPendientes.Text = "Emitir cargos pendientes";
+            this.btnEmitirPendientes.UseVisualStyleBackColor = false;
+            this.btnEmitirPendientes.Click += new System.EventHandler(this.btnEmitirPendientes_Click);
             // 
             // btnLimpiarFiltro
             // 
@@ -219,7 +235,7 @@ namespace UI.Forms
             this.lblEstado.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblEstado.Location = new System.Drawing.Point(425, 55);
             this.lblEstado.Name = "lblEstado";
-            this.lblEstado.Size = new System.Drawing.Size(90, 20);
+            this.lblEstado.Size = new System.Drawing.Size(510, 20);
             this.lblEstado.TabIndex = 7;
             // 
             // lblEstadoLbl
@@ -331,6 +347,7 @@ namespace UI.Forms
         #endregion
 
         private System.Windows.Forms.GroupBox grpFiltro;
+        private System.Windows.Forms.Button   btnEmitirPendientes;
         private System.Windows.Forms.Button   btnLimpiarFiltro;
         private System.Windows.Forms.Button   btnFiltrar;
         private System.Windows.Forms.ComboBox cmbPropiedad;
