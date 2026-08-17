@@ -21,7 +21,7 @@ namespace BLL
 
         public bool Registrar(PagoDTO pago)
         {
-            ValidarPago(pago);
+            ValidarPago(pago, 0);
 
             // Si no se especificó la fecha,
             // se utiliza la fecha actual.
@@ -66,7 +66,7 @@ namespace BLL
                 );
             }
 
-            ValidarPago(pago);
+            ValidarPago(pago, pago.IdPago);
 
             return pagoDAO.Modificar(pago);
         }
@@ -83,7 +83,7 @@ namespace BLL
             return pagoDAO.Eliminar(idPago);
         }
 
-        private void ValidarPago(PagoDTO pago)
+        private void ValidarPago(PagoDTO pago, int idPagoExcluir)
         {
             if (pago == null)
             {
@@ -113,6 +113,19 @@ namespace BLL
                 );
             }
 
+            string[] metodosPermitidos = { "Efectivo", "Tarjeta", "Transferencia", "SINPE" };
+            if (!metodosPermitidos.Contains(pago.MetodoPago))
+                throw new ArgumentException("El método de pago seleccionado no es válido.");
+
+            if (pago.FechaPago.Date > DateTime.Today)
+                throw new ArgumentException("La fecha del pago no puede ser futura.");
+
+            if (pago.Referencia != null && pago.Referencia.Trim().Length > 100)
+                throw new ArgumentException("La referencia no puede superar 100 caracteres.");
+
+            if (pago.MetodoPago != "Efectivo" && string.IsNullOrWhiteSpace(pago.Referencia))
+                throw new ArgumentException("Ingrese la referencia del pago.");
+
             FacturaDTO factura = facturaBLL.ObtenerPorId(pago.IdFactura);
             if (factura == null)
                 throw new ArgumentException("La factura seleccionada no existe.");
@@ -123,7 +136,9 @@ namespace BLL
             if (factura.Estado == "Pagada")
                 throw new ArgumentException("La factura ya se encuentra pagada.");
 
-            decimal pagado = pagoDAO.ObtenerPorFactura(pago.IdFactura).Sum(x => x.Monto);
+            decimal pagado = pagoDAO.ObtenerPorFactura(pago.IdFactura)
+                .Where(x => x.IdPago != idPagoExcluir)
+                .Sum(x => x.Monto);
             decimal saldo = factura.TotalColones - pagado;
             if (saldo <= 0)
                 throw new ArgumentException("La factura no tiene saldo pendiente.");
