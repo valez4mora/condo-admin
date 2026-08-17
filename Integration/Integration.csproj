@@ -55,6 +55,9 @@
     <Compile Include="Provincias\IProvinciaService.cs" />
     <Compile Include="Provincias\ProvinciaService.cs" />
     <Compile Include="Provincias\ProvinciaDTO.cs" />
+    <Compile Include="TipoCambio\ITipoCambioService.cs" />
+    <Compile Include="TipoCambio\TipoCambioResponseDTO.cs" />
+    <Compile Include="TipoCambio\TipoCambioService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DTO\DTO.csproj">

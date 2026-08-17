@@ -1,7 +1,6 @@
 using BLL;
 using DTO;
 using Integration.Hacienda;
-using Integration.Provincias;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +17,8 @@ namespace UI.Forms
         private readonly ResidenteBLL residenteBLL = new ResidenteBLL();
         private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
         private readonly IHaciendaService haciendaService = new HaciendaService();
-        private IProvinciaService provinciaService;
         private List<ResidenteDTO> residentes = new List<ResidenteDTO>();
+        private List<PropiedadDTO> propiedades = new List<PropiedadDTO>();
         private int idSeleccionado;
 
         public FrmResidente()
@@ -31,8 +30,6 @@ namespace UI.Forms
         private void FrmResidente_Load(object sender, EventArgs e)
         {
             cmbSexo.Items.AddRange(new object[] { "M", "F" });
-            try { provinciaService = new ProvinciaService(); } catch { provinciaService = null; }
-            CargarProvincias();
             CargarPropiedades();
             CargarResidentes();
             LimpiarFormulario(false);
@@ -63,36 +60,26 @@ namespace UI.Forms
             });
         }
 
-        private void CargarProvincias()
-        {
-            try
-            {
-                cmbProvincia.DataSource = provinciaService == null ? null : provinciaService.ObtenerProvincias();
-                cmbProvincia.DisplayMember = "Nombre";
-                cmbProvincia.ValueMember = "Id";
-                cmbProvincia.SelectedIndex = -1;
-            }
-            catch
-            {
-                cmbProvincia.DataSource = null;
-                cmbProvincia.Items.Clear();
-                cmbProvincia.Items.Add("San José"); cmbProvincia.Items.Add("Alajuela");
-                cmbProvincia.Items.Add("Cartago"); cmbProvincia.Items.Add("Heredia");
-                cmbProvincia.Items.Add("Guanacaste"); cmbProvincia.Items.Add("Puntarenas"); cmbProvincia.Items.Add("Limón");
-                cmbProvincia.SelectedIndex = -1;
-            }
-        }
-
         private void CargarPropiedades()
         {
             try
             {
-                cmbPropiedad.DataSource = propiedadBLL.ObtenerTodas().OrderBy(p => p.Codigo).ToList();
+                propiedades = propiedadBLL.ObtenerTodas().OrderBy(p => p.Codigo).ToList();
+                cmbPropiedad.DataSource = null;
+                cmbPropiedad.DataSource = propiedades;
                 cmbPropiedad.DisplayMember = "Codigo";
                 cmbPropiedad.ValueMember = "IdPropiedad";
                 cmbPropiedad.SelectedIndex = -1;
             }
             catch (Exception ex) { MostrarError("No se pudieron cargar las propiedades: " + ex.Message); }
+        }
+
+        private void cmbPropiedad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
+            txtDireccion.Text = propiedad == null
+                ? string.Empty
+                : propiedad.Direccion ?? string.Empty;
         }
 
         private void CargarResidentes()
@@ -127,11 +114,7 @@ namespace UI.Forms
             txtTelefono.Text = r.Telefono;
             txtEmail.Text = r.Email;
             cmbPropiedad.SelectedValue = r.IdPropiedad;
-
-            string provincia, direccion;
-            SepararDireccion(r.Direccion, out provincia, out direccion);
-            txtDireccion.Text = direccion;
-            SeleccionarProvincia(provincia);
+            txtDireccion.Text = r.DireccionPropiedad ?? string.Empty;
             MostrarFotografia(r.Fotografia);
 
             bool pasaporte = Regex.IsMatch(r.Identificacion ?? string.Empty, "^[A-Za-z]");
@@ -173,11 +156,13 @@ namespace UI.Forms
         {
             string identificacion = txtIdentificacion.Text.Trim().ToUpperInvariant();
             ValidarIdentificacion(identificacion);
-            if (cmbProvincia.SelectedItem == null) throw new Exception("Debe seleccionar una provincia.");
             if (cmbPropiedad.SelectedValue == null) throw new Exception("Debe seleccionar la propiedad asignada.");
 
-            string provincia = cmbProvincia.SelectedItem is ProvinciaDTO
-                ? ((ProvinciaDTO)cmbProvincia.SelectedItem).Nombre : cmbProvincia.SelectedItem.ToString();
+            PropiedadDTO propiedad = cmbPropiedad.SelectedItem as PropiedadDTO;
+            if (propiedad == null)
+                throw new Exception("La propiedad seleccionada no es válida.");
+            if (string.IsNullOrWhiteSpace(propiedad.Direccion))
+                throw new Exception("La propiedad seleccionada no tiene una dirección registrada.");
 
             return new ResidenteDTO
             {
@@ -188,7 +173,8 @@ namespace UI.Forms
                 Sexo = cmbSexo.SelectedItem == null ? null : cmbSexo.SelectedItem.ToString(),
                 Telefono = txtTelefono.Text.Trim(),
                 Email = txtEmail.Text.Trim(),
-                Direccion = provincia + "|" + txtDireccion.Text.Trim(),
+                Direccion = null,
+                DireccionPropiedad = propiedad.Direccion,
                 Fotografia = ImagenABytes(),
                 IdPropiedad = Convert.ToInt32(cmbPropiedad.SelectedValue)
             };
@@ -305,24 +291,6 @@ namespace UI.Forms
             }
         }
 
-        private void SepararDireccion(string valor, out string provincia, out string direccion)
-        {
-            provincia = string.Empty; direccion = valor ?? string.Empty;
-            int indice = direccion.IndexOf('|');
-            if (indice < 0) return;
-            provincia = direccion.Substring(0, indice).Trim(); direccion = direccion.Substring(indice + 1).Trim();
-        }
-
-        private void SeleccionarProvincia(string nombre)
-        {
-            cmbProvincia.SelectedIndex = -1;
-            for (int i = 0; i < cmbProvincia.Items.Count; i++)
-            {
-                string actual = cmbProvincia.Items[i] is ProvinciaDTO ? ((ProvinciaDTO)cmbProvincia.Items[i]).Nombre : cmbProvincia.Items[i].ToString();
-                if (string.Equals(actual, nombre, StringComparison.OrdinalIgnoreCase)) { cmbProvincia.SelectedIndex = i; break; }
-            }
-        }
-
         private static void SepararNombre(string completo, out string nombres, out string apellidos)
         {
             string[] partes = (completo ?? string.Empty).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -335,7 +303,7 @@ namespace UI.Forms
         {
             idSeleccionado = 0;
             txtIdentificacion.Clear(); txtNombre.Clear(); txtApellidos.Clear(); txtTelefono.Clear(); txtEmail.Clear(); txtDireccion.Clear();
-            cmbSexo.SelectedIndex = -1; cmbProvincia.SelectedIndex = -1; cmbPropiedad.SelectedIndex = -1;
+            cmbSexo.SelectedIndex = -1; cmbPropiedad.SelectedIndex = -1;
             rdoCedula.Checked = true; MostrarImagen(null); dgvResidentes.ClearSelection();
             btnGuardar.Enabled = true; btnActualizar.Enabled = false; btnEliminar.Enabled = false;
             lblEstado.Text = "Complete los datos para registrar un residente";

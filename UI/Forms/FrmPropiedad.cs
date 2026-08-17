@@ -1,6 +1,6 @@
 using BLL;
 using DTO;
-using Integration.BCCR;
+using Integration.TipoCambio;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,16 +12,12 @@ using Util.Enumeraciones;
 
 namespace UI.Forms
 {
-    /// Formulario de Gestión de Propiedades.
-    /// Permite registrar, buscar, actualizar y eliminar propiedades del condominio.
-    /// Calcula automáticamente cuota de mantenimiento, fondo de reserva y
-    /// convierte el monto a dólares mediante el servicio BCCR.
     public partial class FrmPropiedad : Form
     {
         // ── Servicios BLL / Integración ──────────────────────────────
         private readonly PropiedadBLL _propiedadBLL = new PropiedadBLL();
         private readonly PropietarioBLL _propietarioBLL = new PropietarioBLL();
-        private readonly BCCRService _bccrService = new BCCRService();
+        private readonly ITipoCambioService _tipoCambioService = new TipoCambioService();
         private readonly Dictionary<int, bool> _estadoMorosidadPropietarios =
             new Dictionary<int, bool>();
 
@@ -237,32 +233,63 @@ namespace UI.Forms
             txtCuotaDolares.Text = "$ —";
         }
 
-        private void btnConvertirDolar_Click(object sender, EventArgs e)
+        private void btnConvertirDolar_Click(object sender,EventArgs e)
         {
             try
             {
                 if (nudArea.Value <= 0)
                 {
-                    MostrarAviso("Ingrese el área primero para calcular la cuota.");
+                    MostrarAviso(
+                        "Ingrese el área primero para calcular la cuota.");
                     return;
                 }
 
                 if (_cuotaActual <= 0)
                 {
-                    MostrarAviso("No se puede convertir porque la cuota calculada no es válida.");
+                    MostrarAviso(
+                        "No se puede convertir porque la cuota " +
+                        "calculada no es válida.");
                     return;
                 }
 
                 btnConvertirDolar.Enabled = false;
-                btnConvertirDolar.Text = "...";
+                btnConvertirDolar.Text = "Calculando...";
 
-                decimal dolares = _bccrService.ConvertirColonesADolares(_cuotaActual);
-                txtCuotaDolares.Text = $"$ {dolares:N2}";
+                TipoCambioResponseDTO tipoCambio =
+                    _tipoCambioService.ObtenerTipoCambio();
+
+                if (tipoCambio == null || tipoCambio.Valor <= 0)
+                {
+                    throw new Exception(
+                        "El servicio no devolvió un tipo de cambio válido.");
+                }
+
+                decimal dolares = Math.Round(
+                    _cuotaActual / tipoCambio.Valor,
+                    2,
+                    MidpointRounding.AwayFromZero);
+
+                // Mostrar el resultado directamente en el formulario.
+                txtCuotaDolares.Text =
+                    "USD $ " + dolares.ToString("N2");
+
+                txtCuotaDolares.ForeColor =
+                    Color.FromArgb(22, 163, 74);
+
+                // Obliga al Label a mostrar el nuevo valor inmediatamente.
+                txtCuotaDolares.Refresh();
+
+                btnConvertirDolar.Text = "Convertido";
             }
             catch (Exception ex)
             {
-                MostrarError("No se pudo obtener el tipo de cambio BCCR: " + ex.Message);
                 txtCuotaDolares.Text = "$ (sin conexión)";
+                txtCuotaDolares.ForeColor = Color.Firebrick;
+                txtCuotaDolares.Refresh();
+
+                MostrarError(
+                    "No se pudo obtener el tipo de cambio: " +
+                    ex.Message);
             }
             finally
             {
