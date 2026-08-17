@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,6 +43,18 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 111);
             this.panel1.TabIndex = 0;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(210)))), ((int)(((byte)(240)))));
+            this.label2.Location = new System.Drawing.Point(29, 68);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(323, 15);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Registro, control y administración de visitas del condominio";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -57,18 +69,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "     Gestión de Visitas";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(210)))), ((int)(((byte)(240)))));
-            this.label2.Location = new System.Drawing.Point(29, 68);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(323, 15);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Registro, control y administración de visitas del condominio";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
             // Visitas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -77,6 +77,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "Visitas";
             this.Text = "Visitas";
+            this.Load += new System.EventHandler(this.Visitas_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

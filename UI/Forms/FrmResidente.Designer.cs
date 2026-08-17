@@ -27,8 +27,6 @@ namespace UI.Forms
             this.txtTelefono = new System.Windows.Forms.TextBox();
             this.lblEmail = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
-            this.lblProvincia = new System.Windows.Forms.Label();
-            this.cmbProvincia = new System.Windows.Forms.ComboBox();
             this.lblDireccion = new System.Windows.Forms.Label();
             this.txtDireccion = new System.Windows.Forms.TextBox();
             this.lblPropiedad = new System.Windows.Forms.Label();
@@ -110,8 +108,6 @@ namespace UI.Forms
             this.grpDatos.Controls.Add(this.txtTelefono);
             this.grpDatos.Controls.Add(this.lblEmail);
             this.grpDatos.Controls.Add(this.txtEmail);
-            this.grpDatos.Controls.Add(this.lblProvincia);
-            this.grpDatos.Controls.Add(this.cmbProvincia);
             this.grpDatos.Controls.Add(this.lblDireccion);
             this.grpDatos.Controls.Add(this.txtDireccion);
             this.grpDatos.Controls.Add(this.lblPropiedad);
@@ -281,32 +277,14 @@ namespace UI.Forms
             this.txtEmail.Size = new System.Drawing.Size(260, 23);
             this.txtEmail.TabIndex = 15;
             // 
-            // lblProvincia
-            // 
-            this.lblProvincia.AutoSize = true;
-            this.lblProvincia.Location = new System.Drawing.Point(622, 132);
-            this.lblProvincia.Name = "lblProvincia";
-            this.lblProvincia.Size = new System.Drawing.Size(61, 15);
-            this.lblProvincia.TabIndex = 16;
-            this.lblProvincia.Text = "Provincia ";
-            // 
-            // cmbProvincia
-            // 
-            this.cmbProvincia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbProvincia.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbProvincia.Location = new System.Drawing.Point(622, 153);
-            this.cmbProvincia.Name = "cmbProvincia";
-            this.cmbProvincia.Size = new System.Drawing.Size(213, 23);
-            this.cmbProvincia.TabIndex = 17;
-            // 
             // lblDireccion
             // 
             this.lblDireccion.AutoSize = true;
             this.lblDireccion.Location = new System.Drawing.Point(22, 205);
             this.lblDireccion.Name = "lblDireccion";
-            this.lblDireccion.Size = new System.Drawing.Size(103, 15);
+            this.lblDireccion.Size = new System.Drawing.Size(155, 15);
             this.lblDireccion.TabIndex = 18;
-            this.lblDireccion.Text = "Dirección exacta ";
+            this.lblDireccion.Text = "Dirección de la propiedad";
             // 
             // txtDireccion
             // 
@@ -315,14 +293,16 @@ namespace UI.Forms
             this.txtDireccion.MaxLength = 220;
             this.txtDireccion.Multiline = true;
             this.txtDireccion.Name = "txtDireccion";
+            this.txtDireccion.ReadOnly = true;
             this.txtDireccion.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDireccion.Size = new System.Drawing.Size(580, 58);
             this.txtDireccion.TabIndex = 19;
+            this.txtDireccion.TabStop = false;
             // 
             // lblPropiedad
             // 
             this.lblPropiedad.AutoSize = true;
-            this.lblPropiedad.Location = new System.Drawing.Point(622, 205);
+            this.lblPropiedad.Location = new System.Drawing.Point(622, 132);
             this.lblPropiedad.Name = "lblPropiedad";
             this.lblPropiedad.Size = new System.Drawing.Size(116, 15);
             this.lblPropiedad.TabIndex = 20;
@@ -332,10 +312,11 @@ namespace UI.Forms
             // 
             this.cmbPropiedad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPropiedad.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbPropiedad.Location = new System.Drawing.Point(622, 226);
+            this.cmbPropiedad.Location = new System.Drawing.Point(622, 153);
             this.cmbPropiedad.Name = "cmbPropiedad";
             this.cmbPropiedad.Size = new System.Drawing.Size(213, 23);
             this.cmbPropiedad.TabIndex = 21;
+            this.cmbPropiedad.SelectedIndexChanged += new System.EventHandler(this.cmbPropiedad_SelectedIndexChanged);
             // 
             // grpFoto
             // 
@@ -590,8 +571,8 @@ namespace UI.Forms
 
         }
 
-        private System.Windows.Forms.Panel pnlEncabezado,pnlAcciones; private System.Windows.Forms.Label lblTitulo,lblEstado,lblIdentificacion,lblAyudaId,lblNombre,lblApellidos,lblSexo,lblTelefono,lblEmail,lblProvincia,lblDireccion,lblPropiedad,lblSinFoto,lblBuscar,lblTotal;
+        private System.Windows.Forms.Panel pnlEncabezado,pnlAcciones; private System.Windows.Forms.Label lblTitulo,lblEstado,lblIdentificacion,lblAyudaId,lblNombre,lblApellidos,lblSexo,lblTelefono,lblEmail,lblDireccion,lblPropiedad,lblSinFoto,lblBuscar,lblTotal;
         private System.Windows.Forms.GroupBox grpDatos,grpFoto,grpListado; private System.Windows.Forms.RadioButton rdoCedula,rdoPasaporte; private System.Windows.Forms.TextBox txtIdentificacion,txtNombre,txtApellidos,txtTelefono,txtEmail,txtDireccion,txtBuscar;
-        private System.Windows.Forms.ComboBox cmbSexo,cmbProvincia,cmbPropiedad; private System.Windows.Forms.Button btnBuscarHacienda,btnSeleccionarFoto,btnQuitarFoto,btnGuardar,btnActualizar,btnEliminar,btnLimpiar,btnBuscar,btnActualizarLista; private System.Windows.Forms.PictureBox picFoto; private System.Windows.Forms.DataGridView dgvResidentes;
+        private System.Windows.Forms.ComboBox cmbSexo,cmbPropiedad; private System.Windows.Forms.Button btnBuscarHacienda,btnSeleccionarFoto,btnQuitarFoto,btnGuardar,btnActualizar,btnEliminar,btnLimpiar,btnBuscar,btnActualizarLista; private System.Windows.Forms.PictureBox picFoto; private System.Windows.Forms.DataGridView dgvResidentes;
     }
 }

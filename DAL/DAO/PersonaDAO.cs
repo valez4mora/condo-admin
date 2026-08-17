@@ -37,7 +37,8 @@ namespace DAL.DAO
                 cmd.Parameters.AddWithValue("@Sexo", persona.Sexo);
                 cmd.Parameters.AddWithValue("@Telefono", persona.Telefono);
                 cmd.Parameters.AddWithValue("@Email", persona.Email);
-                cmd.Parameters.AddWithValue("@Direccion", persona.Direccion);
+                SqlParameter parametroDireccion = cmd.Parameters.Add("@Direccion", SqlDbType.VarChar, 250);
+                parametroDireccion.Value = string.IsNullOrWhiteSpace(persona.Direccion) ? (object)DBNull.Value : persona.Direccion.Trim();
 
                 SqlParameter parametroFoto =
                     cmd.Parameters.Add("@Fotografia", SqlDbType.VarBinary, -1);

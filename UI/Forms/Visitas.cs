@@ -21,5 +21,10 @@ namespace UI.Forms
         {
 
         }
+
+        private void Visitas_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

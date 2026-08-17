@@ -61,15 +61,52 @@ namespace BLL
 
         private static void Validar(ResidenteDTO r)
         {
-            if (r == null) throw new ArgumentNullException("residente");
-            if (string.IsNullOrWhiteSpace(r.Identificacion)) throw new Exception("La identificación es obligatoria.");
-            if (string.IsNullOrWhiteSpace(r.Nombre)) throw new Exception("El nombre es obligatorio.");
-            if (string.IsNullOrWhiteSpace(r.Apellidos)) throw new Exception("Los apellidos son obligatorios.");
-            if (r.Sexo != "M" && r.Sexo != "F") throw new Exception("Debe seleccionar el sexo.");
-            if (string.IsNullOrWhiteSpace(r.Telefono)) throw new Exception("El teléfono es obligatorio.");
-            if (!EmailValido(r.Email)) throw new Exception("El correo electrónico no es válido.");
-            if (string.IsNullOrWhiteSpace(r.Direccion)) throw new Exception("La provincia y la dirección exacta son obligatorias.");
-            if (r.IdPropiedad <= 0) throw new Exception("Debe seleccionar la propiedad asignada.");
+            if (r == null)
+            {
+                throw new ArgumentNullException("r");
+            }
+
+            if (string.IsNullOrWhiteSpace(r.Identificacion))
+            {
+                throw new Exception(
+                    "La identificación es obligatoria.");
+            }
+
+            if (string.IsNullOrWhiteSpace(r.Nombre))
+            {
+                throw new Exception(
+                    "El nombre es obligatorio.");
+            }
+
+            if (string.IsNullOrWhiteSpace(r.Apellidos))
+            {
+                throw new Exception(
+                    "Los apellidos son obligatorios.");
+            }
+
+            if (r.Sexo != "M" && r.Sexo != "F")
+            {
+                throw new Exception(
+                    "Debe seleccionar el sexo.");
+            }
+
+            if (string.IsNullOrWhiteSpace(r.Telefono))
+            {
+                throw new Exception(
+                    "El teléfono es obligatorio.");
+            }
+
+            if (!EmailValido(r.Email))
+            {
+                throw new Exception(
+                    "El correo electrónico no es válido.");
+            }
+
+            if (r.IdPropiedad <= 0)
+            {
+                throw new Exception(
+                    "Debe seleccionar la propiedad asignada.");
+            }
         }
 
         private static bool EmailValido(string email)
