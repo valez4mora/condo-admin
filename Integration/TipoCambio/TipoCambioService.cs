@@ -81,16 +81,25 @@ namespace Integration.TipoCambio
                         "La respuesta no contiene la tasa para CRC.");
                 }
 
+                // Se obtiene como número JSON, no como texto. Así Windows no
+                // interpreta 448.933752 como 448 933 752 en configuraciones
+                // regionales que usan coma decimal.
                 decimal valor;
-                if (!decimal.TryParse(
-                    tokenCRC.ToString(),
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out valor) || valor <= 0)
+                try
                 {
-                    throw new Exception(
-                        "El tipo de cambio recibido no es válido.");
+                    valor = tokenCRC.Value<decimal>();
                 }
+                catch (Exception ex)
+                {
+                    throw new Exception("La tasa CRC recibida no es numérica.", ex);
+                }
+
+                // Una tasa USD/CRC fuera de este rango indica una respuesta
+                // mal interpretada y no debe utilizarse para facturar.
+                if (valor < 100m || valor > 1000m)
+                    throw new Exception(
+                        "El tipo de cambio USD/CRC recibido está fuera del rango esperado: " +
+                        valor.ToString("N6", CultureInfo.InvariantCulture) + ".");
 
                 return new TipoCambioResponseDTO
                 {
@@ -98,7 +107,7 @@ namespace Integration.TipoCambio
                         ? datos["base_code"].ToString()
                         : "USD",
                     MonedaDestino = "CRC",
-                    Valor = valor,
+                    Valor = decimal.Round(valor, 6, MidpointRounding.AwayFromZero),
                     FechaActualizacion = ObtenerFechaActualizacion(datos),
                     Proveedor = "ExchangeRate-API"
                 };

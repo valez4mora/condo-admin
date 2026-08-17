@@ -353,11 +353,11 @@ namespace BLL
             TipoCambioResponseDTO cambio =
                 _tipoCambioService.ObtenerTipoCambio();
 
-            if (cambio == null || cambio.Valor <= 0)
+            if (cambio == null || cambio.Valor < 100m || cambio.Valor > 1000m)
             {
                 throw new Exception(
-                    "El servicio externo no devolvió un " +
-                    "tipo de cambio válido.");
+                    "El servicio externo no devolvió un tipo de cambio USD/CRC válido. " +
+                    "La factura no fue generada para evitar un cálculo incorrecto.");
             }
 
             decimal totalDolares = Math.Round(

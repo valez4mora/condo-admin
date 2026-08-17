@@ -141,6 +141,9 @@ namespace BLL
             if (existente.Estado == "Pagado")
                 throw new Exception("El cargo ya se encuentra pagado.");
 
+            if (existente.Estado == "Anulado")
+                throw new Exception("No se puede pagar un cargo anulado.");
+
             return _dal.MarcarComoPagado(idCargo);
         }
 
