@@ -11,6 +11,13 @@ namespace BLL
         private readonly PersonaDAO personaDAO = new PersonaDAO();
         private readonly ResidenteDAO residenteDAO = new ResidenteDAO();
 
+
+
+        public List<ResidenteDTO> ObtenerPorPropiedad(int idPropiedad)
+        {
+            // Llama al DAL para obtener residentes por propiedad
+            return residenteDAO.ObtenerPorPropiedad(idPropiedad);
+        }
         public bool Registrar(ResidenteDTO residente)
         {
             Validar(residente);

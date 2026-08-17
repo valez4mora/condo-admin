@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="QRCoder, Version=1.8.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
@@ -194,12 +195,6 @@
     <Compile Include="Forms\FrmUsuarios.Designer.cs">
       <DependentUpon>FrmUsuarios.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Visitas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Visitas.Designer.cs">
-      <DependentUpon>Visitas.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmAreasComunes.resx">
@@ -207,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmBitacora.resx">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
+      <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMorosidad.resx">
       <DependentUpon>FrmMorosidad.cs</DependentUpon>
@@ -223,11 +221,8 @@
     <EmbeddedResource Include="Forms\FrmReservas.resx">
       <DependentUpon>FrmReservas.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FrmResidente.resx">
-      <DependentUpon>FrmResidente.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Visitas.resx">
-      <DependentUpon>Visitas.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmReporteIngresoMensual.resx">
+      <DependentUpon>FrmReporteIngresoMensual.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
