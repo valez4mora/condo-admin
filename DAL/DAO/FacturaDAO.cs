@@ -11,12 +11,35 @@ using DAL.Singleton;
 
 namespace DAL.DAO
 {
+    /// <summary>
+    /// Administra el acceso a los datos relacionados con las facturas
+    /// y sus respectivos detalles.
+    /// </summary>
+    /// <remarks>
+    /// Implementa las operaciones definidas por <see cref="IFacturaDAL"/>
+    /// y utiliza procedimientos almacenados de SQL Server.
+    /// </remarks>
     public class FacturaDAO : IFacturaDAL
     {
+        /// <summary>
+        /// Instancia única utilizada para obtener conexiones con la base de datos.
+        /// </summary>
         private readonly Conexion _cn = Conexion.Instancia;
 
         // ── REGISTRAR ─────────────────────────────────────────────────
-        /// Llama a sp_RegistrarFactura y retorna el Id generado.
+
+        /// <summary>
+        /// Registra una factura y todos sus detalles dentro de una transacción.
+        /// </summary>
+        /// <param name="factura">
+        /// Factura que contiene el encabezado y los detalles por registrar.
+        /// </param>
+        /// <returns>
+        /// Identificador generado para la nueva factura.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// Se produce cuando la factura no contiene al menos un detalle.
+        /// </exception>
         public int Registrar(FacturaDTO factura)
         {
             int idGenerado = 0;
@@ -76,8 +99,17 @@ namespace DAL.DAO
         }
 
         // ── ANULAR ────────────────────────────────────────────────────
-        /// Cambia el estado de la factura a "Anulada".
-        /// Llama a sp_AnularFactura.
+
+        /// <summary>
+        /// Cambia el estado de una factura a anulada.
+        /// </summary>
+        /// <param name="idFactura">
+        /// Identificador de la factura que se desea anular.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> si la factura fue actualizada; de lo contrario,
+        /// <c>false</c>.
+        /// </returns>
         public bool Anular(int idFactura)
         {
             using (SqlConnection cn = _cn.ObtenerConexion())
@@ -93,8 +125,20 @@ namespace DAL.DAO
         }
 
         // ── GUARDAR XML ───────────────────────────────────────────────
-        /// Persiste el XML de la factura en la columna XmlFactura.
-        /// Llama a sp_GuardarXmlFactura.
+
+        /// <summary>
+        /// Guarda el contenido XML asociado a una factura.
+        /// </summary>
+        /// <param name="idFactura">
+        /// Identificador de la factura que recibirá el XML.
+        /// </param>
+        /// <param name="xmlContent">
+        /// Contenido XML que se almacenará en la base de datos.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> si el XML fue almacenado; de lo contrario,
+        /// <c>false</c>.
+        /// </returns>
         public bool GuardarXml(int idFactura, string xmlContent)
         {
             using (SqlConnection cn = _cn.ObtenerConexion())
@@ -104,6 +148,7 @@ namespace DAL.DAO
                 SqlCommand cmd = new SqlCommand("sp_GuardarXmlFactura", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("@IdFactura", SqlDbType.Int).Value = idFactura;
+
                 // sp_GuardarXmlFactura recibe NVARCHAR(MAX) y realiza el CAST a XML.
                 // El texto ya se genera sin declaración de encoding incompatible.
                 cmd.Parameters.Add("@XmlFactura", SqlDbType.NVarChar, -1).Value =
@@ -113,6 +158,17 @@ namespace DAL.DAO
             }
         }
 
+        /// <summary>
+        /// Verifica si un cargo facturable ya se encuentra asociado
+        /// con alguna factura.
+        /// </summary>
+        /// <param name="idCargo">
+        /// Identificador del cargo facturable que se desea consultar.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> si existe una factura asociada al cargo;
+        /// de lo contrario, <c>false</c>.
+        /// </returns>
         public bool ExisteFacturaParaCargo(int idCargo)
         {
             using (SqlConnection cn = _cn.ObtenerConexion())
@@ -121,6 +177,7 @@ namespace DAL.DAO
                 const string sql = @"SELECT COUNT(1)
                                      FROM DetalleFactura
                                      WHERE IdCargo = @IdCargo";
+
                 using (SqlCommand cmd = new SqlCommand(sql, cn))
                 {
                     cmd.Parameters.Add("@IdCargo", SqlDbType.Int).Value = idCargo;
@@ -130,8 +187,17 @@ namespace DAL.DAO
         }
 
         // ── OBTENER POR ID ────────────────────────────────────────────
-        /// Retorna la factura completa (encabezado + detalles) por su Id.
-        /// Llama a sp_ObtenerFacturaPorId.
+
+        /// <summary>
+        /// Obtiene una factura completa, incluyendo su encabezado
+        /// y sus detalles.
+        /// </summary>
+        /// <param name="idFactura">
+        /// Identificador de la factura que se desea consultar.
+        /// </param>
+        /// <returns>
+        /// Factura encontrada o <c>null</c> si no existe.
+        /// </returns>
         public FacturaDTO ObtenerPorId(int idFactura)
         {
             FacturaDTO factura = null;
@@ -163,6 +229,16 @@ namespace DAL.DAO
         }
 
         // ── OBTENER POR PROPIEDAD ─────────────────────────────────────
+
+        /// <summary>
+        /// Obtiene todas las facturas asociadas con una propiedad.
+        /// </summary>
+        /// <param name="idPropiedad">
+        /// Identificador de la propiedad que se desea consultar.
+        /// </param>
+        /// <returns>
+        /// Lista de facturas pertenecientes a la propiedad.
+        /// </returns>
         public List<FacturaDTO> ObtenerPorPropiedad(int idPropiedad)
         {
             List<FacturaDTO> lista = new List<FacturaDTO>();
@@ -186,6 +262,13 @@ namespace DAL.DAO
         }
 
         // ── OBTENER TODAS ─────────────────────────────────────────────
+
+        /// <summary>
+        /// Obtiene todas las facturas registradas en el sistema.
+        /// </summary>
+        /// <returns>
+        /// Lista con todas las facturas encontradas.
+        /// </returns>
         public List<FacturaDTO> ObtenerTodas()
         {
             List<FacturaDTO> lista = new List<FacturaDTO>();
@@ -209,6 +292,19 @@ namespace DAL.DAO
 
         // ── MAPEO PRIVADO ─────────────────────────────────────────────
 
+        /// <summary>
+        /// Agrega un parámetro decimal a un comando SQL con una precisión
+        /// y escala definidas.
+        /// </summary>
+        /// <param name="cmd">
+        /// Comando SQL al que se agregará el parámetro.
+        /// </param>
+        /// <param name="nombre">
+        /// Nombre del parámetro SQL.
+        /// </param>
+        /// <param name="valor">
+        /// Valor decimal que se asignará al parámetro.
+        /// </param>
         private static void AgregarDecimal(SqlCommand cmd, string nombre, decimal valor)
         {
             SqlParameter parametro = cmd.Parameters.Add(nombre, SqlDbType.Decimal);
@@ -217,6 +313,16 @@ namespace DAL.DAO
             parametro.Value = decimal.Round(valor, 2, MidpointRounding.AwayFromZero);
         }
 
+        /// <summary>
+        /// Convierte la fila actual del lector SQL en el encabezado
+        /// de una factura.
+        /// </summary>
+        /// <param name="dr">
+        /// Lector SQL posicionado en el registro que se desea convertir.
+        /// </param>
+        /// <returns>
+        /// Objeto <see cref="FacturaDTO"/> con los datos del encabezado.
+        /// </returns>
         private static FacturaDTO MapearEncabezado(SqlDataReader dr)
         {
             return new FacturaDTO
@@ -237,14 +343,39 @@ namespace DAL.DAO
             };
         }
 
+        /// <summary>
+        /// Verifica si el resultado del lector SQL contiene una columna
+        /// con el nombre indicado.
+        /// </summary>
+        /// <param name="dr">
+        /// Lector SQL cuyo conjunto de columnas se desea revisar.
+        /// </param>
+        /// <param name="nombre">
+        /// Nombre de la columna que se desea localizar.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> si la columna existe; de lo contrario,
+        /// <c>false</c>.
+        /// </returns>
         private static bool ExisteColumna(SqlDataReader dr, string nombre)
         {
             for (int i = 0; i < dr.FieldCount; i++)
                 if (string.Equals(dr.GetName(i), nombre,
                     StringComparison.OrdinalIgnoreCase)) return true;
+
             return false;
         }
 
+        /// <summary>
+        /// Convierte la fila actual del lector SQL en el detalle
+        /// de una factura.
+        /// </summary>
+        /// <param name="dr">
+        /// Lector SQL posicionado en el registro que se desea convertir.
+        /// </param>
+        /// <returns>
+        /// Objeto <see cref="DetalleFacturaDTO"/> con los datos del detalle.
+        /// </returns>
         private static DetalleFacturaDTO MapearDetalle(SqlDataReader dr)
         {
             return new DetalleFacturaDTO
@@ -254,11 +385,21 @@ namespace DAL.DAO
                 IdCargo = Convert.ToInt32(dr["IdCargo"]),
                 DescripcionCargo = dr["DescripcionCargo"].ToString(),
                 TipoCargo = ExisteColumna(dr, "Tipo") ? dr["Tipo"].ToString() : "",
-                MontoBase = ExisteColumna(dr, "MontoBase") ? Convert.ToDecimal(dr["MontoBase"]) : Convert.ToDecimal(dr["Precio"]),
-                IVA = ExisteColumna(dr, "IVA") ? Convert.ToDecimal(dr["IVA"]) : 0m,
-                FechaEmision = ExisteColumna(dr, "FechaEmision") ? Convert.ToDateTime(dr["FechaEmision"]) : DateTime.MinValue,
-                FechaVencimiento = ExisteColumna(dr, "FechaVencimiento") ? Convert.ToDateTime(dr["FechaVencimiento"]) : DateTime.MinValue,
-                EstadoCargo = ExisteColumna(dr, "EstadoCargo") ? dr["EstadoCargo"].ToString() : "",
+                MontoBase = ExisteColumna(dr, "MontoBase")
+                    ? Convert.ToDecimal(dr["MontoBase"])
+                    : Convert.ToDecimal(dr["Precio"]),
+                IVA = ExisteColumna(dr, "IVA")
+                    ? Convert.ToDecimal(dr["IVA"])
+                    : 0m,
+                FechaEmision = ExisteColumna(dr, "FechaEmision")
+                    ? Convert.ToDateTime(dr["FechaEmision"])
+                    : DateTime.MinValue,
+                FechaVencimiento = ExisteColumna(dr, "FechaVencimiento")
+                    ? Convert.ToDateTime(dr["FechaVencimiento"])
+                    : DateTime.MinValue,
+                EstadoCargo = ExisteColumna(dr, "EstadoCargo")
+                    ? dr["EstadoCargo"].ToString()
+                    : "",
                 Cantidad = Convert.ToInt32(dr["Cantidad"]),
                 Precio = Convert.ToDecimal(dr["Precio"]),
                 SubTotal = Convert.ToDecimal(dr["SubTotal"])

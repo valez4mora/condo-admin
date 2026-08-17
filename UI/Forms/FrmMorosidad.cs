@@ -9,24 +9,49 @@ using System.Windows.Forms;
 
 namespace UI.Forms
 {
+    /// <summary>
+    /// Formulario encargado de consultar, recalcular y visualizar
+    /// los indicadores de morosidad de las propiedades.
+    /// </summary>
+    /// <remarks>
+    /// Permite buscar propiedades morosas, filtrar los resultados por
+    /// clasificación de riesgo y aplicar penalizaciones masivas mediante
+    /// <see cref="GestionFinancieraFacade"/>.
+    /// </remarks>
     public partial class FrmMorosidad : Form
     {
-        // Se conserva porque se utiliza para recalcular y consultar indicadores.
+        /// <summary>
+        /// Lógica de negocio utilizada para recalcular y consultar
+        /// los indicadores de morosidad.
+        /// </summary>
         private readonly IndicadorMorosidadBLL morosidadBLL =
             new IndicadorMorosidadBLL();
 
-        // Facade para ejecutar operaciones financieras completas.
+        /// <summary>
+        /// Fachada utilizada para ejecutar operaciones financieras
+        /// relacionadas con la morosidad.
+        /// </summary>
         private readonly GestionFinancieraFacade gestionFinanciera =
             new GestionFinancieraFacade();
 
+        /// <summary>
+        /// Lista de indicadores de morosidad cargados en el formulario.
+        /// </summary>
         private List<IndicadorMorosidadDTO> indicadores =
             new List<IndicadorMorosidadDTO>();
 
+        /// <summary>
+        /// Inicializa una nueva instancia del formulario de morosidad.
+        /// </summary>
         public FrmMorosidad()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Configura los filtros iniciales y recalcula los indicadores
+        /// cuando se carga el formulario.
+        /// </summary>
         private void FrmMorosidad_Load(object sender, EventArgs e)
         {
             cmbRiesgo.Items.AddRange(new object[]
@@ -44,6 +69,10 @@ namespace UI.Forms
             Recalcular();
         }
 
+        /// <summary>
+        /// Recalcula los indicadores de morosidad utilizando la tasa
+        /// mensual seleccionada y actualiza los datos mostrados.
+        /// </summary>
         private void Recalcular()
         {
             try
@@ -75,6 +104,14 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Filtra los indicadores por texto, clasificación de riesgo
+        /// y estado de suspensión de reservas.
+        /// </summary>
+        /// <remarks>
+        /// También actualiza los totales financieros, la cantidad de
+        /// propiedades y los indicadores críticos mostrados en pantalla.
+        /// </remarks>
         private void AplicarFiltros()
         {
             string texto = txtBuscar.Text.Trim();
@@ -163,6 +200,10 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Configura los encabezados, formatos y visibilidad de las
+        /// columnas del listado de morosidad.
+        /// </summary>
         private void FormatearGrid()
         {
             if (dgvMorosidad.Columns.Count == 0)
@@ -208,6 +249,12 @@ namespace UI.Forms
             dgvMorosidad.ClearSelection();
         }
 
+        /// <summary>
+        /// Oculta una columna del listado cuando se encuentra disponible.
+        /// </summary>
+        /// <param name="nombre">
+        /// Nombre de la columna que se desea ocultar.
+        /// </param>
         private void Ocultar(string nombre)
         {
             if (dgvMorosidad.Columns[nombre] != null)
@@ -216,6 +263,15 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Asigna un texto descriptivo al encabezado de una columna.
+        /// </summary>
+        /// <param name="nombre">
+        /// Nombre interno de la columna.
+        /// </param>
+        /// <param name="texto">
+        /// Texto que se mostrará en el encabezado.
+        /// </param>
         private void Encabezado(
             string nombre,
             string texto)
@@ -227,6 +283,12 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Aplica el formato monetario de Costa Rica a una columna.
+        /// </summary>
+        /// <param name="nombre">
+        /// Nombre de la columna que contiene el valor monetario.
+        /// </param>
         private void Moneda(string nombre)
         {
             if (dgvMorosidad.Columns[nombre] == null)
@@ -242,6 +304,10 @@ namespace UI.Forms
                     CultureInfo.GetCultureInfo("es-CR");
         }
 
+        /// <summary>
+        /// Recalcula los indicadores cuando el usuario presiona
+        /// el botón correspondiente.
+        /// </summary>
         private void btnRecalcular_Click(
             object sender,
             EventArgs e)
@@ -249,6 +315,9 @@ namespace UI.Forms
             Recalcular();
         }
 
+        /// <summary>
+        /// Actualiza el listado cuando cambia alguno de los filtros.
+        /// </summary>
         private void filtro_Cambio(
             object sender,
             EventArgs e)
@@ -259,6 +328,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Restablece los filtros y vuelve a mostrar todos los resultados.
+        /// </summary>
         private void btnLimpiar_Click(
             object sender,
             EventArgs e)
@@ -271,6 +343,10 @@ namespace UI.Forms
             txtBuscar.Focus();
         }
 
+        /// <summary>
+        /// Aplica las penalizaciones masivas mediante el patrón Facade
+        /// y vuelve a calcular los indicadores de morosidad.
+        /// </summary>
         private void btnPenalizaciones_Click(
             object sender,
             EventArgs e)
@@ -310,6 +386,9 @@ namespace UI.Forms
             }
         }
 
+        /// <summary>
+        /// Cierra el formulario de control de morosidad.
+        /// </summary>
         private void btnCerrar_Click(
             object sender,
             EventArgs e)
@@ -317,6 +396,13 @@ namespace UI.Forms
             Close();
         }
 
+        /// <summary>
+        /// Activa o desactiva los controles del formulario mientras
+        /// se ejecuta una operación.
+        /// </summary>
+        /// <param name="cargando">
+        /// Indica si el formulario se encuentra procesando información.
+        /// </param>
         private void CambiarCarga(bool cargando)
         {
             UseWaitCursor = cargando;
