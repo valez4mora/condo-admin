@@ -124,7 +124,10 @@ namespace UI.Forms
 
         private void morosidadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            FrmReportePropiedadesMorosas frm = new FrmReportePropiedadesMorosas();
+            frm.MdiParent = this;
+            frm.WindowState = FormWindowState.Maximized;
+            frm.Show();
         }
 
         private void controlDeMorosidadToolStripMenuItem_Click(object sender, EventArgs e)

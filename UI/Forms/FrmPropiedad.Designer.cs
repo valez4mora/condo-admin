@@ -541,6 +541,7 @@ namespace UI.Forms
             this.txtCuotaDolares.TabIndex = 8;
             this.txtCuotaDolares.Text = "$ —";
             this.txtCuotaDolares.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.txtCuotaDolares.Click += new System.EventHandler(this.txtCuotaDolares_Click);
             // 
             // btnConvertirDolar
             // 

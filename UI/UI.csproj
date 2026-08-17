@@ -221,8 +221,14 @@
     <EmbeddedResource Include="Forms\FrmPermisos.resx">
       <DependentUpon>FrmPermisos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPropiedad.resx">
+      <DependentUpon>FrmPropiedad.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmReporteFacturacionPropiedad.resx">
       <DependentUpon>FrmReporteFacturacionPropiedad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmReportePropiedadesMorosas.resx">
+      <DependentUpon>FrmReportePropiedadesMorosas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmReservas.resx">
       <DependentUpon>FrmReservas.cs</DependentUpon>
@@ -276,10 +282,6 @@
     <ProjectReference Include="..\Integration\Integration.csproj">
       <Project>{385606f4-84cf-4915-bf7c-a412222a562c}</Project>
       <Name>Integration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
-      <Project>{8bbb3a97-4701-4ed9-b815-8e5810f67d78}</Project>
-      <Name>Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{bf852853-397f-4ebe-8abd-794e79fe685b}</Project>

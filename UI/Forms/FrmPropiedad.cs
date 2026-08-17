@@ -226,70 +226,52 @@ namespace UI.Forms
             _cuotaActual = nudArea.Value > 0
                 ? (nudArea.Value * _tarifaActual) + _cargoFijoActual
                 : 0m;
+
             decimal fondo = _cuotaActual * PORCENTAJE_FONDO_RESERVA;
 
             txtCuotaColones.Text = $"₡ {_cuotaActual:N2}";
             txtFondoReserva.Text = $"₡ {fondo:N2}";
-            txtCuotaDolares.Text = "$ —";
-        }
 
-        private void btnConvertirDolar_Click(object sender,EventArgs e)
+            // Solo se elimina la conversión cuando realmente cambia la cuota.
+            txtCuotaDolares.Text = "$ —";
+            txtCuotaDolares.ForeColor = Color.FromArgb(100, 116, 139);
+        }
+        private async void btnConvertirDolar_Click(object sender, EventArgs e)
         {
+            if (_cuotaActual <= 0)
+            {
+                MostrarAviso("Primero ingrese un área válida para calcular la cuota.");
+                return;
+            }
+
             try
             {
-                if (nudArea.Value <= 0)
-                {
-                    MostrarAviso(
-                        "Ingrese el área primero para calcular la cuota.");
-                    return;
-                }
-
-                if (_cuotaActual <= 0)
-                {
-                    MostrarAviso(
-                        "No se puede convertir porque la cuota " +
-                        "calculada no es válida.");
-                    return;
-                }
-
                 btnConvertirDolar.Enabled = false;
                 btnConvertirDolar.Text = "Calculando...";
 
-                TipoCambioResponseDTO tipoCambio =
-                    _tipoCambioService.ObtenerTipoCambio();
+                // Evita congelar el formulario durante la consulta.
+                TipoCambioResponseDTO tipoCambio = await System.Threading.Tasks.Task.Run(
+                    () => _tipoCambioService.ObtenerTipoCambio());
 
                 if (tipoCambio == null || tipoCambio.Valor <= 0)
-                {
-                    throw new Exception(
-                        "El servicio no devolvió un tipo de cambio válido.");
-                }
+                    throw new Exception("El servicio no devolvió un tipo de cambio válido.");
 
                 decimal dolares = Math.Round(
                     _cuotaActual / tipoCambio.Valor,
                     2,
                     MidpointRounding.AwayFromZero);
 
-                // Mostrar el resultado directamente en el formulario.
-                txtCuotaDolares.Text =
-                    "USD $ " + dolares.ToString("N2");
-
-                txtCuotaDolares.ForeColor =
-                    Color.FromArgb(22, 163, 74);
-
-                // Obliga al Label a mostrar el nuevo valor inmediatamente.
-                txtCuotaDolares.Refresh();
-
-                btnConvertirDolar.Text = "Convertido";
+                txtCuotaDolares.Text = $"USD $ {dolares:N2}";
+                txtCuotaDolares.ForeColor = Color.FromArgb(22, 163, 74);
             }
             catch (Exception ex)
             {
-                txtCuotaDolares.Text = "$ (sin conexión)";
+                txtCuotaDolares.Text = "$ (no disponible)";
                 txtCuotaDolares.ForeColor = Color.Firebrick;
-                txtCuotaDolares.Refresh();
 
                 MostrarError(
-                    "No se pudo obtener el tipo de cambio: " +
-                    ex.Message);
+                    "No se pudo realizar la conversión.\n\n" +
+                    ex.GetBaseException().Message);
             }
             finally
             {
@@ -629,5 +611,10 @@ namespace UI.Forms
 
         private void MostrarError(string mensaje) =>
             MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        private void txtCuotaDolares_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
