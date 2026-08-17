@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    internal class PermisoDTO
+    public  class PermisoDTO
     {
+
+        public int IdPermiso { get; set; }
+        public int IdRol { get; set; }
+        public string Modulo { get; set; }  
+        public bool PuedeVer { get; set; }
+        public bool PuedeCrear { get; set; }
+        public bool PuedeEditar { get; set; }
+        public bool PuedeEliminar { get; set; }
+
+
+
     }
 }
