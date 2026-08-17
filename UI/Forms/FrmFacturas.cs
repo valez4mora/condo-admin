@@ -2,246 +2,268 @@ using BLL;
 using DTO;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Net.Mail;
 using System.Windows.Forms;
 using Util.Factura;
 
 namespace UI.Forms
 {
-    
     public partial class FrmFacturas : Form
     {
-        private readonly FacturaBLL    _facturaBLL    = new FacturaBLL();
-        private readonly PropiedadBLL  _propiedadBLL  = new PropiedadBLL();
-        private FacturaDTO             _facturaSeleccionada = null;
+        private readonly FacturaBLL facturaBLL = new FacturaBLL();
+        private readonly PropiedadBLL propiedadBLL = new PropiedadBLL();
+        private List<FacturaDTO> facturas = new List<FacturaDTO>();
+        private FacturaDTO facturaSeleccionada;
+        private bool cargando;
 
-        public FrmFacturas()
-        {
-            InitializeComponent();
-        }
-
-        private void btnExportarPdf_Click(object sender, EventArgs e)
-        {
-            if (_facturaSeleccionada == null) return;
-            try
-            {
-                string ruta = PdfFacturaUtil.GuardarEnArchivo(_facturaSeleccionada);
-                MessageBox.Show("PDF guardado en:\n" + ruta, "PDF exportado",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al exportar PDF: " + ex.Message,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // ── CARGA ─────────────────────────────────────────────────────
+        public FrmFacturas() { InitializeComponent(); }
 
         private void FrmFacturas_Load(object sender, EventArgs e)
         {
+            ConfigurarGrid(dgvFacturas);
+            ConfigurarGrid(dgvDetalle);
+            cmbEstado.SelectedIndex = 0;
+            dtpDesde.Value = DateTime.Today.AddMonths(-3);
+            dtpHasta.Value = DateTime.Today;
             CargarPropiedades();
             CargarFacturas();
         }
 
+        private static void ConfigurarGrid(DataGridView grid)
+        {
+            grid.AutoGenerateColumns = true;
+            grid.ReadOnly = true;
+            grid.MultiSelect = false;
+            grid.AllowUserToAddRows = false;
+            grid.AllowUserToDeleteRows = false;
+            grid.AllowUserToResizeRows = false;
+            grid.RowHeadersVisible = false;
+            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            grid.BackgroundColor = Color.White;
+            grid.BorderStyle = BorderStyle.None;
+            grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            grid.EnableHeadersVisualStyles = false;
+            grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 41, 59);
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            grid.ColumnHeadersHeight = 38;
+            grid.RowTemplate.Height = 34;
+            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
+            grid.DefaultCellStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
+            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+        }
+
         private void CargarPropiedades()
         {
-            List<PropiedadDTO> propiedades = _propiedadBLL.ObtenerTodas();
-            cmbPropiedad.DataSource    = propiedades;
-            cmbPropiedad.DisplayMember = "Codigo";
-            cmbPropiedad.ValueMember   = "IdPropiedad";
-            cmbPropiedad.SelectedIndex = -1;
-        }
-
-        private void CargarFacturas(int idPropiedad = 0)
-        {
-            List<FacturaDTO> lista = idPropiedad > 0
-                ? _facturaBLL.ObtenerPorPropiedad(idPropiedad)
-                : _facturaBLL.ObtenerTodas();
-
-            dgvFacturas.DataSource = lista;
-            FormatearGrid();
-            _facturaSeleccionada = null;
-            LimpiarDetalle();
-        }
-
-        // ── FILTRAR ───────────────────────────────────────────────────
-
-        private void btnFiltrar_Click(object sender, EventArgs e)
-        {
-            if (cmbPropiedad.SelectedItem == null)
+            try
             {
-                CargarFacturas();
-                return;
+                cargando = true;
+                List<PropiedadDTO> lista = propiedadBLL.ObtenerTodas().OrderBy(x => x.Codigo).ToList();
+                lista.Insert(0, new PropiedadDTO { IdPropiedad = 0, Codigo = "Todas las propiedades" });
+                cmbPropiedad.DisplayMember = "Codigo";
+                cmbPropiedad.ValueMember = "IdPropiedad";
+                cmbPropiedad.DataSource = lista;
+                cmbPropiedad.SelectedIndex = 0;
             }
+            catch (Exception ex) { MostrarError("No se pudieron cargar las propiedades.", ex); }
+            finally { cargando = false; }
+        }
 
-            PropiedadDTO prop = (PropiedadDTO)cmbPropiedad.SelectedItem;
-            CargarFacturas(prop.IdPropiedad);
+        private void CargarFacturas()
+        {
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                cargando = true;
+                facturas = facturaBLL.ObtenerTodas() ?? new List<FacturaDTO>();
+                AplicarFiltros();
+            }
+            catch (Exception ex) { MostrarError("No se pudieron cargar las facturas.", ex); }
+            finally { cargando = false; Cursor = Cursors.Default; }
+        }
+
+        private void AplicarFiltros()
+        {
+            IEnumerable<FacturaDTO> consulta = facturas;
+            int idPropiedad = cmbPropiedad.SelectedValue is int ? (int)cmbPropiedad.SelectedValue : 0;
+            string estado = cmbEstado.SelectedItem == null ? "Todos" : cmbEstado.SelectedItem.ToString();
+            string texto = txtBuscar.Text.Trim();
+
+            if (idPropiedad > 0) consulta = consulta.Where(x => x.IdPropiedad == idPropiedad);
+            if (estado != "Todos") consulta = consulta.Where(x => string.Equals(x.Estado, estado, StringComparison.OrdinalIgnoreCase));
+            if (chkFechas.Checked)
+            {
+                DateTime desde = dtpDesde.Value.Date;
+                DateTime hasta = dtpHasta.Value.Date.AddDays(1).AddTicks(-1);
+                consulta = consulta.Where(x => x.Fecha >= desde && x.Fecha <= hasta);
+            }
+            if (texto.Length > 0)
+                consulta = consulta.Where(x => x.IdFactura.ToString().Contains(texto) ||
+                    (!string.IsNullOrWhiteSpace(x.CodigoPropiedad) && x.CodigoPropiedad.IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            List<FacturaDTO> resultado = consulta.OrderByDescending(x => x.Fecha).ToList();
+            cargando = true;
+            dgvFacturas.DataSource = null;
+            dgvFacturas.DataSource = resultado;
+            FormatearFacturas();
+            lblResultados.Text = resultado.Count == 1 ? "1 factura encontrada" : resultado.Count + " facturas encontradas";
+            facturaSeleccionada = null;
+            LimpiarDetalle();
+            cargando = false;
+        }
+
+        private void btnFiltrar_Click(object sender, EventArgs e) { AplicarFiltros(); }
+        private void btnActualizar_Click(object sender, EventArgs e) { CargarFacturas(); }
+        private void chkFechas_CheckedChanged(object sender, EventArgs e) { dtpDesde.Enabled = dtpHasta.Enabled = chkFechas.Checked; }
+
+        private void txtBuscar_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+            AplicarFiltros();
+            e.SuppressKeyPress = true;
         }
 
         private void btnLimpiarFiltro_Click(object sender, EventArgs e)
         {
-            cmbPropiedad.SelectedIndex = -1;
-            CargarFacturas();
+            txtBuscar.Clear();
+            cmbPropiedad.SelectedIndex = cmbEstado.SelectedIndex = 0;
+            chkFechas.Checked = false;
+            AplicarFiltros();
         }
 
         private void btnEmitirPendientes_Click(object sender, EventArgs e)
         {
-            FrmCargosFacturables formulario = new FrmCargosFacturables();
-
-            if (MdiParent != null)
-                formulario.MdiParent = MdiParent;
-
-            formulario.FormClosed += (s, args) => CargarFacturas();
-            formulario.Show();
+            FrmCargosFacturables form = new FrmCargosFacturables();
+            if (MdiParent != null) form.MdiParent = MdiParent;
+            form.FormClosed += (s, args) => CargarFacturas();
+            form.Show();
         }
-
-        // ── SELECCIÓN EN GRID ─────────────────────────────────────────
 
         private void dgvFacturas_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvFacturas.CurrentRow == null) return;
-
-            _facturaSeleccionada = dgvFacturas.CurrentRow.DataBoundItem as FacturaDTO;
-            if (_facturaSeleccionada == null) return;
-
-            // Cargar detalle completo (con líneas)
-            _facturaSeleccionada = _facturaBLL.ObtenerPorId(_facturaSeleccionada.IdFactura);
-            MostrarDetalle(_facturaSeleccionada);
+            if (cargando || dgvFacturas.CurrentRow == null) return;
+            FacturaDTO resumen = dgvFacturas.CurrentRow.DataBoundItem as FacturaDTO;
+            if (resumen == null) return;
+            try
+            {
+                facturaSeleccionada = facturaBLL.ObtenerPorId(resumen.IdFactura);
+                if (facturaSeleccionada == null) throw new InvalidOperationException("La factura ya no existe.");
+                MostrarDetalle(facturaSeleccionada);
+            }
+            catch (Exception ex) { facturaSeleccionada = null; LimpiarDetalle(); MostrarError("No se pudo cargar el detalle.", ex); }
         }
 
         private void MostrarDetalle(FacturaDTO f)
         {
-            lblIdFactura.Text    = f.IdFactura.ToString();
-            lblFecha.Text        = f.Fecha.ToString("dd/MM/yyyy HH:mm");
-            lblPropiedad.Text    = f.CodigoPropiedad;
-            lblColones.Text      = f.TotalColones.ToString("N2");
-            lblDolares.Text      = f.TotalDolares.ToString("N2");
-            lblEstado.Text       = f.Estado;
-
+            lblIdFactura.Text = "#" + f.IdFactura;
+            lblFecha.Text = f.Fecha.ToString("dd/MM/yyyy HH:mm");
+            lblPropiedad.Text = string.IsNullOrWhiteSpace(f.CodigoPropiedad) ? "—" : f.CodigoPropiedad;
+            lblColones.Text = "₡ " + f.TotalColones.ToString("N2");
+            lblDolares.Text = "$ " + f.TotalDolares.ToString("N2");
+            lblEstado.Text = f.Estado ?? "—";
+            PintarEstado(f.Estado);
+            dgvDetalle.DataSource = null;
             dgvDetalle.DataSource = f.Detalles;
-            dgvDetalle.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            FormatearDetalle();
+            btnAnular.Enabled = string.Equals(f.Estado, "Emitida", StringComparison.OrdinalIgnoreCase);
+            btnExportarXml.Enabled = btnExportarPdf.Enabled = btnEnviarCorreo.Enabled = txtEmailDestinatario.Enabled = true;
+        }
 
-            // Habilitar / deshabilitar botones según el estado
-            bool esEmitida = f.Estado == "Emitida";
-            btnAnular.Enabled      = esEmitida;
-            btnExportarXml.Enabled = true;
-            btnExportarPdf.Enabled = true;
-            btnEnviarCorreo.Enabled = true;
+        private void PintarEstado(string estado)
+        {
+            bool anulada = string.Equals(estado, "Anulada", StringComparison.OrdinalIgnoreCase);
+            bool pagada = string.Equals(estado, "Pagada", StringComparison.OrdinalIgnoreCase);
+            lblEstado.BackColor = anulada ? Color.FromArgb(254, 226, 226) : pagada ? Color.FromArgb(220, 252, 231) : Color.FromArgb(219, 234, 254);
+            lblEstado.ForeColor = anulada ? Color.FromArgb(185, 28, 28) : pagada ? Color.FromArgb(21, 128, 61) : Color.FromArgb(29, 78, 216);
         }
 
         private void LimpiarDetalle()
         {
-            lblIdFactura.Text = lblFecha.Text = lblPropiedad.Text =
-            lblColones.Text   = lblDolares.Text = lblEstado.Text = "";
+            lblIdFactura.Text = lblFecha.Text = lblPropiedad.Text = lblColones.Text = lblDolares.Text = "—";
+            lblEstado.Text = "Sin selección";
+            lblEstado.BackColor = Color.FromArgb(241, 245, 249);
+            lblEstado.ForeColor = Color.FromArgb(71, 85, 105);
             dgvDetalle.DataSource = null;
-            btnAnular.Enabled = btnExportarXml.Enabled = btnEnviarCorreo.Enabled = false;
-            btnExportarPdf.Enabled = false;
+            btnAnular.Enabled = btnExportarXml.Enabled = btnExportarPdf.Enabled = btnEnviarCorreo.Enabled = txtEmailDestinatario.Enabled = false;
         }
-
-        // ── ANULAR ────────────────────────────────────────────────────
 
         private void btnAnular_Click(object sender, EventArgs e)
         {
-            if (_facturaSeleccionada == null) return;
-
-            DialogResult confirm = MessageBox.Show(
-                $"¿Desea anular la factura #{_facturaSeleccionada.IdFactura}?",
-                "Confirmar anulación",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (confirm != DialogResult.Yes) return;
-
-            try
-            {
-                _facturaBLL.AnularFactura(_facturaSeleccionada.IdFactura);
-                MessageBox.Show("Factura anulada correctamente.",
-                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CargarFacturas();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            if (!HaySeleccion()) return;
+            if (MessageBox.Show("¿Desea anular la factura #" + facturaSeleccionada.IdFactura + "?\n\nPermanecerá visible en el historial.", "Confirmar anulación", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            try { facturaBLL.AnularFactura(facturaSeleccionada.IdFactura); MessageBox.Show("Factura anulada correctamente.", "Factura actualizada", MessageBoxButtons.OK, MessageBoxIcon.Information); CargarFacturas(); }
+            catch (Exception ex) { MostrarError("No se pudo anular la factura.", ex); }
         }
-
-        // ── EXPORTAR XML ──────────────────────────────────────────────
 
         private void btnExportarXml_Click(object sender, EventArgs e)
         {
-            if (_facturaSeleccionada == null) return;
-
-            try
-            {
-                string ruta = XmlFacturaUtil.GuardarEnArchivo(_facturaSeleccionada);
-                MessageBox.Show($"XML guardado en:\n{ruta}",
-                    "XML Exportado", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al exportar XML: " + ex.Message,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            if (!HaySeleccion()) return;
+            try { string ruta = XmlFacturaUtil.GuardarEnArchivo(facturaSeleccionada); MessageBox.Show("XML descargado en:\n" + ruta, "XML de factura", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+            catch (Exception ex) { MostrarError("No se pudo descargar el XML.", ex); }
         }
 
-        // ── ENVIAR POR CORREO ─────────────────────────────────────────
+        private void btnExportarPdf_Click(object sender, EventArgs e)
+        {
+            if (!HaySeleccion()) return;
+            try { string ruta = PdfFacturaUtil.GuardarEnArchivo(facturaSeleccionada); MessageBox.Show("PDF descargado en:\n" + ruta, "PDF de factura", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+            catch (Exception ex) { MostrarError("No se pudo descargar el PDF.", ex); }
+        }
 
         private void btnEnviarCorreo_Click(object sender, EventArgs e)
         {
-            if (_facturaSeleccionada == null) return;
-
+            if (!HaySeleccion()) return;
             string email = txtEmailDestinatario.Text.Trim();
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                MessageBox.Show("Ingrese el correo electrónico del destinatario.",
-                    "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                _facturaBLL.EnviarPorCorreo(_facturaSeleccionada, email);
-                MessageBox.Show("Factura enviada correctamente a: " + email,
-                    "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al enviar correo: " + ex.Message,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            try { new MailAddress(email); }
+            catch { MessageBox.Show("Ingrese un correo electrónico válido.", "Dato requerido", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtEmailDestinatario.Focus(); return; }
+            try { facturaBLL.EnviarPorCorreo(facturaSeleccionada, email); MessageBox.Show("Factura enviada a " + email + ".", "Correo enviado", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+            catch (Exception ex) { MostrarError("No se pudo enviar la factura.", ex); }
         }
 
-        // ── FORMATO GRID ──────────────────────────────────────────────
-
-        private void FormatearGrid()
+        private bool HaySeleccion()
         {
-            if (dgvFacturas.Columns.Count == 0) return;
+            if (facturaSeleccionada != null) return true;
+            MessageBox.Show("Seleccione una factura de la lista.", "Factura requerida", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
 
-            dgvFacturas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvFacturas.SelectionMode       = DataGridViewSelectionMode.FullRowSelect;
-            dgvFacturas.ReadOnly            = true;
+        private void FormatearFacturas()
+        {
+            Columna(dgvFacturas, "IdFactura", "N.°", null);
+            Columna(dgvFacturas, "Fecha", "Fecha de emisión", "dd/MM/yyyy HH:mm");
+            Columna(dgvFacturas, "CodigoPropiedad", "Propiedad", null);
+            Columna(dgvFacturas, "TotalColones", "Total (₡)", "N2");
+            Columna(dgvFacturas, "TotalDolares", "Total ($)", "N2");
+            Columna(dgvFacturas, "Estado", "Estado", null);
+            Ocultar(dgvFacturas, "IdPropiedad", "Detalles", "XMLFactura");
+        }
 
-            if (dgvFacturas.Columns["IdFactura"]     != null) dgvFacturas.Columns["IdFactura"].HeaderText     = "N.° Factura";
-            if (dgvFacturas.Columns["Fecha"]         != null)
-            {
-                dgvFacturas.Columns["Fecha"].HeaderText = "Fecha";
-                dgvFacturas.Columns["Fecha"].DefaultCellStyle.Format = "dd/MM/yyyy";
-            }
-            if (dgvFacturas.Columns["CodigoPropiedad"] != null) dgvFacturas.Columns["CodigoPropiedad"].HeaderText = "Propiedad";
-            if (dgvFacturas.Columns["TotalColones"]  != null)
-            {
-                dgvFacturas.Columns["TotalColones"].HeaderText = "Total (₡)";
-                dgvFacturas.Columns["TotalColones"].DefaultCellStyle.Format = "N2";
-            }
-            if (dgvFacturas.Columns["TotalDolares"]  != null)
-            {
-                dgvFacturas.Columns["TotalDolares"].HeaderText = "Total ($)";
-                dgvFacturas.Columns["TotalDolares"].DefaultCellStyle.Format = "N2";
-            }
-            if (dgvFacturas.Columns["Estado"]        != null) dgvFacturas.Columns["Estado"].HeaderText = "Estado";
-            if (dgvFacturas.Columns["IdPropiedad"]   != null) dgvFacturas.Columns["IdPropiedad"].Visible = false;
-            if (dgvFacturas.Columns["Detalles"]      != null) dgvFacturas.Columns["Detalles"].Visible = false;
+        private void FormatearDetalle()
+        {
+            Ocultar(dgvDetalle, "IdDetalle", "IdFactura", "IdCargo");
+            Columna(dgvDetalle, "Descripcion", "Concepto", null);
+            Columna(dgvDetalle, "Cantidad", "Cantidad", "N2");
+            Columna(dgvDetalle, "Precio", "Precio unitario", "N2");
+            Columna(dgvDetalle, "Subtotal", "Subtotal", "N2");
+        }
+
+        private static void Columna(DataGridView grid, string nombre, string titulo, string formato)
+        {
+            if (grid.Columns[nombre] == null) return;
+            grid.Columns[nombre].HeaderText = titulo;
+            if (!string.IsNullOrEmpty(formato)) grid.Columns[nombre].DefaultCellStyle.Format = formato;
+        }
+
+        private static void Ocultar(DataGridView grid, params string[] nombres)
+        {
+            foreach (string nombre in nombres) if (grid.Columns[nombre] != null) grid.Columns[nombre].Visible = false;
+        }
+
+        private static void MostrarError(string mensaje, Exception ex)
+        {
+            MessageBox.Show(mensaje + "\n\nDetalle: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
