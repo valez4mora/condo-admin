@@ -25,18 +25,19 @@ namespace DAL.DAO
                 SqlCommand cmd = new SqlCommand("sp_RegistrarPago", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@IdFactura", pago.IdFactura);
-                cmd.Parameters.AddWithValue("@Monto", pago.Monto);
-                cmd.Parameters.AddWithValue("@FechaPago", pago.FechaPago);
-                cmd.Parameters.AddWithValue("@MetodoPago", pago.MetodoPago);
-                cmd.Parameters.AddWithValue(
-                    "@Referencia",
+                cmd.Parameters.Add("@IdFactura", SqlDbType.Int).Value = pago.IdFactura;
+                AgregarMonto(cmd, pago.Monto);
+                cmd.Parameters.Add("@FechaPago", SqlDbType.Date).Value = pago.FechaPago.Date;
+                cmd.Parameters.Add("@MetodoPago", SqlDbType.VarChar, 50).Value = pago.MetodoPago;
+                cmd.Parameters.Add("@Referencia", SqlDbType.VarChar, 100).Value =
                     string.IsNullOrWhiteSpace(pago.Referencia)
                         ? (object)DBNull.Value
-                        : pago.Referencia
-                );
+                        : pago.Referencia.Trim();
 
-                return cmd.ExecuteNonQuery() > 0;
+                // Los SP usan SET NOCOUNT ON, por lo que ExecuteNonQuery puede devolver -1
+                // aunque la operación haya terminado correctamente.
+                cmd.ExecuteNonQuery();
+                return true;
             }
         }
 
@@ -169,7 +170,8 @@ namespace DAL.DAO
                         : pago.Referencia
                 );
 
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
         }
 
@@ -192,8 +194,17 @@ namespace DAL.DAO
                     idPago
                 );
 
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
+        }
+
+        private static void AgregarMonto(SqlCommand cmd, decimal monto)
+        {
+            SqlParameter parametro = cmd.Parameters.Add("@Monto", SqlDbType.Decimal);
+            parametro.Precision = 10;
+            parametro.Scale = 2;
+            parametro.Value = decimal.Round(monto, 2, MidpointRounding.AwayFromZero);
         }
     }
 }
