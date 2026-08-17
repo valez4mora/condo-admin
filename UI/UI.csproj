@@ -206,6 +206,9 @@
     <EmbeddedResource Include="Forms\FrmGenerarCuota.resx">
       <DependentUpon>FrmGenerarCuota.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmLogin.resx">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMorosidad.resx">
       <DependentUpon>FrmMorosidad.cs</DependentUpon>
     </EmbeddedResource>
@@ -322,6 +325,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ciudad %281%293.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\a899a7489d4cf51f5db54738d802bf31.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\40fc852206302df373e9747586d84e9b.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\069c168477871ddaf88252c114b5cfe9.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\59ffcdc4-2120-4886-bed5-72f23c9396ce.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lapiz-de-usuario.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clave-de-usuario.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clave-de-usuario %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ingresar %281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
